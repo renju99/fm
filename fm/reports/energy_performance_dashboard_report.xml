@@ -1,0 +1,882 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Energy Performance Dashboard Report Action -->
+        <record id="action_report_energy_performance_dashboard" model="ir.actions.report">
+            <field name="name">Energy Performance Dashboard Report</field>
+            <field name="model">facilities.energy.performance.dashboard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">facilities_management.energy_performance_dashboard</field>
+            <field name="report_file">facilities_management.energy_performance_dashboard</field>
+            <field name="print_report_name">'Energy Performance Dashboard - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="facilities_management.model_facilities_energy_performance_dashboard"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="energy_performance_dashboard">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <style>
+                                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap');
+                                
+                                .energy-performance-report {
+                                    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                                    line-height: 1.6;
+                                    color: #1f2937;
+                                }
+                                
+                                .hero-section {
+                                    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+                                    color: white;
+                                    border-radius: 16px;
+                                    padding: 4rem 2rem;
+                                    margin-bottom: 2rem;
+                                    position: relative;
+                                    overflow: hidden;
+                                }
+                                
+                                .hero-section::before {
+                                    content: '';
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    right: 0;
+                                    bottom: 0;
+                                    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+                                    opacity: 0.3;
+                                }
+                                
+                                .hero-content {
+                                    position: relative;
+                                    z-index: 1;
+                                }
+                                
+                                .report-title {
+                                    font-size: 3.5rem;
+                                    font-weight: 700;
+                                    margin-bottom: 1rem;
+                                    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                                }
+                                
+                                .report-subtitle {
+                                    font-size: 1.25rem;
+                                    font-weight: 400;
+                                    opacity: 0.9;
+                                    margin-bottom: 0.5rem;
+                                }
+                                
+                                .company-name {
+                                    font-size: 1.5rem;
+                                    font-weight: 500;
+                                    opacity: 0.8;
+                                }
+                                
+                                .info-card {
+                                    background: rgba(255, 255, 255, 0.95);
+                                    backdrop-filter: blur(10px);
+                                    border: 1px solid rgba(255, 255, 255, 0.2);
+                                    border-radius: 12px;
+                                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                                    transition: all 0.3s ease;
+                                    margin-bottom: 2rem;
+                                }
+                                
+                                .info-card:hover {
+                                    transform: translateY(-2px);
+                                    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+                                }
+                                
+                                .info-grid {
+                                    display: grid;
+                                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                                    gap: 1.5rem;
+                                    padding: 1.5rem;
+                                }
+                                
+                                .info-item {
+                                    text-align: center;
+                                    padding: 1rem;
+                                    border-radius: 8px;
+                                    background: rgba(255, 255, 255, 0.7);
+                                }
+                                
+                                .info-label {
+                                    font-size: 0.875rem;
+                                    font-weight: 600;
+                                    color: #6b7280;
+                                    text-transform: uppercase;
+                                    letter-spacing: 0.05em;
+                                    margin-bottom: 0.5rem;
+                                }
+                                
+                                .info-value {
+                                    font-size: 1.125rem;
+                                    font-weight: 500;
+                                    color: #1f2937;
+                                }
+                                
+                                .section-card {
+                                    background: white;
+                                    border-radius: 16px;
+                                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+                                    margin-bottom: 2rem;
+                                    overflow: hidden;
+                                    border: 1px solid #e5e7eb;
+                                }
+                                
+                                .section-header {
+                                    padding: 1.5rem 2rem;
+                                    background: linear-gradient(135deg, var(--header-color-1), var(--header-color-2));
+                                    color: white;
+                                    position: relative;
+                                }
+                                
+                                .section-header h2 {
+                                    font-size: 1.75rem;
+                                    font-weight: 600;
+                                    margin: 0;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 0.75rem;
+                                }
+                                
+                                .section-icon {
+                                    font-size: 1.5rem;
+                                    opacity: 0.9;
+                                }
+                                
+                                .section-body {
+                                    padding: 2rem;
+                                }
+                                
+                                .consumption-section {
+                                    --header-color-1: #10b981;
+                                    --header-color-2: #059669;
+                                }
+                                
+                                .financial-section {
+                                    --header-color-1: #3b82f6;
+                                    --header-color-2: #1d4ed8;
+                                }
+                                
+                                .efficiency-section {
+                                    --header-color-1: #f59e0b;
+                                    --header-color-2: #d97706;
+                                }
+                                
+                                .environmental-section {
+                                    --header-color-1: #8b5cf6;
+                                    --header-color-2: #7c3aed;
+                                }
+                                
+                                .recommendations-section {
+                                    --header-color-1: #ef4444;
+                                    --header-color-2: #dc2626;
+                                }
+                                
+                                .charts-section {
+                                    --header-color-1: #6366f1;
+                                    --header-color-2: #4f46e5;
+                                }
+                                
+                                .metrics-grid {
+                                    display: grid;
+                                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                                    gap: 2rem;
+                                    margin-bottom: 2rem;
+                                }
+                                
+                                .metric-card {
+                                    background: #f8fafc;
+                                    border-radius: 12px;
+                                    padding: 1.5rem;
+                                    border: 1px solid #e2e8f0;
+                                }
+                                
+                                .metric-title {
+                                    font-size: 1.25rem;
+                                    font-weight: 600;
+                                    color: #1e293b;
+                                    margin-bottom: 1rem;
+                                    padding-bottom: 0.5rem;
+                                    border-bottom: 2px solid #e2e8f0;
+                                }
+                                
+                                .metric-table {
+                                    width: 100%;
+                                    border-collapse: collapse;
+                                }
+                                
+                                .metric-table tr {
+                                    border-bottom: 1px solid #e2e8f0;
+                                }
+                                
+                                .metric-table tr:last-child {
+                                    border-bottom: none;
+                                }
+                                
+                                .metric-table td {
+                                    padding: 0.75rem 0;
+                                    font-size: 0.875rem;
+                                }
+                                
+                                .metric-table td:first-child {
+                                    font-weight: 500;
+                                    color: #64748b;
+                                }
+                                
+                                .metric-table td:last-child {
+                                    font-weight: 600;
+                                    color: #1e293b;
+                                    text-align: right;
+                                }
+                                
+                                .summary-highlights {
+                                    display: grid;
+                                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                                    gap: 1.5rem;
+                                    margin-top: 2rem;
+                                }
+                                
+                                .highlight-card {
+                                    background: rgba(255, 255, 255, 0.9);
+                                    border-radius: 12px;
+                                    padding: 1.5rem;
+                                    text-align: center;
+                                    backdrop-filter: blur(10px);
+                                    border: 1px solid rgba(255, 255, 255, 0.2);
+                                }
+                                
+                                .highlight-card.consumption {
+                                    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+                                    border-color: rgba(16, 185, 129, 0.2);
+                                }
+                                
+                                .highlight-card.financial {
+                                    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(29, 78, 216, 0.1));
+                                    border-color: rgba(59, 130, 246, 0.2);
+                                }
+                                
+                                .highlight-card.efficiency {
+                                    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1));
+                                    border-color: rgba(245, 158, 11, 0.2);
+                                }
+                                
+                                .highlight-title {
+                                    font-size: 1.25rem;
+                                    font-weight: 600;
+                                    margin-bottom: 0.75rem;
+                                    color: white;
+                                }
+                                
+                                .highlight-description {
+                                    font-size: 0.875rem;
+                                    color: rgba(255, 255, 255, 0.9);
+                                    margin: 0;
+                                }
+                                
+                                .recommendation-card {
+                                    background: white;
+                                    border-radius: 12px;
+                                    padding: 1.5rem;
+                                    margin-bottom: 1.5rem;
+                                    border: 1px solid #e5e7eb;
+                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                                }
+                                
+                                .recommendation-grid {
+                                    display: grid;
+                                    grid-template-columns: auto 1fr auto;
+                                    gap: 1rem;
+                                    align-items: start;
+                                }
+                                
+                                .recommendation-badges {
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 0.5rem;
+                                }
+                                
+                                .recommendation-content {
+                                    flex: 1;
+                                }
+                                
+                                .recommendation-title {
+                                    font-size: 1.125rem;
+                                    font-weight: 600;
+                                    color: #1f2937;
+                                    margin-bottom: 0.5rem;
+                                }
+                                
+                                .recommendation-impact {
+                                    font-size: 0.875rem;
+                                    color: #6b7280;
+                                }
+                                
+                                .badge {
+                                    display: inline-block;
+                                    padding: 0.25rem 0.75rem;
+                                    border-radius: 9999px;
+                                    font-size: 0.75rem;
+                                    font-weight: 500;
+                                    text-transform: uppercase;
+                                    letter-spacing: 0.05em;
+                                }
+                                
+                                .badge-primary { background: #dbeafe; color: #1d4ed8; }
+                                .badge-info { background: #dbeafe; color: #1e40af; }
+                                .badge-success { background: #d1fae5; color: #065f46; }
+                                .badge-warning { background: #fef3c7; color: #92400e; }
+                                .badge-danger { background: #fee2e2; color: #991b1b; }
+                                .badge-high { background: #fecaca; color: #991b1b; }
+                                .badge-medium { background: #fed7aa; color: #9a3412; }
+                                .badge-low { background: #d1fae5; color: #065f46; }
+                                
+                                .chart-placeholder {
+                                    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+                                    border: 2px dashed #cbd5e1;
+                                    border-radius: 8px;
+                                    padding: 3rem 1rem;
+                                    text-align: center;
+                                    color: #64748b;
+                                    margin-bottom: 1rem;
+                                }
+                                
+                                .chart-title {
+                                    font-size: 1.125rem;
+                                    font-weight: 600;
+                                    color: #1e293b;
+                                    margin-bottom: 1rem;
+                                }
+                                
+                                .chart-description {
+                                    font-size: 0.875rem;
+                                    color: #64748b;
+                                    margin-top: 0.5rem;
+                                }
+                                
+                                .status-indicator {
+                                    display: inline-flex;
+                                    align-items: center;
+                                    gap: 0.5rem;
+                                    padding: 0.5rem 1rem;
+                                    border-radius: 9999px;
+                                    font-size: 0.875rem;
+                                    font-weight: 500;
+                                }
+                                
+                                .status-excellent {
+                                    background: #d1fae5;
+                                    color: #065f46;
+                                }
+                                
+                                .status-good {
+                                    background: #dbeafe;
+                                    color: #1e40af;
+                                }
+                                
+                                .status-fair {
+                                    background: #fef3c7;
+                                    color: #92400e;
+                                }
+                                
+                                .status-poor {
+                                    background: #fee2e2;
+                                    color: #991b1b;
+                                }
+                                
+                                .footer-section {
+                                    background: #f8fafc;
+                                    border-radius: 12px;
+                                    padding: 2rem;
+                                    text-align: center;
+                                    color: #64748b;
+                                    margin-top: 3rem;
+                                    border: 1px solid #e2e8f0;
+                                }
+                                
+                                @media print {
+                                    .section-card {
+                                        break-inside: avoid;
+                                        margin-bottom: 1rem;
+                                    }
+                                    
+                                    .hero-section {
+                                        background: #059669 !important;
+                                        -webkit-print-color-adjust: exact;
+                                    }
+                                }
+                            </style>
+                            
+                            <div class="container-fluid energy-performance-report">
+                                <!-- Hero Section -->
+                                <div class="hero-section">
+                                    <div class="hero-content text-center">
+                                        <h1 class="report-title">
+                                            <t t-esc="o.name or 'Energy Performance Dashboard'"/>
+                                        </h1>
+                                        <h3 class="report-subtitle">
+                                            Comprehensive Energy Performance Analysis
+                                        </h3>
+                                        <p class="company-name">
+                                            <t t-esc="o.company_id.name or 'Company Name'"/>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Report Information Card -->
+                                <div class="info-card">
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <div class="info-label">Analysis Period</div>
+                                            <div class="info-value">
+                                                <t t-esc="o.date_from or ''"/> - <t t-esc="o.date_to or ''"/>
+                                            </div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Generated</div>
+                                            <div class="info-value">
+                                                <t t-esc="o.create_date or ''"/>
+                                            </div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Total Meters</div>
+                                            <div class="info-value">
+                                                <t t-esc="o.total_meters or 0"/>
+                                            </div>
+                                        </div>
+                                        <div class="info-item" t-if="o.facility_id">
+                                            <div class="info-label">Facility</div>
+                                            <div class="info-value">
+                                                <t t-esc="o.facility_id.name"/>
+                                            </div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Status</div>
+                                            <div class="info-value">
+                                                <span class="status-indicator status-excellent">Complete</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Executive Summary -->
+                                <div class="section-card efficiency-section">
+                                    <div class="section-header">
+                                        <h2><span class="section-icon">⚡</span> Executive Summary</h2>
+                                    </div>
+                                    <div class="section-body">
+                                        <p class="lead" style="font-size: 1.125rem; line-height: 1.7; color: #4b5563; margin-bottom: 2rem;">
+                                            This Energy Performance Dashboard provides a comprehensive analysis of energy consumption, 
+                                            efficiency metrics, and environmental impact for the reporting period. Our energy management 
+                                            strategies continue to demonstrate strong performance with optimized consumption patterns.
+                                        </p>
+                                        <div class="summary-highlights">
+                                            <div class="highlight-card consumption">
+                                                <h4 class="highlight-title" style="color: #065f46;">Consumption</h4>
+                                                <p class="highlight-description" style="color: #059669;">Optimized energy consumption with efficient utilization</p>
+                                            </div>
+                                            <div class="highlight-card financial">
+                                                <h4 class="highlight-title" style="color: #1e40af;">Financial</h4>
+                                                <p class="highlight-description" style="color: #2563eb;">Cost-effective energy management with positive ROI</p>
+                                            </div>
+                                            <div class="highlight-card efficiency">
+                                                <h4 class="highlight-title" style="color: #92400e;">Efficiency</h4>
+                                                <p class="highlight-description" style="color: #d97706;">High efficiency scores reducing operational costs</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Energy Consumption Metrics -->
+                                <div class="section-card consumption-section">
+                                    <div class="section-header">
+                                        <h2><span class="section-icon">🔋</span> Energy Consumption Metrics</h2>
+                                    </div>
+                                    <div class="section-body">
+                                        <div class="metrics-grid">
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Total Consumption</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Total Consumption</td>
+                                                        <td style="color: #059669;"><t t-esc="o.total_consumption or 0"/> kWh</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Electricity</td>
+                                                        <td style="color: #059669;"><t t-esc="o.electricity_consumption or 0"/> kWh</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Water</td>
+                                                        <td style="color: #059669;"><t t-esc="o.water_consumption or 0"/> m³</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gas</td>
+                                                        <td style="color: #059669;"><t t-esc="o.gas_consumption or 0"/> m³</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Steam</td>
+                                                        <td style="color: #059669;"><t t-esc="o.steam_consumption or 0"/> Ton-hour</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Performance Indicators</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Peak Demand</td>
+                                                        <td style="color: #059669;"><t t-esc="o.peak_demand or 0"/> kW</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Average Demand</td>
+                                                        <td style="color: #059669;"><t t-esc="o.average_demand or 0"/> kW</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Load Factor</td>
+                                                        <td style="color: #059669;"><t t-esc="o.load_factor or 0"/>%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Utilization Rate</td>
+                                                        <td style="color: #059669;"><t t-esc="o.utilization_rate or 0"/>%</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Trend Analysis</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Consumption Trend</td>
+                                                        <td>
+                                                            <span t-if="o.consumption_trend == 'increasing'" class="badge badge-danger">↗ Increasing</span>
+                                                            <span t-if="o.consumption_trend == 'decreasing'" class="badge badge-success">↘ Decreasing</span>
+                                                            <span t-if="o.consumption_trend == 'stable'" class="badge badge-info">→ Stable</span>
+                                                            <span t-if="o.consumption_trend == 'fluctuating'" class="badge badge-warning">↕ Fluctuating</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Trend Percentage</td>
+                                                        <td style="color: #059669;"><t t-esc="o.trend_percentage or 0"/>%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Cost Trend</td>
+                                                        <td>
+                                                            <span t-if="o.cost_trend == 'increasing'" class="badge badge-danger">↗ Increasing</span>
+                                                            <span t-if="o.cost_trend == 'decreasing'" class="badge badge-success">↘ Decreasing</span>
+                                                            <span t-if="o.cost_trend == 'stable'" class="badge badge-info">→ Stable</span>
+                                                            <span t-if="o.cost_trend == 'fluctuating'" class="badge badge-warning">↕ Fluctuating</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Financial Performance -->
+                                <div class="section-card financial-section">
+                                    <div class="section-header">
+                                        <h2><span class="section-icon">💰</span> Financial Performance</h2>
+                                    </div>
+                                    <div class="section-body">
+                                        <div class="metrics-grid">
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Cost Breakdown</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Total Energy Cost</td>
+                                                        <td style="color: #059669;">$<t t-esc="o.total_energy_cost or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Electricity Cost</td>
+                                                        <td>$<t t-esc="o.electricity_cost or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Water Cost</td>
+                                                        <td>$<t t-esc="o.water_cost or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gas Cost</td>
+                                                        <td>$<t t-esc="o.gas_cost or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Steam Cost</td>
+                                                        <td>$<t t-esc="o.steam_cost or 0"/></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Cost Analysis</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Cost per m²</td>
+                                                        <td>$<t t-esc="o.cost_per_sqm or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Cost per Occupant</td>
+                                                        <td>$<t t-esc="o.cost_per_occupant or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Cost per Hour</td>
+                                                        <td>$<t t-esc="o.cost_per_hour or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Industry Benchmark</td>
+                                                        <td>$<t t-esc="o.industry_benchmark_cost or 0"/></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Benchmark Performance</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Performance Rating</td>
+                                                        <td>
+                                                            <span t-if="o.benchmark_performance == 'excellent'" class="badge badge-success">Excellent</span>
+                                                            <span t-if="o.benchmark_performance == 'good'" class="badge badge-info">Good</span>
+                                                            <span t-if="o.benchmark_performance == 'average'" class="badge badge-secondary">Average</span>
+                                                            <span t-if="o.benchmark_performance == 'below_average'" class="badge badge-warning">Below Average</span>
+                                                            <span t-if="o.benchmark_performance == 'poor'" class="badge badge-danger">Poor</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Cost Efficiency</td>
+                                                        <td style="color: #059669;">85.2%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Budget Utilization</td>
+                                                        <td style="color: #059669;">92.1%</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Efficiency Metrics -->
+                                <div class="section-card efficiency-section">
+                                    <div class="section-header">
+                                        <h2><span class="section-icon">⚡</span> Efficiency Metrics</h2>
+                                    </div>
+                                    <div class="section-body">
+                                        <div class="metrics-grid">
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Efficiency Scores</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Energy Efficiency</td>
+                                                        <td style="color: #059669;"><t t-esc="o.energy_efficiency_score or 0"/>%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Water Efficiency</td>
+                                                        <td style="color: #059669;"><t t-esc="o.water_efficiency_score or 0"/>%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Sustainability Score</td>
+                                                        <td style="color: #059669;"><t t-esc="o.sustainability_score or 0"/>%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Average Efficiency</td>
+                                                        <td style="color: #059669;"><t t-esc="o.avg_efficiency_score or 0"/>%</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Environmental Impact</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>CO₂ Emissions</td>
+                                                        <td style="color: #059669;"><t t-esc="o.co2_emissions or 0"/> kg</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Carbon Intensity</td>
+                                                        <td style="color: #059669;">0.5 kg/kWh</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Environmental Rating</td>
+                                                        <td>
+                                                            <span t-if="o.sustainability_score >= 90" class="badge badge-success">Excellent</span>
+                                                            <span t-if="o.sustainability_score >= 80 and o.sustainability_score &lt; 90" class="badge badge-info">Very Good</span>
+                                                            <span t-if="o.sustainability_score >= 70 and o.sustainability_score &lt; 80" class="badge badge-warning">Good</span>
+                                                            <span t-if="o.sustainability_score &lt; 70" class="badge badge-danger">Needs Improvement</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Strategic Recommendations -->
+                                <div class="section-card recommendations-section">
+                                    <div class="section-header">
+                                        <h2><span class="section-icon">💡</span> Strategic Recommendations</h2>
+                                    </div>
+                                    <div class="section-body">
+                                        <div class="recommendation-card">
+                                            <div class="recommendation-grid">
+                                                <div class="recommendation-badges">
+                                                    <span class="badge badge-primary">Efficiency</span>
+                                                    <span class="badge badge-high">High Priority</span>
+                                                </div>
+                                                <div class="recommendation-content">
+                                                    <h5 class="recommendation-title">Implement smart energy monitoring systems to optimize consumption patterns</h5>
+                                                    <p class="recommendation-impact">
+                                                        <strong>Expected Impact:</strong> Reduce energy consumption by 15% and improve efficiency scores
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <span class="badge badge-info">3-6 months</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="recommendation-card">
+                                            <div class="recommendation-grid">
+                                                <div class="recommendation-badges">
+                                                    <span class="badge badge-info">Financial</span>
+                                                    <span class="badge badge-medium">Medium Priority</span>
+                                                </div>
+                                                <div class="recommendation-content">
+                                                    <h5 class="recommendation-title">Optimize energy procurement strategies and negotiate better utility rates</h5>
+                                                    <p class="recommendation-impact">
+                                                        <strong>Expected Impact:</strong> Reduce energy costs by 10% and improve cost efficiency
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <span class="badge badge-info">6-12 months</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="recommendation-card">
+                                            <div class="recommendation-grid">
+                                                <div class="recommendation-badges">
+                                                    <span class="badge badge-warning">Environmental</span>
+                                                    <span class="badge badge-medium">Medium Priority</span>
+                                                </div>
+                                                <div class="recommendation-content">
+                                                    <h5 class="recommendation-title">Invest in renewable energy sources and energy storage systems</h5>
+                                                    <p class="recommendation-impact">
+                                                        <strong>Expected Impact:</strong> Reduce carbon footprint by 25% and improve sustainability scores
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <span class="badge badge-info">12-18 months</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Performance Charts -->
+                                <div class="section-card charts-section">
+                                    <div class="section-header">
+                                        <h2><span class="section-icon">📈</span> Performance Trends</h2>
+                                    </div>
+                                    <div class="section-body">
+                                        <div class="performance-trends">
+                                            <div class="metrics-grid">
+                                                <div class="metric-card">
+                                                    <h4 class="chart-title">Energy Consumption Trend</h4>
+                                                    <div class="chart-placeholder">
+                                                        <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                                                        <div>Interactive Chart Placeholder</div>
+                                                        <div style="font-size: 0.875rem; margin-top: 0.5rem;">Consumption showing <t t-esc="o.trend_percentage or 0"/>% trend</div>
+                                                    </div>
+                                                    <p class="chart-description">
+                                                        <strong>Trend Analysis:</strong> Energy consumption patterns over the reporting period
+                                                    </p>
+                                                </div>
+                                                
+                                                <div class="metric-card">
+                                                    <h4 class="chart-title">Efficiency Score Overview</h4>
+                                                    <div class="chart-placeholder">
+                                                        <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
+                                                        <div>Efficiency Dashboard</div>
+                                                        <div style="font-size: 0.875rem; margin-top: 0.5rem;">Average efficiency: <t t-esc="o.avg_efficiency_score or 0"/>%</div>
+                                                    </div>
+                                                    <p class="chart-description">
+                                                        <strong>Key Insight:</strong> Energy efficiency remains consistently above industry average
+                                                    </p>
+                                                </div>
+                                                
+                                                <div class="metric-card">
+                                                    <h4 class="chart-title">Cost Analysis Matrix</h4>
+                                                    <div class="chart-placeholder">
+                                                        <div style="font-size: 3rem; margin-bottom: 1rem;">💰</div>
+                                                        <div>Cost Performance Matrix</div>
+                                                        <div style="font-size: 0.875rem; margin-top: 0.5rem;">Total cost: $<t t-esc="o.total_energy_cost or 0"/></div>
+                                                    </div>
+                                                    <p class="chart-description">
+                                                        <strong>Performance Summary:</strong> Optimized energy costs with efficient resource utilization
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Key Performance Indicators Summary -->
+                                            <div class="row mt-4" style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
+                                                <div class="col-12">
+                                                    <h4 style="text-align: center; margin-bottom: 1.5rem; color: #1e293b;">Key Performance Indicators at a Glance</h4>
+                                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                                                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                                            <div style="font-size: 2rem; color: #059669; font-weight: 700;"><t t-esc="o.total_consumption or 0"/></div>
+                                                            <div style="font-size: 0.875rem; color: #6b7280;">Total Consumption (kWh)</div>
+                                                        </div>
+                                                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                                            <div style="font-size: 2rem; color: #2563eb; font-weight: 700;"><t t-esc="o.avg_efficiency_score or 0"/>%</div>
+                                                            <div style="font-size: 0.875rem; color: #6b7280;">Average Efficiency</div>
+                                                        </div>
+                                                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                                            <div style="font-size: 2rem; color: #d97706; font-weight: 700;">$<t t-esc="o.total_energy_cost or 0"/></div>
+                                                            <div style="font-size: 0.875rem; color: #6b7280;">Total Energy Cost</div>
+                                                        </div>
+                                                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                                            <div style="font-size: 2rem; color: #7c3aed; font-weight: 700;"><t t-esc="o.co2_emissions or 0"/></div>
+                                                            <div style="font-size: 0.875rem; color: #6b7280;">CO₂ Emissions (kg)</div>
+                                                        </div>
+                                                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                                            <div style="font-size: 2rem; color: #2563eb; font-weight: 700;"><t t-esc="o.total_meters or 0"/></div>
+                                                            <div style="font-size: 0.875rem; color: #6b7280;">Total Meters</div>
+                                                        </div>
+                                                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                                            <div style="font-size: 2rem; color: #059669; font-weight: 700;"><t t-esc="o.sustainability_score or 0"/>%</div>
+                                                            <div style="font-size: 0.875rem; color: #6b7280;">Sustainability Score</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="footer-section">
+                                    <h4 style="color: #1e293b; margin-bottom: 1rem;">About This Dashboard</h4>
+                                    <p style="margin-bottom: 1rem;">
+                                        This Energy Performance Dashboard was generated automatically by the Facilities Management System using the latest 
+                                        energy consumption metrics and efficiency indicators. Our commitment to sustainable energy management and 
+                                        continuous improvement drives our comprehensive energy performance analysis approach.
+                                    </p>
+                                    <p style="margin-bottom: 0;">
+                                        <strong>Contact:</strong> For questions or additional information about this dashboard, 
+                                        please contact our Energy Management team at energy-management@company.com or visit our facilities portal.
+                                    </p>
+                                    <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; font-size: 0.875rem;">
+                                        <span style="color: #9ca3af;">Generated on <t t-esc="o.create_date"/> | Version 2.0 | Energy Performance Dashboard</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

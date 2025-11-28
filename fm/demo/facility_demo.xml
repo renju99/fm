@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Create a simple facility for demo -->
+        <record id="demo_facility_1" model="facilities.facility">
+            <field name="name">Demo Facility</field>
+            <field name="address">123 Demo Street, Demo City</field>
+            <field name="phone">+1-555-0123</field>
+            <field name="email">demo@facility.com</field>
+        </record>
+
+        <!-- Create a simple asset for demo -->
+        <record id="demo_asset_1" model="facilities.asset">
+            <field name="name">Demo Asset 1</field>
+            <field name="asset_code">DEMO-001</field>
+            <field name="facility_id" ref="demo_facility_1"/>
+        </record>
+
+        <!-- Create a simple SLA for demo -->
+        <record id="demo_sla_1" model="facilities.sla">
+            <field name="name">Demo SLA</field>
+            <field name="response_time_hours">24</field>
+            <field name="resolution_time_hours">48</field>
+        </record>
+
+        <!-- Create a simple technician for demo -->
+        <record id="demo_technician_1" model="hr.employee">
+            <field name="name">Demo Technician</field>
+            <field name="work_email">technician@demo.com</field>
+        </record>
+
+        <!-- Create a simple maintenance team for demo -->
+        <record id="demo_team_1" model="maintenance.team">
+            <field name="name">Demo Team</field>
+            <field name="leader_id" ref="demo_technician_1"/>
+        </record>
+
+        <!-- Create demo work orders with current dates (October 2025) -->
+        <record id="demo_workorder_1" model="facilities.workorder">
+            <field name="name">WO-DEMO-001</field>
+            <field name="asset_id" ref="demo_asset_1"/>
+            <field name="work_order_type">corrective</field>
+            <field name="state">assigned</field>
+            <field name="priority">3</field>
+            <field name="start_date">2025-10-28</field>
+            <field name="end_date">2025-10-29</field>
+            <field name="estimated_duration">4.0</field>
+            <field name="sla_id" ref="demo_sla_1"/>
+            <field name="technician_id" ref="demo_technician_1"/>
+            <field name="maintenance_team_id" ref="demo_team_1"/>
+        </record>
+
+        <record id="demo_workorder_2" model="facilities.workorder">
+            <field name="name">WO-DEMO-002</field>
+            <field name="asset_id" ref="demo_asset_1"/>
+            <field name="work_order_type">preventive</field>
+            <field name="state">in_progress</field>
+            <field name="priority">4</field>
+            <field name="start_date">2025-10-27</field>
+            <field name="end_date">2025-10-28</field>
+            <field name="estimated_duration">2.0</field>
+            <field name="sla_id" ref="demo_sla_1"/>
+            <field name="technician_id" ref="demo_technician_1"/>
+            <field name="maintenance_team_id" ref="demo_team_1"/>
+        </record>
+
+        <record id="demo_workorder_3" model="facilities.workorder">
+            <field name="name">WO-DEMO-003</field>
+            <field name="asset_id" ref="demo_asset_1"/>
+            <field name="work_order_type">preventive</field>
+            <field name="state">assigned</field>
+            <field name="priority">2</field>
+            <field name="start_date">2025-10-30</field>
+            <field name="end_date">2025-10-31</field>
+            <field name="estimated_duration">6.0</field>
+            <field name="sla_id" ref="demo_sla_1"/>
+            <field name="technician_id" ref="demo_technician_1"/>
+            <field name="maintenance_team_id" ref="demo_team_1"/>
+        </record>
+
+        <!-- Add more work orders for better visibility -->
+        <record id="demo_workorder_4" model="facilities.workorder">
+            <field name="name">WO-DEMO-004</field>
+            <field name="asset_id" ref="demo_asset_1"/>
+            <field name="work_order_type">corrective</field>
+            <field name="state">completed</field>
+            <field name="priority">1</field>
+            <field name="start_date">2025-10-25</field>
+            <field name="end_date">2025-10-25</field>
+            <field name="actual_start_date">2025-10-25 08:00:00</field>
+            <field name="actual_end_date">2025-10-25 12:00:00</field>
+            <field name="estimated_duration">4.0</field>
+            <field name="sla_id" ref="demo_sla_1"/>
+            <field name="technician_id" ref="demo_technician_1"/>
+            <field name="maintenance_team_id" ref="demo_team_1"/>
+        </record>
+
+        <record id="demo_workorder_5" model="facilities.workorder">
+            <field name="name">WO-DEMO-005</field>
+            <field name="asset_id" ref="demo_asset_1"/>
+            <field name="work_order_type">preventive</field>
+            <field name="state">completed</field>
+            <field name="priority">0</field>
+            <field name="start_date">2025-10-20</field>
+            <field name="end_date">2025-10-20</field>
+            <field name="actual_start_date">2025-10-20 09:00:00</field>
+            <field name="actual_end_date">2025-10-20 11:30:00</field>
+            <field name="estimated_duration">2.5</field>
+            <field name="sla_id" ref="demo_sla_1"/>
+            <field name="technician_id" ref="demo_technician_1"/>
+            <field name="maintenance_team_id" ref="demo_team_1"/>
+        </record>
+        
+        <!-- Add overdue work order for dashboard visibility -->
+        <record id="demo_workorder_6" model="facilities.workorder">
+            <field name="name">WO-DEMO-006</field>
+            <field name="asset_id" ref="demo_asset_1"/>
+            <field name="work_order_type">corrective</field>
+            <field name="state">assigned</field>
+            <field name="priority">5</field>
+            <field name="start_date">2025-10-15</field>
+            <field name="end_date">2025-10-17</field>
+            <field name="estimated_duration">8.0</field>
+            <field name="sla_id" ref="demo_sla_1"/>
+            <field name="technician_id" ref="demo_technician_1"/>
+            <field name="maintenance_team_id" ref="demo_team_1"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Access Log Tree View -->
+    <record id="view_maintenance_workorder_access_log_tree" model="ir.ui.view">
+        <field name="name">maintenance.workorder.access.log.tree</field>
+        <field name="model">maintenance.workorder.access.log</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="security_level == 'critical'" 
+                  decoration-warning="security_level == 'high'"
+                  decoration-info="security_level == 'medium'">
+                <field name="workorder_id"/>
+                <field name="user_id"/>
+                <field name="action" widget="badge" 
+                       decoration-danger="action in ['delete', 'approve']"
+                       decoration-warning="action in ['edit', 'assign']"
+                       decoration-info="action in ['start_progress', 'complete']"/>
+                <field name="access_date" widget="datetime"/>
+                <field name="ip_address"/>
+                <field name="security_level" widget="badge" 
+                       decoration-danger="security_level == 'critical'"
+                       decoration-warning="security_level == 'high'"
+                       decoration-info="security_level == 'medium'"/>
+                <field name="details"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Access Log Form View -->
+    <record id="view_maintenance_workorder_access_log_form" model="ir.ui.view">
+        <field name="name">maintenance.workorder.access.log.form</field>
+        <field name="model">maintenance.workorder.access.log</field>
+        <field name="arch" type="xml">
+            <form string="Access Log">
+                <header>
+                    <button name="action_view_workorder" string="View Work Order" type="object"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Access Information">
+                            <field name="workorder_id" readonly="1"/>
+                            <field name="user_id" readonly="1"/>
+                            <field name="action" readonly="1"/>
+                            <field name="access_date" readonly="1"/>
+                        </group>
+                        <group string="Security Information">
+                            <field name="ip_address" readonly="1"/>
+                            <field name="security_level" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Details">
+                        <field name="details" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Access Log Search View -->
+    <record id="view_maintenance_workorder_access_log_search" model="ir.ui.view">
+        <field name="name">maintenance.workorder.access.log.search</field>
+        <field name="model">maintenance.workorder.access.log</field>
+        <field name="arch" type="xml">
+            <search string="Search Access Logs">
+                <field name="workorder_id"/>
+                <field name="user_id"/>
+                <field name="action"/>
+                <field name="access_date"/>
+                <field name="security_level"/>
+                <filter string="Critical" name="critical" domain="[('security_level', '=', 'critical')]"/>
+                <filter string="High" name="high" domain="[('security_level', '=', 'high')]"/>
+                <filter string="Medium" name="medium" domain="[('security_level', '=', 'medium')]"/>
+                <filter string="Low" name="low" domain="[('security_level', '=', 'low')]"/>
+                <filter string="Today" name="today" domain="[('access_date', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                <filter string="This Week" name="this_week" domain="[('access_date', '>=', (context_today() - relativedelta(weeks=1)))]"/>
+                <filter string="This Month" name="this_month" domain="[('access_date', '>=', datetime.datetime.now().strftime('%Y-%m-01'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="User" name="group_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Action" name="group_action" context="{'group_by': 'action'}"/>
+                    <filter string="Security Level" name="group_security_level" context="{'group_by': 'security_level'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'access_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Access Log Action -->
+    <record id="action_maintenance_workorder_access_log" model="ir.actions.act_window">
+        <field name="name">Access Logs</field>
+        <field name="res_model">maintenance.workorder.access.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('facilities_management.view_maintenance_workorder_access_log_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('facilities_management.view_maintenance_workorder_access_log_form')})]"/>
+        <field name="context">{'search_default_critical': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No access logs found!
+            </p>
+            <p>
+                Access logs track all user interactions with work orders for security and audit purposes.
+            </p>
+        </field>
+    </record>
+
+    <!-- Inherit Work Order Form to Add Security Fields -->
+    <record id="view_workorder_form_inherit_security" model="ir.ui.view">
+        <field name="name">facilities.workorder.form.inherit.security</field>
+        <field name="model">facilities.workorder</field>
+        <field name="inherit_id" ref="facilities_management.view_workorder_enhanced_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" name="action_view_access_logs" type="object"
+                        icon="fa-shield">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Access Logs</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Work Order Form to Add Security Fields -->
+    <record id="view_workorder_form_inherit_security_fields" model="ir.ui.view">
+        <field name="name">facilities.workorder.form.inherit.security.fields</field>
+        <field name="model">facilities.workorder</field>
+        <field name="inherit_id" ref="facilities_management.view_workorder_enhanced_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Security" name="security" groups="facilities_management.group_facilities_security_admin">
+                    <group>
+                        <group string="Access Control">
+                            <field name="access_level"/>
+                            <field name="security_clearance_required"/>
+                            <field name="security_clearance_level" invisible="not security_clearance_required"/>
+                        </group>
+                        <group string="Audit Trail">
+                            <field name="created_by_id" readonly="1"/>
+                            <field name="last_modified_by_id" readonly="1"/>
+                            <field name="last_modified_date" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Permissions">
+                        <field name="can_view" readonly="1"/>
+                        <field name="can_edit" readonly="1"/>
+                        <field name="can_delete" readonly="1"/>
+                        <field name="can_assign" readonly="1"/>
+                        <field name="can_approve" readonly="1"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Security Dashboard View -->
+    <record id="view_maintenance_workorder_security_dashboard" model="ir.ui.view">
+        <field name="name">maintenance.workorder.security.dashboard</field>
+        <field name="model">maintenance.workorder</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_dashboard">
+                <field name="name"/>
+                <field name="access_level"/>
+                <field name="security_clearance_required"/>
+                <field name="created_by_id"/>
+                <field name="last_modified_by_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong><field name="name"/></strong>
+                                <div class="mt-2">
+                                    <span class="badge badge-primary" title="Access Level">
+                                        <field name="access_level"/>
+                                    </span>
+                                    <span class="badge badge-warning" title="Security Clearance Required"
+                                          invisible="not security_clearance_required">
+                                        Security Clearance
+                                    </span>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        Created by: <field name="created_by_id"/>
+                                    </small>
+                                </div>
+                                <div class="mt-1">
+                                    <small class="text-muted">
+                                        Last modified by: <field name="last_modified_by_id"/>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Security Menu Items -->
+    <menuitem id="menu_maintenance_security"
+              name="Security"
+              parent="facilities_management.menu_maintenance_admin"
+              sequence="10"
+              groups="facilities_management.group_facilities_security_admin"/>
+
+    <menuitem id="menu_maintenance_access_logs"
+              name="Access Logs"
+              parent="facilities_management.menu_maintenance_security"
+              action="action_maintenance_workorder_access_log"
+              sequence="10"
+              groups="facilities_management.group_facilities_security_auditor"/>
+
+    <menuitem id="menu_maintenance_security_dashboard"
+              name="Security Dashboard"
+              parent="facilities_management.menu_maintenance_security"
+              action="action_maintenance_workorder_security_dashboard"
+              sequence="20"
+              groups="facilities_management.group_facilities_security_admin"/>
+
+    <!-- Security Dashboard Action -->
+    <record id="action_maintenance_workorder_security_dashboard" model="ir.actions.act_window">
+        <field name="name">Security Dashboard</field>
+        <field name="res_model">facilities.workorder</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_maintenance_workorder_security_dashboard"/>
+        <field name="context">{'search_default_restricted': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No restricted work orders found!
+            </p>
+            <p>
+                This dashboard shows work orders with restricted access levels and security requirements.
+            </p>
+        </field>
+    </record>
+</odoo>

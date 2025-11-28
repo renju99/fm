@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Service Catalog Tree View -->
+    <record id="view_service_catalog_tree" model="ir.ui.view">
+        <field name="name">service.catalog.tree</field>
+        <field name="model">facilities.service.catalog</field>
+        <field name="arch" type="xml">
+            <list string="Service Catalog" decoration-muted="not active or not available">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="category"/>
+                <field name="available"/>
+                <field name="default_priority" widget="priority"/>
+                <!-- Optional fields - hidden by default but available in view options -->
+                <field name="active" optional="hide"/>
+                <field name="request_count" optional="hide"/>
+                <field name="avg_resolution_time" widget="float_time" optional="hide"/>
+                <field name="estimated_cost" widget="monetary" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Service Catalog Form View -->
+    <record id="view_service_catalog_form" model="ir.ui.view">
+        <field name="name">service.catalog.form</field>
+        <field name="model">facilities.service.catalog</field>
+        <field name="arch" type="xml">
+            <form string="Service Catalog">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_create_request" type="object" class="oe_stat_button" icon="fa-plus-circle">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Create Request</span>
+                            </div>
+                        </button>
+                        <button name="action_view_requests" type="object" class="oe_stat_button" icon="fa-list">
+                            <field name="request_count" widget="statinfo" string="Requests"/>
+                        </button>
+                    </div>
+                    
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Unavailable" bg_color="bg-warning" invisible="available"/>
+                    
+                    <field name="image" widget="image" class="oe_avatar" options="{'preview_image': 'image', 'size': [90, 90]}"/>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Service Name"/>
+                        </h1>
+                        <h2>
+                            <field name="code" placeholder="Service Code"/>
+                        </h2>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="category"/>
+                            <field name="parent_id" domain="[('id', '!=', id)]"/>
+                            <field name="active"/>
+                            <field name="available"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="icon"/>
+                            <field name="color" widget="color"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Description" name="description">
+                            <group>
+                                <field name="short_description" placeholder="Brief description for catalog lists"/>
+                            </group>
+                            <field name="description" widget="html" placeholder="Detailed service description"/>
+                        </page>
+                        
+                        <page string="Default Settings" name="defaults">
+                            <group>
+                                <group string="Assignment">
+                                    <field name="default_sla_id"/>
+                                    <field name="default_team_id"/>
+                                    <field name="default_priority" widget="priority"/>
+                                </group>
+                                <group string="Approval">
+                                    <field name="approval_required"/>
+                                    <field name="default_approver_id" invisible="not approval_required"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Cost">
+                                    <field name="estimated_cost"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="cost_center"/>
+                                </group>
+                                <group string="Form Configuration">
+                                    <field name="custom_form_view_id"/>
+                                    <field name="required_fields"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Access Control" name="access">
+                            <group>
+                                <group string="User Groups">
+                                    <field name="user_group_ids" widget="many2many_tags"/>
+                                </group>
+                                <group string="Departments">
+                                    <field name="department_ids" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Help &amp; Documentation" name="help">
+                            <group>
+                                <field name="instructions" widget="html" placeholder="Instructions for requesting this service"/>
+                            </group>
+                            <group>
+                                <group string="Help Resources">
+                                    <field name="help_document_ids" widget="many2many_tags"/>
+                                    <field name="contact_ids" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="faq" widget="html" placeholder="Frequently asked questions"/>
+                            </group>
+                        </page>
+                        
+                        <page string="Sub-Services" name="sub_services">
+                            <field name="child_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="available"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                        
+                        <page string="Statistics" name="statistics">
+                            <group>
+                                <group>
+                                    <field name="request_count"/>
+                                    <field name="avg_resolution_time" widget="float_time"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Service Catalog Kanban View -->
+    <record id="view_service_catalog_kanban" model="ir.ui.view">
+        <field name="name">service.catalog.kanban</field>
+        <field name="model">facilities.service.catalog</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="category"/>
+                <field name="available"/>
+                <field name="active"/>
+                <field name="image"/>
+                <field name="icon"/>
+                <field name="color"/>
+                <field name="request_count"/>
+                <field name="estimated_cost"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click" t-attf-class="#{record.color.raw_value ? 'oe_kanban_color_' + record.color.raw_value : ''}" t-att-class="{'oe_kanban_color_2': !record.available.raw_value or !record.active.raw_value}">
+                            <div class="o_kanban_image">
+                                <img t-if="record.image.value" t-att-src="record.image.value" alt="Service Image"/>
+                                <t t-elif="record.icon.value">
+                                    <i t-attf-class="fa #{record.icon.raw_value} fa-2x" title="Service Icon"/>
+                                </t>
+                                <t t-else="">
+                                    <i class="fa fa-cog fa-2x" title="Service icon"/>
+                                </t>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                        <small class="o_kanban_record_subtitle text-muted">
+                                            [<field name="code"/>]
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <field name="category" widget="badge"/>
+                                    <t t-if="record.estimated_cost.value">
+                                        <br/>
+                                        <i class="fa fa-money" title="Estimated cost"/> <field name="estimated_cost" widget="monetary"/>
+                                    </t>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <t t-if="!record.available.raw_value">
+                                            <span class="badge badge-pill badge-warning">Unavailable</span>
+                                        </t>
+                                        <t t-if="!record.active.raw_value">
+                                            <span class="badge badge-pill badge-danger">Archived</span>
+                                        </t>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <span class="badge badge-pill badge-info">
+                                            <field name="request_count"/> requests
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_footer">
+                                <div class="o_kanban_footer_left">
+                                    <a name="action_create_request" type="object" class="btn btn-primary btn-sm" role="button" t-if="record.available.raw_value and record.active.raw_value">
+                                        Request Now
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Service Catalog Search View -->
+    <record id="view_service_catalog_search" model="ir.ui.view">
+        <field name="name">service.catalog.search</field>
+        <field name="model">facilities.service.catalog</field>
+        <field name="arch" type="xml">
+            <search string="Service Catalog">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="description"/>
+                <field name="category"/>
+                <separator/>
+                <filter string="Available" name="available" domain="[('available', '=', True)]"/>
+                <filter string="Unavailable" name="unavailable" domain="[('available', '=', False)]"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Approval Required" name="approval_required" domain="[('approval_required', '=', True)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Category" name="group_by_category" context="{'group_by': 'category'}"/>
+                    <filter string="Availability" name="group_by_available" context="{'group_by': 'available'}"/>
+                    <filter string="Parent Service" name="group_by_parent" context="{'group_by': 'parent_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_service_catalog" model="ir.actions.act_window">
+        <field name="name">Service Catalog</field>
+        <field name="res_model">facilities.service.catalog</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{
+            'search_default_active': 1,
+            'search_default_available': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first service catalog item!
+            </p>
+            <p>
+                The service catalog provides a structured collection of all services available for request within your organization.
+                Users can easily browse and request services they need.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_service_catalog_public" model="ir.actions.act_window">
+        <field name="name">Request Service</field>
+        <field name="res_model">facilities.service.catalog</field>
+        <field name="view_mode">kanban</field>
+        <field name="domain">[('available', '=', True), ('active', '=', True)]</field>
+        <field name="context">{}</field>
+    </record>
+</odoo>

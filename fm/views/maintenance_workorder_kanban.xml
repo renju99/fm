@@ -1,0 +1,80 @@
+<odoo>
+    <record id="view_maintenance_workorder_kanban" model="ir.ui.view">
+        <field name="name">facilities.workorder.kanban</field>
+        <field name="model">facilities.workorder</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="status"/>
+                <field name="approval_state"/>
+                <field name="technician_id"/>
+                <field name="priority"/>
+                <field name="asset_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card">
+                            <div class="oe_kanban_content">
+                                <div class="oe_kanban_record_top">
+                                    <strong><field name="name"/></strong>
+                                </div>
+                                <div class="oe_kanban_record_body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <small class="text-muted">Status:</small>
+                                            <div><field name="status"/></div>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted">Approval:</small>
+                                            <div><field name="approval_state"/></div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-6">
+                                            <small class="text-muted">Asset:</small>
+                                            <div><field name="asset_id"/></div>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted">Priority:</small>
+                                            <div><field name="priority"/></div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-12">
+                                            <small class="text-muted">Technician:</small>
+                                            <div><field name="technician_id"/></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="oe_kanban_record_bottom mt-3">
+                                    <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                        <!-- Enhanced Start Workorder Button -->
+                                        <button type="object" name="action_start_progress"
+                                                class="btn btn-primary btn-sm"
+                                                t-attf-invisible="status not in ('draft', 'assigned') or approval_state not in ('approved', 'draft', 'submitted', 'supervisor', 'manager')">
+                                            <i class="fa fa-play me-1"></i>Start
+                                        </button>
+
+                                        <!-- Resume Work Button -->
+                                        <button type="object" name="action_resume_work"
+                                                class="btn btn-warning btn-sm"
+                                                t-attf-invisible="status != 'on_hold'">
+                                            <i class="fa fa-refresh me-1"></i>Resume
+                                        </button>
+                                        <button type="object" name="action_assign_technician"
+                                                class="btn btn-info btn-sm">
+                                            <i class="fa fa-user me-1"></i>Assign
+                                        </button>
+                                        <button type="object" name="action_report_downtime"
+                                                class="btn btn-warning btn-sm">
+                                            <i class="fa fa-clock me-1"></i>Downtime
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

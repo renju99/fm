@@ -1,0 +1,127 @@
+/* Facilities Management Portal Navigation Styles */
+
+/* Top Navigation Bar */
+.navbar.facilities-nav {
+    background-color: #f8f9fa !important;
+    border-bottom: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0.5rem 0;
+}
+
+.navbar.facilities-nav .navbar-brand {
+    font-weight: 600;
+    color: #495057;
+    font-size: 1.25rem;
+}
+
+.navbar.facilities-nav .navbar-brand:hover {
+    color: #007bff;
+}
+
+/* Navigation Links */
+.navbar.facilities-nav .nav-link {
+    color: #495057;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.navbar.facilities-nav .nav-link:hover {
+    color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.navbar.facilities-nav .nav-link.active {
+    color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+/* User Dropdown */
+.navbar.facilities-nav .dropdown-toggle {
+    color: #495057;
+}
+
+.navbar.facilities-nav .dropdown-menu {
+    border: 1px solid #dee2e6;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 0.375rem;
+}
+
+.navbar.facilities-nav .dropdown-item {
+    color: #495057;
+    padding: 0.5rem 1rem;
+}
+
+.navbar.facilities-nav .dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #007bff;
+}
+
+/* Mobile Navigation */
+@media (max-width: 991.98px) {
+    .navbar.facilities-nav .navbar-collapse {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #dee2e6;
+    }
+    
+    .navbar.facilities-nav .nav-link {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f3f4;
+    }
+    
+    .navbar.facilities-nav .nav-link:last-child {
+        border-bottom: none;
+    }
+}
+
+/* Active Page Highlighting */
+.navbar.facilities-nav .nav-link[href="/dashboard"]:not(.dropdown-toggle),
+.navbar.facilities-nav .nav-link[href="/my/service-requests"]:not(.dropdown-toggle),
+.navbar.facilities-nav .nav-link[href="/my/service-catalog"]:not(.dropdown-toggle),
+.navbar.facilities-nav .nav-link[href="/my/help-center"]:not(.dropdown-toggle) {
+    position: relative;
+}
+
+/* Icon spacing */
+.navbar.facilities-nav .fa {
+    width: 16px;
+    text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .navbar.facilities-nav .navbar-brand {
+        font-size: 1.1rem;
+    }
+    
+    .navbar.facilities-nav .nav-link {
+        font-size: 0.9rem;
+    }
+}
+
+/* Smooth transitions */
+.navbar.facilities-nav * {
+    transition: all 0.2s ease;
+}
+
+/* Focus states for accessibility */
+.navbar.facilities-nav .nav-link:focus,
+.navbar.facilities-nav .dropdown-toggle:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* New Request button styling */
+.navbar.facilities-nav .nav-link[href="/my/service-request/new"] {
+    background-color: #007bff;
+    color: white !important;
+    border-radius: 0.375rem;
+    margin-left: 0.5rem;
+}
+
+.navbar.facilities-nav .nav-link[href="/my/service-request/new"]:hover {
+    background-color: #0056b3;
+    color: white !important;
+}

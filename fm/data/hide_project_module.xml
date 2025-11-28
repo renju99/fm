@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Project hiding data - commented out since project modules are uninstalled -->
+        <!-- This will be handled by the Python model instead -->
+        
+        <!-- 
+        These records are commented out because project modules have been uninstalled
+        and the references would cause installation errors.
+        Project hiding is now handled by the facilities.project.hider model.
+        -->
+        
+    </data>
+</odoo>

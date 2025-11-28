@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Payment Terms -->
+        <record id="payment_term_monthly" model="facilities.payment.term">
+            <field name="name">Monthly</field>
+            <field name="sequence">10</field>
+            <field name="description">Monthly payment terms</field>
+        </record>
+
+        <record id="payment_term_quarterly" model="facilities.payment.term">
+            <field name="name">Quarterly</field>
+            <field name="sequence">20</field>
+            <field name="description">Quarterly payment terms</field>
+        </record>
+
+        <record id="payment_term_semi_annual" model="facilities.payment.term">
+            <field name="name">Semi-Annual</field>
+            <field name="sequence">30</field>
+            <field name="description">Semi-annual payment terms</field>
+        </record>
+
+        <record id="payment_term_annual" model="facilities.payment.term">
+            <field name="name">Annual</field>
+            <field name="sequence">40</field>
+            <field name="description">Annual payment terms</field>
+        </record>
+
+        <!-- Room Types -->
+        <record id="room_type_office" model="facilities.room.type">
+            <field name="name">Office</field>
+            <field name="code">OFF</field>
+            <field name="sequence">10</field>
+            <field name="description">Standard office space</field>
+        </record>
+
+        <record id="room_type_meeting" model="facilities.room.type">
+            <field name="name">Meeting Room</field>
+            <field name="code">MTG</field>
+            <field name="sequence">20</field>
+            <field name="description">Meeting and conference room</field>
+        </record>
+
+        <record id="room_type_storage" model="facilities.room.type">
+            <field name="name">Storage</field>
+            <field name="code">STO</field>
+            <field name="sequence">30</field>
+            <field name="description">Storage and utility space</field>
+        </record>
+
+        <record id="room_type_retail" model="facilities.room.type">
+            <field name="name">Retail Space</field>
+            <field name="code">RTL</field>
+            <field name="sequence">40</field>
+            <field name="description">Retail and commercial space</field>
+        </record>
+
+        <record id="room_type_warehouse" model="facilities.room.type">
+            <field name="name">Warehouse</field>
+            <field name="code">WHS</field>
+            <field name="sequence">50</field>
+            <field name="description">Warehouse and industrial space</field>
+        </record>
+
+        <record id="room_type_apartment" model="facilities.room.type">
+            <field name="name">Apartment</field>
+            <field name="code">APT</field>
+            <field name="sequence">60</field>
+            <field name="description">Residential apartment</field>
+        </record>
+    </data>
+</odoo>

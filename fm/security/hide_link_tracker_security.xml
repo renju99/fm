@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Note: Link Tracker and UTM menu restrictions -->
+        <!-- These records are commented out because the modules might not be installed -->
+        <!-- Uncomment and modify as needed if these modules are installed -->
+        
+        <!-- Link Tracker menu restriction (uncomment if link_tracker module is installed) -->
+        <!--
+        <record id="link_tracker.link_tracker_menu_main" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+        </record>
+        -->
+
+        <!-- UTM root menu restriction (uncomment if utm module is installed) -->
+        <!--
+        <record id="utm.menu_link_tracker_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+        </record>
+        -->
+    </data>
+</odoo>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Create a group for users who should NOT see non-facilities menus -->
+        <record id="group_facilities_focused_user" model="res.groups">
+            <field name="name">Facilities Focused User</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+            <field name="comment">Users in this group will only see facilities-related menus and essential tools</field>
+        </record>
+
+        <!-- Hide unrelated parent menus from facilities management users -->
+        <!-- These menus will be hidden from facilities_focused_user group -->
+
+        <!-- Note: Most menu restrictions are commented out to avoid module dependency issues -->
+        <!-- Uncomment specific sections below as needed if those modules are installed -->
+        
+        <!-- Core modules that are usually installed -->
+        
+        <!-- Accounting & Finance (if account module is installed) -->
+        <!--
+        <record id="account.menu_finance" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        -->
+
+        <!-- Sales (if sale module is installed) -->
+        <!--
+        <record id="sale.sale_menu_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        -->
+
+        <!-- Purchase (if purchase module is installed) -->
+        <!--
+        <record id="purchase.menu_purchase_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        -->
+
+        <!-- Inventory (if stock module is installed) -->
+        <!--
+        <record id="stock.menu_stock_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        -->
+
+        <!-- Note: Add other menu restrictions here as needed -->
+        <!-- Follow the same pattern: wrap in comments and only uncomment if the module is installed -->
+        
+        <!-- Examples of other menus that can be hidden (uncomment as needed): -->
+        <!--
+        <record id="crm.crm_menu_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="hr.menu_hr_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="mrp.menu_mrp_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        -->
+
+        <!-- MENUS KEPT VISIBLE FOR FACILITIES USERS: -->
+        <!-- - Facilities Management (our own menus) -->
+        <!-- - Discuss (mail) - for communication -->
+        <!-- - Calendar - for scheduling -->
+        <!-- - Contacts - for managing contacts -->
+        <!-- - Project - for project management if needed -->
+        <!-- - Settings - restricted to admins anyway -->
+        <!-- - Apps - restricted to admins anyway -->
+
+    </data>
+</odoo>

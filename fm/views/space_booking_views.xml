@@ -1,0 +1,695 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Enhanced Search View -->
+    <record id="view_space_booking_search" model="ir.ui.view">
+        <field name="name">facilities.space.booking.search</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="room_id"/>
+                <field name="user_id"/>
+                <field name="booking_type"/>
+                <field name="department_id"/>
+                <field name="contact_email"/>
+                <field name="state"/>
+                <field name="start_datetime"/>
+                <field name="end_datetime"/>
+                <field name="priority"/>
+                <field name="required_equipment_ids"/>
+                <field name="template_id"/>
+
+                <separator/>
+
+                <filter name="my_bookings" string="My Bookings"
+                        domain="[('user_id', '=', uid)]"/>
+                <filter name="today" string="Today"
+                        domain="[('start_datetime', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))),
+                                 ('start_datetime', '&lt;', datetime.datetime.combine((context_today() + relativedelta(days=1)), datetime.time(0,0,0)))]"/>
+                <filter name="this_week" string="This Week"
+                        domain="[('start_datetime', '&gt;=', (context_today() - relativedelta(weeks=1)))]"/>
+                <filter name="recurring" string="Recurring"
+                        domain="[('is_recurring', '=', True)]"/>
+                <filter name="external_guests" string="With External Guests"
+                        domain="[('is_external_guest', '=', True)]"/>
+                <filter name="overdue" string="Overdue"
+                        domain="[('is_overdue', '=', True)]"/>
+                <filter name="high_priority" string="High Priority"
+                        domain="[('priority', 'in', ['high', 'urgent'])]"/>
+
+                <separator/>
+
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="pending" string="Pending" domain="[('state', '=', 'pending')]"/>
+                <filter name="confirmed" string="Confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]"/>
+                <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]"/>
+
+                <separator/>
+
+                <filter name="meetings" string="Meetings" domain="[('booking_type', '=', 'meeting')]"/>
+                <filter name="events" string="Events" domain="[('booking_type', '=', 'event')]"/>
+                <filter name="training" string="Training" domain="[('booking_type', '=', 'training')]"/>
+                <filter name="maintenance" string="Maintenance" domain="[('booking_type', '=', 'maintenance')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter name="group_room" string="Room" context="{'group_by': 'room_id'}"/>
+                    <filter name="group_user" string="User" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_department" string="Department" context="{'group_by': 'department_id'}"/>
+                    <filter name="group_type" string="Booking Type" context="{'group_by': 'booking_type'}"/>
+                    <filter name="group_priority" string="Priority" context="{'group_by': 'priority'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'start_datetime:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Enhanced Tree View -->
+    <record id="view_space_booking_tree" model="ir.ui.view">
+        <field name="name">facilities.space.booking.tree</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state=='draft'"
+                  decoration-success="state=='confirmed'"
+                  decoration-muted="state=='cancelled'"
+                  decoration-warning="state=='pending'"
+                  decoration-danger="is_overdue"
+                  decoration-bf="priority in ['high', 'urgent']">
+                <field name="name"/>
+                <field name="room_id"/>
+                <field name="user_id"/>
+                <field name="start_datetime"/>
+                <field name="end_datetime"/>
+                <field name="priority" widget="priority"/>
+                <field name="booking_status_display" string="Status"/>
+                <!-- Optional fields - hidden by default but available in view options -->
+                <field name="booking_type" optional="hide"/>
+                <field name="department_id" optional="hide"/>
+                <field name="contact_email" optional="hide"/>
+                <field name="duration_hours" widget="float_time" optional="hide"/>
+                <field name="total_cost" widget="monetary" options="{'currency_field': 'currency_id'}" optional="hide"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="required_capacity" optional="hide"/>
+                <field name="capacity_utilization" widget="percentage" optional="hide"/>
+                <field name="purpose" optional="hide"/>
+                <field name="attendees" optional="hide"/>
+                <field name="is_recurring" optional="hide"/>
+                <field name="is_external_guest" optional="hide"/>
+                <field name="approval_required" optional="hide"/>
+                <field name="is_overdue" invisible="1"/>
+                <field name="state" invisible="1"/>
+                <button name="action_check_in" type="object" icon="fa-sign-in" 
+                        title="Check In" invisible="state != 'confirmed'"/>
+                <button name="action_check_out" type="object" icon="fa-sign-out" 
+                        title="Check Out" invisible="state != 'in_progress'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Enhanced Form View -->
+    <record id="view_space_booking_form" model="ir.ui.view">
+        <field name="name">facilities.space.booking.form</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <form string="Space Booking">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm"
+                            invisible="state not in ('draft','pending')"
+                            class="btn-primary"/>
+                    <button name="action_approve" type="object" string="Approve"
+                            invisible="not approval_required or state != 'pending'"
+                            class="btn-success"/>
+                    <button name="action_reject" type="object" string="Reject"
+                            invisible="not approval_required or state != 'pending'"
+                            class="btn-danger"/>
+                    <button name="action_check_in" type="object" string="Check In"
+                            invisible="state != 'confirmed'"
+                            class="btn-info"/>
+                    <button name="action_check_out" type="object" string="Check Out"
+                            invisible="state != 'in_progress'"
+                            class="btn-info"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state == 'cancelled'"
+                            class="btn-secondary"/>
+                    <button name="action_draft" type="object" string="Set to Draft"
+                            invisible="state == 'draft'"
+                            class="btn-secondary"/>
+                    <button name="action_create_recurring_bookings" type="object" string="Create Recurring"
+                            invisible="not is_recurring or state != 'confirmed'"
+                            class="btn-info"/>
+                    <button name="action_send_reminder" type="object" string="Send Reminder"
+                            invisible="state not in ('confirmed', 'in_progress')"
+                            class="btn-warning"/>
+                    <button name="action_view_portal" type="object" string="Portal View"
+                            class="btn-link"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,pending,confirmed,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_create_template" type="object" 
+                                class="oe_stat_button" icon="fa-save"
+                                invisible="state != 'confirmed'"
+                                title="Save as Template">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Save as</span>
+                                <span class="o_stat_text">Template</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-star" type="object" name="action_view_rating" 
+                                invisible="state != 'completed' or not rating">
+                            <field name="rating" widget="statinfo" string="Rating"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Overdue" bg_color="bg-danger" 
+                            invisible="not is_overdue"/>
+                    <widget name="web_ribbon" title="High Priority" bg_color="bg-warning" 
+                            invisible="priority not in ['high', 'urgent']"/>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <h3 invisible="not template_id">
+                            Based on template: <field name="template_id" readonly="1"/>
+                        </h3>
+                    </div>
+
+                    <group string="General Information">
+                        <group name="booking_details">
+                            <field name="room_id" options="{'no_create': True}"/>
+                            <field name="user_id"/>
+                            <field name="booking_type"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="department_id" required="booking_type == 'event'"/>
+                            <field name="contact_email"/>
+                            <field name="purpose"/>
+                            <field name="attendees"/>
+                            <field name="required_capacity"/>
+                            <field name="approval_required" readonly="1"/>
+                        </group>
+                        <group name="status_info">
+                            <field name="duration_hours" widget="float_time"/>
+                            <field name="room_capacity" readonly="1"/>
+                            <field name="capacity_utilization" widget="percentage" readonly="1"/>
+                            <field name="hourly_rate" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                            <field name="total_cost" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="is_holiday_conflict" readonly="1" invisible="not is_holiday_conflict"/>
+                            <field name="is_overdue" readonly="1" invisible="not is_overdue"/>
+                        </group>
+                    </group>
+
+                    <group string="Timing">
+                        <group name="schedule">
+                            <field name="start_datetime"/>
+                            <field name="end_datetime"/>
+                            <field name="check_in_time" readonly="1" invisible="not check_in_time"/>
+                            <field name="check_out_time" readonly="1" invisible="not check_out_time"/>
+                        </group>
+                        <group name="recurrence_info">
+                            <field name="is_recurring"/>
+                            <field name="recurrence_rule" invisible="not is_recurring" 
+                                   placeholder="e.g., FREQ=WEEKLY;BYDAY=MO,WE,FR"/>
+                            <field name="recurring_display" readonly="1" invisible="not is_recurring"/>
+                            <field name="parent_booking_id" invisible="not parent_booking_id"/>
+                        </group>
+                    </group>
+
+                    <group string="Automation" invisible="state == 'completed'">
+                        <group name="automation_settings">
+                            <field name="auto_check_in"/>
+                            <field name="auto_check_out"/>
+                            <field name="reminder_sent" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Equipment &amp; Requirements" name="equipment">
+                            <group>
+                                <field name="required_equipment_ids" widget="many2many_tags"/>
+                                <field name="equipment_availability" readonly="1" 
+                                       invisible="not required_equipment_ids"/>
+                            </group>
+                        </page>
+
+                        <page string="Guests" name="guests">
+                            <group>
+                                <field name="is_external_guest"/>
+                                <field name="external_guest_names" invisible="not is_external_guest"
+                                       placeholder="Enter external guest names, one per line"/>
+                            </group>
+                        </page>
+
+                        <page string="QR Code &amp; Access" name="qr_access">
+                            <group string="QR Code">
+                                <field name="qr_code" widget="image" invisible="not qr_code"/>
+                                <field name="qr_code_filename" invisible="1"/>
+                                <field name="portal_access_token" readonly="1" password="True"/>
+                            </group>
+                        </page>
+
+                        <page string="Attachments" name="attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+
+                        <page string="Additional Information" name="additional_info">
+                            <group>
+                                <field name="notes" nolabel="1" placeholder="Add any additional notes..."/>
+                            </group>
+                        </page>
+
+                        <page string="Template Settings" name="template_settings" 
+                              invisible="state != 'confirmed'">
+                            <group>
+                                <field name="is_template"/>
+                                <field name="template_name" invisible="not is_template" 
+                                       placeholder="Enter template name..."/>
+                            </group>
+                        </page>
+
+                        <page string="Approval &amp; Feedback" name="approval_feedback">
+                            <group string="Approval Information" invisible="not approval_required">
+                                <field name="approved_by" readonly="1"/>
+                                <field name="approval_date" readonly="1"/>
+                                <field name="rejection_reason" readonly="1" invisible="state != 'cancelled'"/>
+                            </group>
+                            <group string="Feedback" invisible="state != 'completed'">
+                                <field name="rating"/>
+                                <field name="feedback" placeholder="Please share your feedback about the booking..."/>
+                            </group>
+                        </page>
+
+                        <page string="Integration" name="integration">
+                            <group>
+                                <field name="calendar_event_id" readonly="1"/>
+                                <field name="external_booking_ref"/>
+                                <field name="notification_settings" widget="ace" 
+                                       options="{'mode': 'json'}" string="Notification Settings (JSON)"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Enhanced Kanban View -->
+    <record id="view_space_booking_kanban" model="ir.ui.view">
+        <field name="name">facilities.space.booking.kanban</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="room_id"/>
+                <field name="user_id"/>
+                <field name="booking_type"/>
+                <field name="department_id"/>
+                <field name="start_datetime"/>
+                <field name="end_datetime"/>
+                <field name="state"/>
+                <field name="purpose"/>
+                <field name="attendees"/>
+                <field name="is_recurring"/>
+                <field name="is_external_guest"/>
+                <field name="contact_email"/>
+                <field name="priority"/>
+                <field name="total_cost"/>
+                <field name="currency_id"/>
+                <field name="capacity_utilization"/>
+                <field name="is_overdue"/>
+                <field name="approval_required"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click" 
+                             t-attf-class="#{record.is_overdue.raw_value ? 'border-danger' : ''}">
+                            <div class="o_kanban_record_top">
+                                <strong><field name="name"/></strong>
+                                <div class="o_kanban_tags_section">
+                                    <span t-if="record.booking_type.raw_value" 
+                                          t-attf-class="badge badge-#{record.booking_type.raw_value == 'event' ? 'warning' : 'info'}">
+                                        <field name="booking_type"/>
+                                    </span>
+                                    <span t-if="record.priority.raw_value == 'urgent'" class="badge badge-danger ml-1">
+                                        Urgent
+                                    </span>
+                                    <span t-if="record.priority.raw_value == 'high'" class="badge badge-warning ml-1">
+                                        High
+                                    </span>
+                                    <span t-if="record.is_recurring.raw_value" class="badge badge-secondary ml-1" title="Recurring">
+                                        🔄
+                                    </span>
+                                    <span t-if="record.is_external_guest.raw_value" class="badge badge-info ml-1" title="External Guests">
+                                        👥
+                                    </span>
+                                    <span t-if="record.approval_required.raw_value" class="badge badge-warning ml-1" title="Approval Required">
+                                        ⚠️
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div><i class="fa fa-building-o" title="Room"/> <field name="room_id"/></div>
+                                <div><i class="fa fa-user" title="User"/> <field name="user_id"/></div>
+                                <div t-if="record.department_id.raw_value"><i class="fa fa-users" title="Department"/> <field name="department_id"/></div>
+                                <div t-if="record.contact_email.raw_value"><i class="fa fa-envelope" title="Email"/> <field name="contact_email"/></div>
+                                <div><i class="fa fa-clock-o" title="Time"/> <field name="start_datetime"/> - <field name="end_datetime"/></div>
+                                <div t-if="record.purpose.raw_value"><i class="fa fa-info-circle" title="Purpose"/> <field name="purpose"/></div>
+                                <div t-if="record.attendees.raw_value"><i class="fa fa-group" title="Attendees"/> <field name="attendees"/> attendees</div>
+                                <div t-if="record.total_cost.raw_value" class="text-muted">
+                                    <i class="fa fa-money" title="Cost"/> <field name="total_cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                </div>
+                                <div t-if="record.capacity_utilization.raw_value" class="text-muted">
+                                    <i class="fa fa-pie-chart" title="Capacity"/> <field name="capacity_utilization" widget="percentage"/> capacity
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <button name="action_check_in" type="object" class="btn btn-sm btn-primary" role="button"
+                                            t-if="record.state.raw_value == 'confirmed'">
+                                        Check In
+                                    </button>
+                                    <button name="action_check_out" type="object" class="btn btn-sm btn-success" role="button"
+                                            t-if="record.state.raw_value == 'in_progress'">
+                                        Check Out
+                                    </button>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <img t-if="record.user_id.raw_value" 
+                                         t-att-src="'/web/image/res.users/' + record.user_id.raw_value + '/avatar_128'" 
+                                         t-att-alt="record.user_id.value" class="oe_kanban_avatar"/>
+                                    <div t-else="" class="oe_kanban_avatar bg-light d-flex align-items-center justify-content-center">
+                                        <i class="fa fa-user fa-lg text-muted" title="User Avatar"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Enhanced Calendar View -->
+    <record id="view_space_booking_calendar" model="ir.ui.view">
+        <field name="name">facilities.space.booking.calendar</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <calendar string="Space Booking Calendar"
+                      date_start="start_datetime"
+                      date_stop="end_datetime"
+                      color="booking_type"
+                      event_open_popup="true"
+                      mode="month">
+                <field name="name"/>
+                <field name="room_id"/>
+                <field name="user_id"/>
+                <field name="state"/>
+                <field name="purpose"/>
+                <field name="booking_type"/>
+                <field name="department_id"/>
+                <field name="is_recurring"/>
+                <field name="is_external_guest"/>
+                <field name="contact_email"/>
+                <field name="priority"/>
+                <field name="attendees"/>
+                <field name="total_cost"/>
+                <field name="approval_required"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Dashboard View -->
+    <record id="view_space_booking_dashboard" model="ir.ui.view">
+        <field name="name">facilities.space.booking.dashboard</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <kanban class="oe_background_grey o_kanban_dashboard o_space_booking_kanban" create="0">
+                <field name="state"/>
+                <field name="start_datetime"/>
+                <field name="room_id"/>
+                <field name="user_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click o_kanban_dashboard_tile">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">Space Booking Dashboard</div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_content">
+                                <div class="o_kanban_primary_left">
+                                    <div class="row">
+                                        <div class="col-6 o_kanban_primary_bottom">
+                                            <a name="action_view_today_bookings" type="object" class="btn btn-primary" role="button">
+                                                Today's Bookings
+                                            </a>
+                                        </div>
+                                        <div class="col-6 o_kanban_primary_bottom">
+                                            <a name="action_view_my_bookings" type="object" class="btn btn-info" role="button">
+                                                My Bookings
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Graph View -->
+    <record id="view_space_booking_graph" model="ir.ui.view">
+        <field name="name">facilities.space.booking.graph</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <graph string="Booking Analysis" type="bar">
+                <field name="booking_type" type="row"/>
+                <field name="state" type="col"/>
+                <field name="total_cost" type="measure"/>
+                <field name="duration_hours" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Pivot View -->
+    <record id="view_space_booking_pivot" model="ir.ui.view">
+        <field name="name">facilities.space.booking.pivot</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <pivot string="Booking Analysis">
+                <field name="booking_type" type="row"/>
+                <field name="department_id" type="row"/>
+                <field name="room_id" type="row"/>
+                <field name="start_datetime" type="col" interval="month"/>
+                <field name="total_cost" type="measure"/>
+                <field name="duration_hours" type="measure"/>
+                <field name="attendees" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Enhanced Action -->
+    <record id="action_space_booking" model="ir.actions.act_window">
+        <field name="name">Space Bookings</field>
+        <field name="res_model">facilities.space.booking</field>
+        <field name="view_mode">kanban,list,form,calendar,graph,pivot</field>
+        <field name="search_view_id" ref="view_space_booking_search"/>
+        <field name="context">{'search_default_confirmed': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No space bookings yet!
+            </p>
+            <p>
+                Book rooms and spaces for meetings, events, training, workshops, or other purposes.
+                Use templates for recurring booking patterns and track equipment requirements.
+            </p>
+        </field>
+    </record>
+
+    <!-- My Bookings Action -->
+    <record id="action_my_space_bookings" model="ir.actions.act_window">
+        <field name="name">My Bookings</field>
+        <field name="res_model">facilities.space.booking</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
+        <field name="search_view_id" ref="view_space_booking_search"/>
+        <field name="context">{'search_default_my_bookings': 1}</field>
+        <field name="domain">[('user_id', '=', uid)]</field>
+    </record>
+
+    <!-- Pending Approvals Action -->
+    <record id="action_pending_booking_approvals" model="ir.actions.act_window">
+        <field name="name">Pending Approvals</field>
+        <field name="res_model">facilities.space.booking</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_space_booking_search"/>
+        <field name="context">{'search_default_pending': 1}</field>
+        <field name="domain">[('state', '=', 'pending'), ('booking_type', '=', 'event')]</field>
+    </record>
+
+    <!-- Analytics Action -->
+    <record id="action_space_booking_analytics" model="ir.actions.act_window">
+        <field name="name">Booking Analytics</field>
+        <field name="res_model">facilities.space.booking</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_neutral_face">
+                No booking data to analyze yet.
+            </p>
+        </field>
+    </record>
+
+    <!-- Booking Templates Action -->
+    <record id="action_booking_templates" model="ir.actions.act_window">
+        <field name="name">Booking Templates</field>
+        <field name="res_model">facilities.booking.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No booking templates yet!
+            </p>
+            <p>
+                Create reusable booking templates to speed up the booking process.
+            </p>
+        </field>
+    </record>
+
+    <!-- Room Equipment Action -->
+    <record id="action_room_equipment" model="ir.actions.act_window">
+        <field name="name">Room Equipment</field>
+        <field name="res_model">facilities.room.equipment</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No room equipment defined yet!
+            </p>
+            <p>
+                Define equipment available in rooms for booking management.
+            </p>
+        </field>
+    </record>
+
+    <!-- Quick Booking Action -->
+    <record id="action_quick_booking" model="ir.actions.act_window">
+        <field name="name">Quick Booking</field>
+        <field name="res_model">facilities.space.booking</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_state': 'draft', 'form_view_initial_mode': 'edit'}</field>
+    </record>
+
+
+
+    <!-- (moved to facility_asset_menus.xml) -->
+
+    <!-- Data: Enhanced Sequence -->
+    <record id="seq_space_booking" model="ir.sequence">
+        <field name="name">Space Booking</field>
+        <field name="code">facilities.space.booking</field>
+        <field name="prefix">SB-</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Enhanced Mail Template -->
+    <record id="mail_template_space_booking_confirmed" model="mail.template">
+        <field name="name">Space Booking Confirmation</field>
+        <field name="model_id" ref="model_facilities_space_booking"/>
+        <field name="subject">Space Booking Confirmed - ${object.name}</field>
+        <field name="email_to">${object.contact_email or object.user_id.email}</field>
+        <field name="body_html"><![CDATA[
+            <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
+                <div style="background-color: #f8f9fa; padding: 20px;">
+                    <h2 style="color: #28a745; margin-bottom: 20px;">Booking Confirmed</h2>
+                </div>
+
+                <div style="padding: 20px;">
+                    <p>Dear ${object.user_id.name},</p>
+                    <p>Your space booking has been confirmed with the following details:</p>
+
+                    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Booking Reference:</td>
+                                <td style="padding: 8px;">${object.name}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Room:</td>
+                                <td style="padding: 8px;">${object.room_id.name}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Start Time:</td>
+                                <td style="padding: 8px;">${object.start_datetime}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">End Time:</td>
+                                <td style="padding: 8px;">${object.end_datetime}</td>
+                            </tr>
+                            % if object.purpose:
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Purpose:</td>
+                                <td style="padding: 8px;">${object.purpose}</td>
+                            </tr>
+                            % endif
+                            % if object.attendees:
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Attendees:</td>
+                                <td style="padding: 8px;">${object.attendees}</td>
+                            </tr>
+                            % endif
+                            % if object.booking_type:
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Booking Type:</td>
+                                <td style="padding: 8px;">${object.booking_type}</td>
+                            </tr>
+                            % endif
+                            % if object.department_id:
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Department:</td>
+                                <td style="padding: 8px;">${object.department_id.name}</td>
+                            </tr>
+                            % endif
+                            % if object.contact_email:
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Contact Email:</td>
+                                <td style="padding: 8px;">${object.contact_email}</td>
+                            </tr>
+                            % endif
+                        </table>
+                    </div>
+
+                    % if object.is_recurring:
+                    <div style="background-color: #e7f3ff; padding: 10px; border-radius: 5px; margin: 15px 0;">
+                        <p style="margin: 0;"><strong>Recurring Booking:</strong> ${object.recurring_display}</p>
+                    </div>
+                    % endif
+
+                    % if object.is_external_guest and object.external_guest_names:
+                    <div style="background-color: #fff3cd; padding: 10px; border-radius: 5px; margin: 15px 0;">
+                        <p style="margin: 0; font-weight: bold;">External Guests:</p>
+                        <p style="margin: 5px 0 0 0;">${object.external_guest_names}</p>
+                    </div>
+                    % endif
+
+                    % if object.notes:
+                    <div style="margin: 20px 0;">
+                        <p><strong>Additional Notes:</strong></p>
+                        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">
+                            <p style="margin: 0;">${object.notes}</p>
+                        </div>
+                    </div>
+                    % endif
+
+                    <p style="margin-top: 30px;">Thank you for using our facilities booking system.</p>
+                    <p>Best regards,<br/>Facilities Management Team</p>
+                </div>
+            </div>
+        ]]></field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+</odoo>

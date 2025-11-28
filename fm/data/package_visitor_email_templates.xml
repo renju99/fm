@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Package Arrival Notification Email Template -->
+    <record id="email_template_package_arrival" model="mail.template">
+        <field name="name">Package Arrival Notification</field>
+        <field name="model_id" ref="model_package_management"/>
+        <field name="subject">Package Arrival - ${object.tracking_number}</field>
+        <field name="email_from">${object.company_id.email or ''}</field>
+        <field name="email_to">${object.recipient_email or ''}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #2c3e50;">Package Arrival Notification</h2>
+                <p>Dear ${object.recipient_id.name},</p>
+                <p>A package has arrived for you at <strong>${object.facility_id.name}</strong>.</p>
+                
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <h3 style="margin-top: 0;">Package Details:</h3>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="padding: 5px;"><strong>Tracking Number:</strong></td>
+                            <td style="padding: 5px;">${object.tracking_number}</td>
+                        </tr>
+                        <tr t-if="object.carrier_id">
+                            <td style="padding: 5px;"><strong>Carrier:</strong></td>
+                            <td style="padding: 5px;">${object.carrier_id.name}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>Received Date:</strong></td>
+                            <td style="padding: 5px;">${format_datetime(object.received_date, dt_format='medium')}</td>
+                        </tr>
+                        <tr t-if="object.storage_location">
+                            <td style="padding: 5px;"><strong>Storage Location:</strong></td>
+                            <td style="padding: 5px;">${object.storage_location}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <p><strong>Please collect your package at your earliest convenience.</strong></p>
+                
+                <p t-if="object.requires_signature">
+                    <em>Note: This package requires signature upon collection.</em>
+                </p>
+                
+                <p>If you have any questions, please contact us.</p>
+                
+                <p>Best regards,<br/>
+                ${object.facility_id.name} Management</p>
+            </div>
+        </field>
+    </record>
+
+    <!-- Visitor Approval Request Email Template -->
+    <record id="email_template_visitor_approval_request" model="mail.template">
+        <field name="name">Visitor Approval Request</field>
+        <field name="model_id" ref="model_visitor_management"/>
+        <field name="subject">Visitor Approval Request - ${object.visitor_name}</field>
+        <field name="email_from">${object.company_id.email or ''}</field>
+        <field name="email_to">${object.host_email or ''}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #2c3e50;">Visitor Approval Request</h2>
+                <p>Dear ${object.host_id.name},</p>
+                <p>You have a visitor approval request:</p>
+                
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <h3 style="margin-top: 0;">Visitor Information:</h3>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="padding: 5px;"><strong>Name:</strong></td>
+                            <td style="padding: 5px;">${object.visitor_name}</td>
+                        </tr>
+                        <tr t-if="object.visitor_company">
+                            <td style="padding: 5px;"><strong>Company:</strong></td>
+                            <td style="padding: 5px;">${object.visitor_company}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>Visit Date:</strong></td>
+                            <td style="padding: 5px;">${format_datetime(object.visit_date, dt_format='medium')}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>Purpose:</strong></td>
+                            <td style="padding: 5px;">${dict(object._fields['visit_purpose'].selection).get(object.visit_purpose)}</td>
+                        </tr>
+                        <tr t-if="object.visit_description">
+                            <td style="padding: 5px;"><strong>Description:</strong></td>
+                            <td style="padding: 5px;">${object.visit_description}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <p>Please log in to approve or deny this visitor request.</p>
+                
+                <p>Best regards,<br/>
+                ${object.facility_id.name} Security</p>
+            </div>
+        </field>
+    </record>
+
+    <!-- Visitor Approved Email Template -->
+    <record id="email_template_visitor_approved" model="mail.template">
+        <field name="name">Visitor Approved Notification</field>
+        <field name="model_id" ref="model_visitor_management"/>
+        <field name="subject">Visit Approved - ${object.facility_id.name}</field>
+        <field name="email_from">${object.company_id.email or ''}</field>
+        <field name="email_to">${object.visitor_email or ''}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #27ae60;">Visit Approved</h2>
+                <p>Dear ${object.visitor_name},</p>
+                <p>Your visit to <strong>${object.facility_id.name}</strong> has been approved.</p>
+                
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <h3 style="margin-top: 0;">Visit Details:</h3>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="padding: 5px;"><strong>Visitor Number:</strong></td>
+                            <td style="padding: 5px;">${object.visitor_number}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>Host:</strong></td>
+                            <td style="padding: 5px;">${object.host_id.name}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>Visit Date:</strong></td>
+                            <td style="padding: 5px;">${format_datetime(object.visit_date, dt_format='medium')}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>Location:</strong></td>
+                            <td style="padding: 5px;">${object.facility_id.name}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <p><strong>Please present this confirmation at reception upon arrival.</strong></p>
+                
+                <p t-if="object.escort_required">
+                    <em style="color: #e67e22;">Note: An escort is required for your visit. Please wait at reception.</em>
+                </p>
+                
+                <p>Best regards,<br/>
+                ${object.facility_id.name} Security</p>
+            </div>
+        </field>
+    </record>
+
+    <!-- Visitor Denied - Host Notification -->
+    <record id="email_template_visitor_denied_host" model="mail.template">
+        <field name="name">Visitor Denied - Host Notification</field>
+        <field name="model_id" ref="model_visitor_management"/>
+        <field name="subject">Visitor Access Denied - ${object.visitor_name}</field>
+        <field name="email_from">${object.company_id.email or ''}</field>
+        <field name="email_to">${object.host_email or ''}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #e74c3c;">Visitor Access Denied</h2>
+                <p>Dear ${object.host_id.name},</p>
+                <p>We would like to inform you that access has been denied to your expected visitor:</p>
+                
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="padding: 5px;"><strong>Visitor:</strong></td>
+                            <td style="padding: 5px;">${object.visitor_name}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>Scheduled Date:</strong></td>
+                            <td style="padding: 5px;">${format_datetime(object.visit_date, dt_format='medium')}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <p>If you have any questions about this decision, please contact security.</p>
+                
+                <p>Best regards,<br/>
+                ${object.facility_id.name} Security</p>
+            </div>
+        </field>
+    </record>
+
+    <!-- Visitor Denied - Visitor Notification -->
+    <record id="email_template_visitor_denied_visitor" model="mail.template">
+        <field name="name">Visitor Denied - Visitor Notification</field>
+        <field name="model_id" ref="model_visitor_management"/>
+        <field name="subject">Visit Request - ${object.facility_id.name}</field>
+        <field name="email_from">${object.company_id.email or ''}</field>
+        <field name="email_to">${object.visitor_email or ''}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #e74c3c;">Visit Request Status</h2>
+                <p>Dear ${object.visitor_name},</p>
+                <p>We regret to inform you that your visit request to <strong>${object.facility_id.name}</strong> could not be approved at this time.</p>
+                
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="padding: 5px;"><strong>Visitor Number:</strong></td>
+                            <td style="padding: 5px;">${object.visitor_number}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>Requested Date:</strong></td>
+                            <td style="padding: 5px;">${format_datetime(object.visit_date, dt_format='medium')}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <p>For more information, please contact your host or our reception.</p>
+                
+                <p>Best regards,<br/>
+                ${object.facility_id.name} Security</p>
+            </div>
+        </field>
+    </record>
+
+</odoo>
+
+
+
+
+
+
+
+
+
+

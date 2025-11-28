@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Budget Dashboard Client Action - Interactive Dashboard -->
+        <record id="action_budget_dashboard_interactive" model="ir.actions.client">
+            <field name="name">Budget vs Actual Dashboard</field>
+            <field name="tag">facilities_budget_dashboard</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Welcome to Budget vs Actual Dashboard!
+                </p>
+                <p>
+                    Click on any KPI card to drill down into detailed budget and expense data.
+                    Use filters to analyze specific cost centers, categories, or time periods.
+                </p>
+            </field>
+        </record>
+
+        <!-- Replace the existing menu item for Budget vs Actual Reports -->
+        <!-- This assumes there's a menu item with id menu_budget_vs_actual_reports -->
+        <menuitem id="menu_budget_vs_actual_reports_new"
+                  name="Budget vs Actual Dashboard"
+                  parent="menu_financial_management"
+                  action="action_budget_dashboard_interactive"
+                  sequence="30"/>
+
+    </data>
+</odoo>
+
+

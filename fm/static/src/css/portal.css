@@ -1,0 +1,143 @@
+/* Service Request Portal Styles */
+
+.o_portal_service_request {
+    padding: 20px 0;
+}
+
+.service-request-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    transition: box-shadow 0.15s ease-in-out;
+}
+
+.service-request-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.service-catalog-item {
+    transition: transform 0.15s ease-in-out;
+}
+
+.service-catalog-item:hover {
+    transform: translateY(-2px);
+}
+
+.priority-critical {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+.priority-high {
+    background-color: #fd7e14 !important;
+    color: white !important;
+}
+
+.priority-normal {
+    background-color: #6c757d !important;
+    color: white !important;
+}
+
+.status-submitted {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+.status-in-progress {
+    background-color: #17a2b8 !important;
+    color: white !important;
+}
+
+.status-resolved {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+.status-closed {
+    background-color: #343a40 !important;
+    color: white !important;
+}
+
+/* Help Center Styles */
+.help-document-card {
+    border-left: 4px solid #007bff;
+}
+
+.help-document-featured {
+    border-left-color: #ffc107;
+}
+
+.contact-card {
+    border-left: 4px solid #28a745;
+}
+
+/* Form Styles */
+.required::after {
+    content: " *";
+    color: #dc3545;
+}
+
+.form-section {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .o_portal_service_request {
+        padding: 10px 0;
+    }
+    
+    .service-request-card {
+        margin-bottom: 15px;
+    }
+}
+
+/* Rating stars */
+.rating-stars {
+    color: #ffc107;
+}
+
+.rating-stars .fa-star-o {
+    color: #dee2e6;
+}
+
+/* Portal navigation */
+.portal-nav-item {
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.portal-nav-item:hover {
+    background-color: #f8f9fa;
+    text-decoration: none;
+}
+
+.portal-nav-item.active {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Service type badges */
+.service-type-maintenance {
+    background-color: #fd7e14;
+}
+
+.service-type-facility {
+    background-color: #20c997;
+}
+
+.service-type-it {
+    background-color: #6f42c1;
+}
+
+.service-type-hr {
+    background-color: #e83e8c;
+}
+
+.service-type-other {
+    background-color: #6c757d;
+}

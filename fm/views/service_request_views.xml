@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Service Request Tree View -->
+    <record id="view_service_request_tree" model="ir.ui.view">
+        <field name="name">service.request.tree</field>
+        <field name="model">facilities.service.request</field>
+        <field name="arch" type="xml">
+            <list string="Service Requests" decoration-danger="sla_status == 'breached'" decoration-warning="sla_status == 'at_risk'" decoration-muted="state in ['closed', 'cancelled']">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="service_type"/>
+                <field name="requester_id"/>
+                <field name="priority" widget="priority"/>
+                <field name="state" widget="badge" decoration-success="state == 'resolved'" decoration-info="state == 'in_progress'" decoration-warning="state == 'pending_approval'"/>
+                <field name="request_date"/>
+                <!-- Optional fields - hidden by default but available in view options -->
+                <field name="category_id" optional="hide"/>
+                <field name="assigned_to_id" optional="hide"/>
+                <field name="due_date" optional="hide"/>
+                <field name="sla_status" invisible="1"/>
+                <field name="days_open" optional="hide"/>
+                <field name="is_overdue" invisible="1"/>
+                <field name="activity_ids" widget="list_activity" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Service Request Form View -->
+    <record id="view_service_request_form" model="ir.ui.view">
+        <field name="name">service.request.form</field>
+        <field name="model">facilities.service.request</field>
+        <field name="arch" type="xml">
+            <form string="Service Request">
+                <header>
+                    <button name="action_submit" string="Submit" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_start_progress" string="Start Progress" type="object" class="oe_highlight" invisible="state != 'submitted'"/>
+                    <button name="action_request_approval" string="Request Approval" type="object" invisible="state not in ['submitted', 'in_progress']"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="state != 'pending_approval'"/>
+                    <button name="action_reject" string="Reject" type="object" invisible="state != 'pending_approval'"/>
+                    <button name="action_resolve" string="Resolve" type="object" class="oe_highlight" invisible="state not in ['submitted', 'in_progress', 'approved']"/>
+                    <button name="action_close" string="Close" type="object" invisible="state != 'resolved'"/>
+                    <button name="action_put_on_hold" string="Put on Hold" type="object" invisible="state not in ['submitted', 'in_progress', 'approved']"/>
+                    <button name="action_resume" string="Resume" type="object" class="oe_highlight" invisible="state != 'on_hold'"/>
+                    <button name="action_reopen" string="Reopen" type="object" invisible="state not in ['closed', 'resolved', 'cancelled']"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state in ['closed', 'resolved']"/>
+                    <button name="action_create_workorder" string="Create Work Order" type="object" class="oe_highlight" invisible="not can_create_workorder"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,in_progress,resolved,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_workorder" type="object" class="oe_stat_button" icon="fa-wrench" invisible="not workorder_id">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Work Order</span>
+                            </div>
+                        </button>
+                        <button name="action_view_attachments" type="object" class="oe_stat_button" icon="fa-paperclip">
+                            <field name="attachment_count" widget="statinfo" string="Attachments"/>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <h2>
+                            <field name="title" placeholder="Enter service request title..."/>
+                        </h2>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="service_type"/>
+                            <field name="category_id" domain="[('category', '=', service_type)]"/>
+                            <field name="requester_id"/>
+                            <field name="request_date"/>
+                            <field name="due_date"/>
+                        </group>
+                        <group>
+                            <field name="priority" widget="priority"/>
+                            <field name="urgency"/>
+                            <field name="assigned_to_id"/>
+                            <field name="team_id"/>
+                            <field name="sla_id"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" widget="html"/>
+                        </page>
+                        
+                        <page string="Asset &amp; Location" name="asset_location">
+                            <div class="alert alert-info" role="alert">
+                                <strong>Note:</strong> Either asset or location information can be provided. 
+                                Asset will be determined during technician inspection if not specified initially.
+                            </div>
+                            <group>
+                                <group string="Specific Asset (Optional)">
+                                    <field name="asset_id" placeholder="Select if related to specific equipment"/>
+                                </group>
+                                <group string="Location Information">
+                                    <field name="facility_id"/>
+                                    <field name="building_id" domain="[('facility_id', '=', facility_id)]"/>
+                                    <field name="floor_id" domain="[('building_id', '=', building_id)]"/>
+                                    <field name="room_id" domain="[('floor_id', '=', floor_id)]"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Contact Information" name="contact">
+                            <group>
+                                <group>
+                                    <field name="contact_phone"/>
+                                    <field name="contact_email"/>
+                                </group>
+                                <group>
+                                    <field name="estimated_cost"/>
+                                    <field name="actual_cost"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="SLA &amp; Tracking" name="sla_tracking">
+                            <group>
+                                <group string="SLA Information">
+                                    <field name="sla_deadline"/>
+                                    <field name="sla_status" widget="badge"/>
+                                    <field name="days_open"/>
+                                    <field name="is_overdue"/>
+                                </group>
+                                <group string="Resolution">
+                                    <field name="resolution_date"/>
+                                    <field name="workorder_id" readonly="1"/>
+                                    <field name="can_create_workorder" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Approval" name="approval" invisible="not approval_required">
+                            <group>
+                                <group>
+                                    <field name="approval_required"/>
+                                    <field name="approver_id"/>
+                                    <field name="approval_date"/>
+                                </group>
+                                <group>
+                                    <field name="approval_notes"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Resolution &amp; Feedback" name="resolution">
+                            <group>
+                                <field name="resolution_notes" widget="html"/>
+                            </group>
+                            <group>
+                                <group string="Customer Feedback">
+                                    <field name="feedback_rating" widget="priority"/>
+                                    <field name="feedback_comments"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Service Request Kanban View -->
+    <record id="view_service_request_kanban" model="ir.ui.view">
+        <field name="name">service.request.kanban</field>
+        <field name="model">facilities.service.request</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="service_type"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="requester_id"/>
+                <field name="assigned_to_id"/>
+                <field name="sla_status"/>
+                <field name="days_open"/>
+                <field name="activity_ids"/>
+                <field name="activity_state"/>
+                <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="oe_kanban_card #{record.sla_status.raw_value == 'breached' ? 'oe_kanban_color_2' : ''} #{record.sla_status.raw_value == 'at_risk' ? 'oe_kanban_color_7' : ''}">
+                            <div class="o_dropdown_kanban dropdown">
+                                <a class="dropdown-toggle o-no-caret btn" data-bs-toggle="dropdown" href="#" role="button" aria-label="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <a t-if="widget.editable" role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                    <a t-if="widget.deletable" role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                    <a role="menuitem" class="dropdown-item" name="action_service_request" type="action">View in List</a>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_content">
+                                <div class="oe_kanban_details oe_kanban_global_click" style="cursor: pointer;">
+                                        <div class="o_kanban_record_top">
+                                            <div class="o_kanban_record_headings">
+                                                <strong class="o_kanban_record_title">
+                                                    <field name="name"/>: <field name="title"/>
+                                                </strong>
+                                            </div>
+                                            <div class="o_kanban_record_body">
+                                                <field name="service_type" widget="badge"/>
+                                                <br/>
+                                                <i class="fa fa-user" title="Requester"/> <field name="requester_id"/>
+                                                <t t-if="record.assigned_to_id.value">
+                                                    <br/>
+                                                    <i class="fa fa-user-circle" title="Assigned to"/> <field name="assigned_to_id"/>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="o_kanban_record_bottom">
+                                            <div class="oe_kanban_bottom_left">
+                                                <field name="priority" widget="priority"/>
+                                                <t t-if="record.days_open.value > 0">
+                                                    <span class="badge badge-pill badge-info">
+                                                        <field name="days_open"/> days
+                                                    </span>
+                                                </t>
+                                            </div>
+                                            <div class="oe_kanban_bottom_right">
+                                                <field name="activity_ids" widget="kanban_activity"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Service Request Calendar View -->
+    <record id="view_service_request_calendar" model="ir.ui.view">
+        <field name="name">service.request.calendar</field>
+        <field name="model">facilities.service.request</field>
+        <field name="arch" type="xml">
+            <calendar string="Service Requests" date_start="request_date" date_stop="due_date" color="priority" mode="month">
+                <field name="title"/>
+                <field name="service_type"/>
+                <field name="state"/>
+                <field name="priority"/>
+                <field name="assigned_to_id"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Service Request Search View -->
+    <record id="view_service_request_search" model="ir.ui.view">
+        <field name="name">service.request.search</field>
+        <field name="model">facilities.service.request</field>
+        <field name="arch" type="xml">
+            <search string="Service Requests">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="description"/>
+                <field name="requester_id"/>
+                <field name="assigned_to_id"/>
+                <field name="service_type"/>
+                <field name="category_id"/>
+                <field name="asset_id"/>
+                <separator/>
+                <filter string="My Requests" name="my_requests" domain="[('requester_id', '=', uid)]"/>
+                <filter string="Assigned to Me" name="assigned_to_me" domain="[('assigned_to_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Pending Approval" name="pending_approval" domain="[('state', '=', 'pending_approval')]"/>
+                <filter string="Resolved" name="resolved" domain="[('state', '=', 'resolved')]"/>
+                <filter string="Closed" name="closed" domain="[('state', '=', 'closed')]"/>
+                <separator/>
+                <filter string="High Priority" name="high_priority" domain="[('priority', 'in', ['3', '4', '5'])]"/>
+                <filter string="Critical" name="critical" domain="[('priority', '=', '5')]"/>
+                <filter string="Overdue" name="overdue" domain="[('is_overdue', '=', True)]"/>
+                <filter string="SLA Breached" name="sla_breached" domain="[('sla_status', '=', 'breached')]"/>
+                <filter string="SLA At Risk" name="sla_at_risk" domain="[('sla_status', '=', 'at_risk')]"/>
+                <separator/>
+                <filter string="This Week" name="this_week" domain="[('request_date', '&gt;=', (context_today() - relativedelta(weeks=1)))]"/>
+                <filter string="This Month" name="this_month" domain="[('request_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Service Type" name="group_by_service_type" context="{'group_by': 'service_type'}"/>
+                    <filter string="Priority" name="group_by_priority" context="{'group_by': 'priority'}"/>
+                    <filter string="Requester" name="group_by_requester" context="{'group_by': 'requester_id'}"/>
+                    <filter string="Assigned To" name="group_by_assigned_to" context="{'group_by': 'assigned_to_id'}"/>
+                    <filter string="Team" name="group_by_team" context="{'group_by': 'team_id'}"/>
+                    <filter string="SLA Status" name="group_by_sla_status" context="{'group_by': 'sla_status'}"/>
+                    <filter string="Request Date" name="group_by_request_date" context="{'group_by': 'request_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Service Request Pivot View -->
+    <record id="view_service_request_pivot" model="ir.ui.view">
+        <field name="name">service.request.pivot</field>
+        <field name="model">facilities.service.request</field>
+        <field name="arch" type="xml">
+            <pivot string="Service Request Analysis">
+                <field name="service_type" type="row"/>
+                <field name="state" type="col"/>
+                <field name="request_date" type="row" interval="month"/>
+                <field name="days_open" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Service Request Graph View -->
+    <record id="view_service_request_graph" model="ir.ui.view">
+        <field name="name">service.request.graph</field>
+        <field name="model">facilities.service.request</field>
+        <field name="arch" type="xml">
+            <graph string="Service Request Analysis" type="bar">
+                <field name="service_type"/>
+                <field name="state" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_service_request" model="ir.actions.act_window">
+        <field name="name">Service Requests</field>
+        <field name="res_model">facilities.service.request</field>
+        <field name="view_mode">list,kanban,form,calendar,pivot,graph</field>
+        <field name="context">{
+            'search_default_active': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first service request!
+            </p>
+            <p>
+                Service requests allow users to formally request assistance or services from your organization.
+                Track, manage, and resolve requests efficiently with SLA monitoring and workflow automation.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_my_service_requests" model="ir.actions.act_window">
+        <field name="name">My Service Requests</field>
+        <field name="res_model">facilities.service.request</field>
+        <field name="view_mode">list,kanban,form,calendar</field>
+        <field name="domain">[('requester_id', '=', uid)]</field>
+        <field name="context">{
+            'search_default_active': 1,
+            'default_requester_id': uid
+        }</field>
+    </record>
+
+    <record id="action_assigned_service_requests" model="ir.actions.act_window">
+        <field name="name">Assigned to Me</field>
+        <field name="res_model">facilities.service.request</field>
+        <field name="view_mode">list,kanban,form,calendar</field>
+        <field name="domain">[('assigned_to_id', '=', uid)]</field>
+        <field name="context">{
+            'search_default_active': 1
+        }</field>
+    </record>
+
+    <!-- Action for kanban-first view (used by menus) -->
+    <record id="action_service_request_kanban" model="ir.actions.act_window">
+        <field name="name">Service Requests</field>
+        <field name="res_model">facilities.service.request</field>
+        <field name="view_mode">kanban,list,form,calendar,pivot,graph</field>
+        <field name="context">{
+            'search_default_active': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first service request!
+            </p>
+            <p>
+                Service requests allow users to formally request assistance or services from your organization.
+                Track, manage, and resolve requests efficiently with SLA monitoring and workflow automation.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_service_request_dashboard" model="ir.actions.act_window">
+        <field name="name">Service Request Dashboard</field>
+        <field name="res_model">facilities.service.request</field>
+        <field name="view_mode">kanban,list,form,graph,pivot</field>
+        <field name="context">{
+            'search_default_active': 1
+        }</field>
+    </record>
+</odoo>

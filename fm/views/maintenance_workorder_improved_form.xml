@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Standard Odoo 18 Work Order Form View -->
+    <record id="view_workorder_enhanced_form" model="ir.ui.view">
+        <field name="name">facilities.workorder.enhanced.form</field>
+        <field name="model">facilities.workorder</field>
+        <field name="priority" eval="15"/>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="draft,assigned,in_progress,on_hold,completed,cancelled"/>
+                    <field name="onhold_approval_state" widget="statusbar" 
+                           statusbar_visible="none,pending,approved,rejected"
+                           invisible="state != 'in_progress' and onhold_approval_state == 'none'"/>
+                    
+                    <button name="action_start_progress" type="object" string="Start Work" class="oe_highlight"
+                            invisible="state not in ('draft', 'assigned')"
+                            confirm="Are you sure you want to start this work order?"/>
+                    <button name="action_complete" type="object" string="Complete" class="oe_highlight"
+                            invisible="state != 'in_progress'"
+                            confirm="Mark this Work Order as completed?"/>
+                    <button name="action_resume_work" type="object" string="Resume"
+                            invisible="state != 'on_hold'"/>
+                    <button name="action_request_onhold" type="object" string="Request On-Hold" class="btn-warning"
+                            invisible="state != 'in_progress' or onhold_approval_state == 'pending'"/>
+                    <button name="action_approve_onhold" type="object" string="Approve On-Hold" class="oe_highlight"
+                            invisible="onhold_approval_state != 'pending'"
+                            groups="facilities_management.group_facilities_manager"/>
+                    <button name="action_reject_onhold" type="object" string="Reject On-Hold" class="btn-danger"
+                            invisible="onhold_approval_state != 'pending'"
+                            groups="facilities_management.group_facilities_manager"/>
+                    <button name="action_reopen_workorder" type="object" string="Reopen"
+                            invisible="not can_reopen_workorder"/>
+                    <button name="action_create_invoice" type="object" string="Create Invoice" class="btn-primary"
+                            invisible="invoice_status != 'to_invoice'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('completed', 'cancelled')"/>
+                            
+                    <!-- Hidden Fields -->
+                    <field name="all_tasks_completed" invisible="1"/>
+                    <field name="show_standalone_tasks" invisible="1"/>
+                    <field name="service_request_id" invisible="1"/>
+                    <field name="picking_count" invisible="1"/>
+                    <field name="start_date_readonly" invisible="1"/>
+                    <field name="sla_dates_readonly" invisible="1"/>
+                    <field name="can_reopen_workorder" invisible="1"/>
+                    <field name="status" invisible="1"/>
+                    <field name="is_schedule_generated" invisible="1"/>
+                    <field name="invoice_count" invisible="1"/>
+                    <field name="invoice_status" invisible="1"/>
+                    <field name="invoiced" invisible="1"/>
+                    <field name="budget_expense_count" invisible="1"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_view_service_request" type="object"
+                                invisible="not service_request_id" icon="fa-ticket">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Service Request</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" name="action_view_picking" type="object"
+                                invisible="picking_count == 0" icon="fa-truck">
+                            <field name="picking_count" widget="statinfo" string="Parts Transfers"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_view_invoices" type="object"
+                                invisible="invoice_count == 0" icon="fa-file-text-o">
+                            <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_view_budget_expenses" type="object" icon="fa-money"
+                                invisible="budget_expense_count == 0">
+                            <field name="budget_expense_count" widget="statinfo" string="Budget Expenses"/>
+                        </button>
+                        
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="Work Order Reference"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Basic Information">
+                            <field name="asset_id" options="{'no_create': True}"/>
+                            <field name="asset_tag" readonly="1" invisible="asset_id == False"/>
+                            <field name="serial_number" readonly="1" invisible="asset_id == False"/>
+                            <field name="work_order_type" readonly="work_order_type == 'preventive'"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="technician_id"/>
+                            <field name="supervisor_id" readonly="1"/>
+                            <field name="manager_id" readonly="1"/>
+                        </group>
+                        <group string="Location &amp; Timing">
+                            <field name="facility_id" readonly="1"/>
+                            <field name="building_id" readonly="1" invisible="not building_id"/>
+                            <field name="floor_id" readonly="1" invisible="not floor_id"/>
+                            <field name="room_id" readonly="1" invisible="not room_id"/>
+                            <field name="start_date" readonly="start_date_readonly or sla_dates_readonly"/>
+                            <field name="end_date" readonly="sla_dates_readonly"/>
+                        </group>
+                    </group>
+
+                    <group string="Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
+
+                    <group string="On-Hold Request" invisible="state != 'in_progress'">
+                        <group>
+                            <field name="onhold_reason"/>
+                        </group>
+                        <group>
+                            <field name="onhold_comment" placeholder="Explain why work needs to be put on hold..."/>
+                        </group>
+                    </group>
+
+                    <group string="Maintenance Schedule" invisible="not is_schedule_generated">
+                        <group>
+                            <field name="schedule_id" readonly="1"/>
+                            <field name="job_plan_id" readonly="status != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="service_type"/>
+                            <field name="maintenance_team_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Tasks" name="tasks">
+                            <field name="workorder_task_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="description"/>
+                                    <field name="is_done" widget="boolean_toggle"/>
+                                    <field name="duration"/>
+                                    <field name="responsible_id"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                            
+                            <group>
+                                <group>
+                                    <field name="total_task_count" readonly="1"/>
+                                    <field name="completed_task_count" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="task_completion_percentage" readonly="1" widget="progressbar"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Work Done" name="work_done">
+                            <field name="work_done" placeholder="Describe the work performed..."/>
+                        </page>
+
+                        <page string="Personnel" name="personnel">
+                            <field name="assignment_ids">
+                                <list editable="bottom">
+                                    <field name="technician_id"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="work_hours" readonly="1"/>
+                                    <field name="status"/>
+                                    <field name="labor_cost" readonly="1"/>
+                                    <field name="notes"/>
+                                    <button name="action_start_work" type="object" string="Start" 
+                                            invisible="status in ('in_progress', 'completed')" 
+                                            icon="fa-play" class="btn-success"/>
+                                    <button name="action_complete_work" type="object" string="Complete" 
+                                            invisible="status in ('completed', 'not_started')" 
+                                            icon="fa-check" class="btn-primary"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Parts Used" name="parts">
+                            <field name="parts_used_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
+                                    <field name="total_cost" readonly="1"/>
+                                    <field name="product_qty_in_hand" readonly="1"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Permits" name="permits">
+                            <field name="permit_ids" readonly="1">
+                                <list create="false" edit="false" delete="false">
+                                    <field name="name"/>
+                                    <field name="permit_type"/>
+                                    <field name="status"/>
+                                    <field name="issued_date"/>
+                                    <field name="expiry_date"/>
+                                    <field name="requested_by_id"/>
+                                    <field name="approved_by_id"/>
+                                </list>
+                            </field>
+                            <div class="alert alert-info mt-3" role="alert">
+                                <p><strong>Note:</strong> Permits cannot be created or modified from this work order form. 
+                                Please use the dedicated <strong>Permits</strong> menu under Maintenance to create and manage permits.</p>
+                            </div>
+                        </page>
+
+                        <page string="SLA &amp; KPI" name="sla_kpi">
+                            <group>
+                                <group string="SLA Information">
+                                    <field name="sla_id" readonly="1"/>
+                                    <field name="sla_deadline" readonly="1"/>
+                                    <field name="sla_status" widget="badge"/>
+                                    <field name="sla_response_deadline" readonly="1"/>
+                                    <field name="sla_response_status" widget="badge"/>
+                                    <field name="sla_resolution_deadline" readonly="1"/>
+                                    <field name="sla_resolution_status" widget="badge"/>
+                                </group>
+                                <group string="KPI Metrics">
+                                    <field name="mttr" readonly="1"/>
+                                    <field name="first_time_fix" readonly="1"/>
+                                    <field name="downtime_hours"/>
+                                    <field name="cost_per_workorder" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Additional Info" name="additional">
+                            <group>
+                                <group string="Contract &amp; Financial">
+                                    <field name="cost_center_id" options="{'no_create': True}"/>
+                                    <field name="analytic_account_id"/>
+                                    <field name="partner_id" string="Vendor" required="invoice_status == 'to_invoice'"/>
+                                    <field name="contract_id"/>
+                                    <field name="invoice_status" widget="badge"/>
+                                    <field name="labor_cost" readonly="1"/>
+                                    <field name="parts_cost" readonly="1"/>
+                                    <field name="total_cost" readonly="1"/>
+                                </group>
+                                <group string="Permit Information">
+                                    <field name="permit_required" widget="boolean_toggle"/>
+                                    <field name="permit_notes" invisible="not permit_required"/>
+                                </group>
+                                <group string="Actual Dates">
+                                    <field name="actual_start_date" readonly="sla_dates_readonly"/>
+                                    <field name="actual_end_date" readonly="sla_dates_readonly"/>
+                                </group>
+                            </group>
+                            
+                            <group string="On-Hold Management" invisible="onhold_approval_state == 'none'">
+                                <group>
+                                    <field name="onhold_reason" readonly="1"/>
+                                    <field name="onhold_request_date" readonly="1"/>
+                                    <field name="onhold_approved_by" readonly="1"/>
+                                    <field name="onhold_approval_date" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="onhold_comment" readonly="1"/>
+                                </group>
+                            </group>
+
+                            <separator string="Escalation History" invisible="not escalation_history"/>
+                            <field name="escalation_history" readonly="1" invisible="not escalation_history">
+                                <list>
+                                    <field name="escalation_level"/>
+                                    <field name="escalation_date"/>
+                                    <field name="escalation_reason"/>
+                                    <field name="status"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+</odoo>

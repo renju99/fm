@@ -1,0 +1,1013 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Enhanced Asset Action with better view modes -->
+    <record id="action_asset" model="ir.actions.act_window">
+        <field name="name">Assets</field>
+        <field name="res_model">facilities.asset</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
+        <field name="context">{
+            'search_default_filter_active': 1
+            }
+        </field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first facility asset!
+            </p>
+            <p>
+                Manage your facility assets including equipment, furniture, and infrastructure.
+            </p>
+        </field>
+    </record>
+
+    <!-- Facilities Action -->
+    <record id="action_facility" model="ir.actions.act_window">
+        <field name="name">Facilities</field>
+        <field name="res_model">facilities.facility</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first facility!
+            </p>
+            <p>
+                Manage your facilities and their properties.
+            </p>
+        </field>
+    </record>
+
+    <!-- Asset Categories Action -->
+    <record id="action_asset_category" model="ir.actions.act_window">
+        <field name="name">Asset Categories</field>
+        <field name="res_model">facilities.asset.category</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_asset_category_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_asset_category_form')}),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_asset_category_kanban')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first asset category!
+            </p>
+            <p>
+                Organize your assets by creating categories to better manage and track your assets.
+            </p>
+        </field>
+    </record>
+
+    <!-- Maintenance Schedule Action -->
+    <record id="action_maintenance_schedule" model="ir.actions.act_window">
+        <field name="name">Maintenance Schedules</field>
+        <field name="res_model">asset.maintenance.schedule</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first maintenance schedule!
+            </p>
+            <p>
+                Schedule maintenance activities for your assets.
+            </p>
+        </field>
+    </record>
+
+    <!-- Maintenance Work Orders Action -->
+    <record id="action_maintenance_workorder" model="ir.actions.act_window">
+        <field name="name">Work Orders</field>
+        <field name="res_model">facilities.workorder</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_maintenance_workorder_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_workorder_enhanced_form')}),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_maintenance_workorder_kanban')})]"/>
+        <field name="context">{
+            'load_tasks': True,
+            'search_default_with_start_date': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first work order!
+            </p>
+            <p>
+                Manage maintenance work orders with streamlined list view showing essential fields.
+                Use the view options to show additional fields when needed.
+            </p>
+        </field>
+    </record>
+
+    <!-- Enhanced Maintenance Work Orders Action for SLA and KPI Tracking -->
+    <record id="action_maintenance_workorder_enhanced" model="ir.actions.act_window">
+        <field name="name">Enhanced Work Orders</field>
+        <field name="res_model">facilities.workorder</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_maintenance_workorder_enhanced_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_workorder_enhanced_form')}),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_maintenance_workorder_kanban')})]"/>
+        <field name="context">{
+            'load_tasks': True
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first enhanced work order!
+            </p>
+            <p>
+                Manage maintenance work orders with advanced SLA tracking, KPI metrics, and escalation management.
+            </p>
+        </field>
+    </record>
+
+    <!-- Planned Maintenance Work Orders Action -->
+    <record id="action_planned_maintenance_workorder" model="ir.actions.act_window">
+        <field name="name">Planned Maintenance Work Orders</field>
+        <field name="res_model">facilities.workorder</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_planned_maintenance_workorder_kanban')}),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_planned_maintenance_workorder_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_planned_maintenance_workorder_form')}),
+                (0, 0, {'view_mode': 'calendar', 'view_id': ref('view_planned_maintenance_workorder_calendar')})]"/>
+        <field name="search_view_id" ref="view_planned_maintenance_workorder_search"/>
+        <field name="context">{
+            'load_tasks': True
+        }</field>
+        <field name="domain">[('work_order_type', '=', 'preventive')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first planned maintenance work order!
+            </p>
+            <p>
+                Manage planned preventive maintenance work orders generated from maintenance schedules. 
+                These work orders follow structured maintenance plans and include standardized tasks.
+            </p>
+        </field>
+    </record>
+
+    <!-- Enhanced Dashboard Actions -->
+    <record id="action_asset_overview" model="ir.actions.act_window">
+        <field name="name">Asset Overview</field>
+        <field name="res_model">facilities.asset</field>
+        <field name="view_mode">kanban,graph,pivot</field>
+        <field name="context">{
+            'search_default_group_by_category': 1,
+            'search_default_filter_active': 1
+            }
+        </field>
+    </record>
+
+    <record id="action_assets_by_state" model="ir.actions.act_window">
+        <field name="name">Assets by State</field>
+        <field name="res_model">facilities.asset</field>
+        <field name="view_mode">kanban,list</field>
+        <field name="context">{
+            'search_default_group_by_condition': 1
+            }
+        </field>
+    </record>
+
+    <record id="action_warranty_monitoring" model="ir.actions.act_window">
+        <field name="name">Warranty Monitoring</field>
+        <field name="res_model">facilities.asset</field>
+        <field name="view_mode">calendar,list,kanban</field>
+        <field name="view_id" ref="view_facilities_asset_calendar_warranty"/>
+        <field name="context">{
+            'search_default_has_warranty': 1
+            }
+        </field>
+        <field name="domain">[('warranty_expires_date', '!=', False)]</field>
+    </record>
+
+
+    <!-- Buildings Action -->
+    <record id="action_facilities_building" model="ir.actions.act_window">
+        <field name="name">Buildings</field>
+        <field name="res_model">facilities.building</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first building!
+            </p>
+            <p>
+                Manage your facility buildings and their properties.
+            </p>
+        </field>
+    </record>
+
+    <!-- Floors Action -->
+    <record id="action_facilities_floor" model="ir.actions.act_window">
+        <field name="name">Floors</field>
+        <field name="res_model">facilities.floor</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first floor!
+            </p>
+            <p>
+                Manage floors within your buildings.
+            </p>
+        </field>
+    </record>
+
+    <!-- Rooms Action -->
+    <record id="action_facilities_room" model="ir.actions.act_window">
+        <field name="name">Rooms</field>
+        <field name="res_model">facilities.room</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocentent_smiling_face">
+                Create your first room!
+            </p>
+            <p>
+                Manage rooms within your floors and buildings.
+            </p>
+        </field>
+    </record>
+
+    <!-- Asset Dashboard Action -->
+    <record id="action_asset_dashboard" model="ir.actions.act_window">
+        <field name="name">Asset Dashboard</field>
+        <field name="res_model">facilities.asset</field>
+        <field name="view_mode">kanban,graph,pivot</field>
+        <field name="context">{
+            'search_default_filter_active': 1
+            }
+        </field>
+    </record>
+
+    <!-- Asset Value Analysis Action -->
+    <record id="action_asset_value_analysis" model="ir.actions.act_window">
+        <field name="name">Asset Value Analysis</field>
+        <field name="res_model">facilities.asset</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="context">{
+            'search_default_group_by_category': 1,
+            'search_default_filter_active': 1
+            }
+        </field>
+    </record>
+
+    <!-- Maintenance Calendar Action -->
+    <record id="action_maintenance_calendar" model="ir.actions.act_window">
+        <field name="name">Maintenance Calendar</field>
+        <field name="res_model">asset.maintenance.schedule</field>
+        <field name="view_mode">calendar,list,form</field>
+    </record>
+
+    <!-- Scheduled Maintenance Actions -->
+    <record id="action_asset_maintenance_scheduled_actions" model="ir.actions.act_window">
+        <field name="name">Scheduled Maintenance Actions</field>
+        <field name="res_model">ir.cron</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('name', 'ilike', 'maintenance')]</field>
+    </record>
+
+    <!-- Maintenance Reports Action -->
+    <record id="action_maintenance_reports" model="ir.actions.act_window">
+        <field name="name">Maintenance Reports</field>
+        <field name="res_model">facilities.workorder</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="context">{
+            'search_default_group_by_state': 1
+            }
+        </field>
+    </record>
+
+    <!-- Asset Reports Actions -->
+    <record id="action_asset_reports" model="ir.actions.act_window">
+        <field name="name">Asset Reports</field>
+        <field name="res_model">facilities.asset</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="context">{
+            'search_default_group_by_category': 1
+            }
+        </field>
+    </record>
+
+    <!-- Facility Reports Action -->
+    <record id="action_facility_reports" model="ir.actions.act_window">
+        <field name="name">Facility Reports</field>
+        <field name="res_model">facilities.facility</field>
+        <field name="view_mode">graph,pivot,list</field>
+    </record>
+
+    <!-- Resource Utilization Action -->
+    <record id="action_maintenance_resource_utilization" model="ir.actions.act_window">
+        <field name="name">Resource Utilization</field>
+        <field name="res_model">maintenance.resource.utilization</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Track resource utilization!
+            </p>
+            <p>
+                Monitor how your maintenance resources are being utilized.
+            </p>
+        </field>
+    </record>
+
+
+    <!-- Job Plans Action -->
+    <record id="action_maintenance_job_plan" model="ir.actions.act_window">
+        <field name="name">Job Plans</field>
+        <field name="res_model">maintenance.job.plan</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first job plan!
+            </p>
+            <p>
+                Define standardized maintenance procedures and tasks.
+            </p>
+        </field>
+    </record>
+
+    <!-- Maintenance Work Order Task Action -->
+    <record id="action_maintenance_workorder_task" model="ir.actions.act_window">
+        <field name="name">Work Order Tasks</field>
+        <field name="res_model">facilities.workorder.task</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first work order task!
+            </p>
+            <p>
+                Manage individual tasks within maintenance work orders.
+            </p>
+        </field>
+    </record>
+
+
+
+
+
+
+    <!-- MAIN MENU ITEMS (Left Sidebar) -->
+    <menuitem id="menu_facilities_root"
+              name="Facilities"
+              sequence="10"
+              web_icon="hr,static/description/icon.png"
+              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager,facilities_management.group_maintenance_technician"/>
+
+    <menuitem id="menu_asset_management"
+              name="Asset Management"
+              sequence="20"
+              web_icon="stock,static/description/icon.png"
+              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager,facilities_management.group_maintenance_technician"/>
+
+    <menuitem id="menu_maintenance"
+              name="Maintenance"
+              sequence="30"
+              web_icon="maintenance,static/description/icon.png"
+              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager,facilities_management.group_maintenance_technician"/>
+
+
+    <menuitem id="menu_space_booking"
+              name="Space Booking"
+              sequence="40"
+              web_icon="calendar,static/description/icon.png"
+              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager,facilities_management.group_maintenance_technician"/>
+
+    <menuitem id="menu_facilities_analytics"
+              name="Analytics"
+              sequence="45"
+              web_icon="fa-line-chart"
+              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager"/>
+
+    <menuitem id="menu_financial_management"
+              name="Financial Management"
+              sequence="50"
+              web_icon="account,static/description/icon.png"
+              groups="facilities_management.group_facilities_manager"/>
+
+    <menuitem id="menu_vendor_management"
+              name="Vendor Management"
+              sequence="55"
+              web_icon="purchase,static/description/icon.png"
+              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager"/>
+
+    <menuitem id="menu_safety_management"
+              name="Safety &amp; HSE"
+              sequence="60"
+              web_icon="hr,static/description/icon.png"
+              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager"/>
+
+    <menuitem id="menu_energy_management_root"
+              name="Energy Management"
+              sequence="70"
+              web_icon="stock,static/description/icon.png"
+              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager"/>
+
+    <!-- FACILITIES SECTION -->
+    <menuitem id="menu_facility_records"
+              name="Facility Records"
+              parent="menu_facilities_root"
+              sequence="10"/>
+              
+    <menuitem id="menu_tenant_landlord"
+              name="Tenant &amp; Landlord Management"
+              parent="menu_facilities_root"
+              sequence="15"/>
+
+    <menuitem id="menu_booking_dashboard"
+              name="Dashboard"
+              parent="menu_space_booking"
+              action="action_space_booking_dashboard_client"
+              sequence="5"/>
+
+    <menuitem id="menu_quick_booking"
+              name="Quick Book"
+              parent="menu_space_booking"
+              action="action_quick_booking"
+              sequence="8"/>
+
+    <menuitem id="menu_space_booking_operations"
+              name="All Bookings"
+              parent="menu_space_booking"
+              action="action_space_booking"
+              sequence="10"/>
+
+    <menuitem id="menu_my_space_bookings"
+              name="My Bookings"
+              parent="menu_space_booking"
+              action="action_my_space_bookings"
+              sequence="15"/>
+
+    <menuitem id="menu_pending_approvals"
+              name="Pending Approvals"
+              parent="menu_space_booking"
+              action="action_pending_booking_approvals"
+              sequence="20"/>
+
+    <menuitem id="menu_booking_templates"
+              name="Templates"
+              parent="menu_space_booking"
+              action="action_booking_templates"
+              sequence="25"/>
+
+    <menuitem id="menu_room_equipment"
+              name="Equipment"
+              parent="menu_space_booking"
+              action="action_room_equipment"
+              sequence="28"/>
+
+
+    <menuitem id="menu_facility_list_item"
+              name="All Facilities"
+              parent="menu_facility_records"
+              action="action_facility"
+              sequence="5"/>
+
+    <menuitem id="menu_buildings_item"
+              name="Buildings"
+              parent="menu_facility_records"
+              action="action_facilities_building"
+              sequence="10"/>
+
+    <menuitem id="menu_floors_item"
+              name="Floors"
+              parent="menu_facility_records"
+              action="action_facilities_floor"
+              sequence="20"/>
+
+    <menuitem id="menu_rooms_item"
+              name="Rooms"
+              parent="menu_facility_records"
+              action="action_facilities_room"
+              sequence="30"/>
+
+    <!-- TENANT & LANDLORD MANAGEMENT SECTION -->
+    <menuitem id="menu_tenants_item"
+              name="Tenants"
+              parent="menu_tenant_landlord"
+              action="action_res_partner_tenant_directory"
+              sequence="10"/>
+
+    <!-- Lease Agreements Menu -->
+    <menuitem id="menu_facilities_lease_agreements"
+              name="Lease Agreements"
+              parent="menu_tenant_landlord"
+              sequence="30"/>
+
+    <!-- Unified Leases Action with Smart Defaults -->
+    <record id="action_facilities_lease_unified" model="ir.actions.act_window">
+        <field name="name">Lease Management</field>
+        <field name="res_model">facilities.lease</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_facilities_lease_search"/>
+        <field name="context">{
+            'group_by': 'state',
+            'search_default_filter_active': 1,
+            'search_default_filter_expiring': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first lease agreement!
+            </p>
+            <p>
+                <strong>📋 All-in-One Lease Management</strong><br/>
+                • <strong>📝 Create:</strong> Click "New" to create draft leases<br/>
+                • <strong>🔍 Filter:</strong> Use status filters (Draft, Active, Expiring, Expired)<br/>
+                • <strong>📊 Organize:</strong> Group by status, property type, or landlord<br/>
+                • <strong>📅 Track:</strong> Monitor expiration dates and renewals
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_facilities_leases_unified"
+              name="Leases"
+              action="action_facilities_lease_unified"
+              parent="menu_facilities_lease_agreements"
+              sequence="10"/>
+
+    <menuitem id="menu_facilities_landlord_contracts"
+              name="Landlord Contracts"
+              action="action_facilities_landlord_contract"
+              parent="menu_facilities_lease_agreements"
+              sequence="40"/>
+
+    <menuitem id="menu_facilities_payment_terms"
+              name="Payment Terms"
+              action="action_facilities_payment_term"
+              parent="menu_facilities_lease_agreements"
+              sequence="50"/>
+
+    <menuitem id="menu_facilities_room_types"
+              name="Room Types"
+              action="action_facilities_room_type"
+              parent="menu_facilities_lease_agreements"
+              sequence="60"/>
+
+    <menuitem id="menu_landlords_item"
+              name="Landlords"
+              parent="menu_tenant_landlord"
+              action="action_res_partner_landlord_directory"
+              sequence="20"/>
+
+    <menuitem id="menu_leases_item"
+              name="Lease Agreements"
+              parent="menu_tenant_landlord"
+              action="action_facilities_lease"
+              sequence="30"/>
+
+    <menuitem id="menu_payment_terms_item"
+              name="Payment Terms"
+              parent="menu_tenant_landlord"
+              action="action_facilities_payment_term"
+              sequence="40"/>
+
+    <!-- ENHANCED ASSET MANAGEMENT SECTION -->
+
+    <!-- Asset Operations -->
+    <menuitem id="menu_asset_operations"
+              name="Operations"
+              parent="menu_asset_management"
+              sequence="5"/>
+
+    <menuitem id="menu_asset_list"
+              name="All Assets"
+              parent="menu_asset_operations"
+              action="action_asset"
+              sequence="10"/>
+
+    <menuitem id="menu_asset_categories"
+              name="Categories"
+              parent="menu_asset_operations"
+              action="action_asset_category"
+              sequence="20"/>
+
+
+    <menuitem id="menu_asset_disposal"
+              name="Asset Disposals"
+              parent="menu_asset_operations"
+              action="action_asset_disposal"
+              sequence="50"/>
+
+            <!-- Asset Analytics &amp; Dashboards -->
+    <menuitem id="menu_asset_analytics"
+              name="Analytics &amp; Dashboards"
+              parent="menu_asset_management"
+              sequence="10"/>
+
+
+
+    <!-- Value Analysis menu removed -->
+
+
+    <!-- Asset Monitoring -->
+    <menuitem id="menu_asset_monitoring"
+              name="Monitoring"
+              parent="menu_asset_management"
+              sequence="15"/>
+
+
+    <!-- Moved to Monitoring section -->
+
+    <!-- Moved to Monitoring section -->
+
+
+    <!-- ======================================== -->
+    <!-- MAINTENANCE SECTION - REORGANIZED -->
+    <!-- ======================================== -->
+
+    <!-- 1. SERVICE MANAGEMENT - Entry point for maintenance -->
+    <menuitem id="menu_service_management"
+              name="Service Management"
+              parent="menu_maintenance"
+              sequence="10"/>
+
+    <menuitem id="menu_service_request"
+              name="Service Requests"
+              parent="menu_service_management"
+              sequence="10"/>
+
+    <menuitem id="menu_service_request_dashboard"
+              name="Dashboard"
+              parent="menu_service_request"
+              action="action_service_request_dashboard"
+              sequence="5"/>
+
+    <menuitem id="menu_service_request_all"
+              name="All Service Requests"
+              parent="menu_service_request"
+              action="action_service_request_kanban"
+              sequence="10"/>
+
+    <menuitem id="menu_service_request_my"
+              name="My Requests"
+              parent="menu_service_request"
+              action="action_my_service_requests"
+              sequence="20"/>
+
+    <menuitem id="menu_service_request_assigned"
+              name="Assigned to Me"
+              parent="menu_service_request"
+              action="action_assigned_service_requests"
+              sequence="30"/>
+
+    <!-- Service Catalog -->
+    <menuitem id="menu_service_catalog"
+              name="Service Catalog"
+              parent="menu_service_management"
+              action="action_service_catalog"
+              sequence="20"/>
+
+    <menuitem id="menu_service_catalog_public"
+              name="Request Service"
+              parent="menu_service_management"
+              action="action_service_catalog_public"
+              sequence="15"/>
+
+    <!-- Help Center -->
+    <menuitem id="menu_help_center"
+              name="Help Center"
+              parent="menu_service_management"
+              sequence="30"/>
+
+    <menuitem id="menu_service_contact"
+              name="Contact Directory"
+              parent="menu_help_center"
+              action="action_service_contact"
+              sequence="10"/>
+
+    <menuitem id="menu_service_document"
+              name="Documents"
+              parent="menu_help_center"
+              action="action_service_document"
+              sequence="20"/>
+
+    <menuitem id="menu_service_document_public"
+              name="Browse Help Center"
+              parent="menu_help_center"
+              action="action_service_document_public"
+              sequence="5"/>
+
+    <!-- 2. WORK ORDERS - Core maintenance operations -->
+    <menuitem id="menu_work_orders"
+              name="Work Orders"
+              parent="menu_maintenance"
+              sequence="20"/>
+
+    <menuitem id="menu_maintenance_workorders"
+              name="All Work Orders"
+              parent="menu_work_orders"
+              action="action_maintenance_workorder"
+              sequence="10"/>
+
+    <menuitem id="menu_planned_maintenance_workorders"
+              name="Planned Work Orders"
+              parent="menu_work_orders"
+              action="action_planned_maintenance_workorder"
+              sequence="20"/>
+
+    <menuitem id="menu_maintenance_workorder_assignment"
+              name="Technician Assignments"
+              parent="menu_work_orders"
+              action="facilities_management.action_maintenance_workorder_assignment"
+              sequence="30"/>
+
+    <!-- Escalation Log Action -->
+    <record id="action_maintenance_escalation_log" model="ir.actions.act_window">
+        <field name="name">Escalation History</field>
+        <field name="res_model">facilities.escalation.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('facilities_management.view_maintenance_escalation_log_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('facilities_management.view_maintenance_escalation_log_form')})]"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No escalation logs found!
+            </p>
+            <p>
+                Escalation logs are automatically created when SLA breaches occur.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_maintenance_escalation_logs"
+              name="Escalation History"
+              parent="menu_work_orders"
+              action="action_maintenance_escalation_log"
+              sequence="40"/>
+
+    <!-- 3. PLANNING & SCHEDULING - Preventive maintenance planning -->
+    <menuitem id="menu_planning_scheduling"
+              name="Planning &amp; Scheduling"
+              parent="menu_maintenance"
+              sequence="30"/>
+
+    <menuitem id="menu_maintenance_schedule"
+              name="Maintenance Schedules"
+              parent="menu_planning_scheduling"
+              action="action_maintenance_schedule"
+              sequence="10"/>
+
+    <menuitem id="menu_maintenance_job_plan_item"
+              name="Job Plans"
+              parent="menu_planning_scheduling"
+              action="action_maintenance_job_plan"
+              sequence="20"/>
+
+    <!-- Maintenance Contracts Menu -->
+    <menuitem id="menu_maintenance_contracts"
+              name="Maintenance Contracts"
+              parent="menu_planning_scheduling"
+              action="action_maintenance_contract"
+              sequence="30"/>
+
+    <!-- 4. ANALYTICS & REPORTS - Performance analysis -->
+    <menuitem id="menu_maintenance_analytics"
+              name="Analytics &amp; Reports"
+              parent="menu_maintenance"
+              sequence="40"/>
+
+    <menuitem id="menu_maintenance_kpi_dashboard"
+              name="KPI Dashboard"
+              parent="menu_maintenance_analytics"
+              action="action_maintenance_kpi_dashboard_client"
+              sequence="10"/>
+
+    <menuitem id="menu_technician_performance_dashboard"
+              name="Technician Performance"
+              parent="menu_maintenance_analytics"
+              action="action_technician_performance_dashboard_client"
+              sequence="30"/>
+
+    <menuitem id="menu_maintenance_resource_utilization_item"
+              name="Resource Utilization"
+              parent="menu_maintenance_analytics"
+              action="action_resource_utilization_dashboard_client"
+              sequence="40"/>
+
+    <!-- Asset Performance menu removed from Maintenance Analytics -->
+
+    <menuitem id="menu_maintenance_performance_dashboard_kpi"
+              name="Performance Dashboard"
+              parent="menu_maintenance_analytics"
+              action="action_maintenance_performance_dashboard_client"
+              sequence="60"/>
+
+    <menuitem id="menu_monthly_building_report_wizard"
+              name="Monthly Maintenance Report"
+              parent="menu_maintenance_analytics"
+              action="action_monthly_building_report_wizard"
+              sequence="70"/>
+
+    <!-- 5. SAFETY & COMPLIANCE - Safety and compliance -->
+    <menuitem id="menu_safety_compliance"
+              name="Safety &amp; Compliance"
+              parent="menu_maintenance"
+              sequence="50"/>
+
+    <menuitem id="menu_workorder_permit"
+              name="Work Order Permits"
+              parent="menu_safety_compliance"
+              action="action_workorder_permit"
+              sequence="10"/>
+
+    <menuitem id="menu_facilities_sla"
+              name="SLA Management"
+              parent="menu_safety_compliance"
+              action="action_facilities_sla"
+              sequence="20"/>
+
+    <!-- 6. CONFIGURATION - System configuration -->
+    <menuitem id="menu_maintenance_config_main"
+              name="Configuration"
+              parent="menu_maintenance"
+              sequence="60"
+              groups="base.group_system"/>
+
+    <menuitem id="menu_hr_employee_technician_list"
+              name="Technician Management"
+              parent="menu_maintenance_config_main"
+              action="action_hr_employee_technician_list"
+              sequence="10"/>
+
+    <menuitem id="menu_maintenance_config"
+              name="Maintenance Settings"
+              parent="menu_maintenance_config_main"
+              sequence="20"/>
+
+    <menuitem id="menu_facilities_report_recipient"
+              name="Report Recipients"
+              parent="menu_maintenance_config_main"
+              action="action_facilities_report_recipient"
+              sequence="30"/>
+
+    <menuitem id="menu_facilities_import_export"
+              name="Import/Export"
+              parent="menu_maintenance_config_main"
+              action="action_facilities_import_wizard"
+              sequence="40"/>
+
+    <menuitem id="menu_service_document_tag"
+              name="Service Document Tags"
+              parent="menu_maintenance_config_main"
+              action="action_service_document_tag"
+              sequence="50"/>
+
+    <!-- 7. ADMINISTRATION - System administration (hidden from regular users) -->
+    <menuitem id="menu_maintenance_admin"
+              name="Administration"
+              parent="menu_maintenance"
+              sequence="70"
+              groups="base.group_system"/>
+
+    <menuitem id="menu_scheduled_maintenance_actions"
+              name="Scheduled Actions"
+              parent="menu_maintenance_admin"
+              action="action_asset_maintenance_scheduled_actions"
+              sequence="10"/>
+
+    <menuitem id="menu_facility_manager_check_wizard"
+              name="Check Manager Status"
+              parent="menu_maintenance_admin"
+              action="action_facility_manager_check_wizard"
+              sequence="20"/>
+
+    <!-- ======================================== -->
+    <!-- ADDITIONAL ASSET MANAGEMENT MENUS -->
+    <!-- ======================================== -->
+
+    <menuitem id="menu_asset_reports"
+              name="Asset Reports"
+              parent="menu_asset_analytics"
+              action="action_asset_reports"
+              sequence="60"/>
+
+    <menuitem id="menu_facility_reports"
+              name="Facility Reports"
+              parent="menu_facilities_root"
+              action="action_facility_reports"
+              sequence="70"/>
+
+    <!-- SECURITY MANAGEMENT SECTION -->
+    <!-- TODO: Implement security rounds functionality
+    <menuitem id="menu_security_management"
+              name="Security Management"
+              parent="menu_facilities_root"
+              sequence="80"/>
+
+    <menuitem id="menu_security_rounds"
+              name="Security Rounds"
+              parent="menu_security_management"
+              action="action_facilities_security_round"
+              sequence="10"/>
+
+    <menuitem id="menu_security_checkpoints"
+              name="Security Checkpoints"
+              parent="menu_security_management"
+              action="action_facilities_checkpoint"
+              sequence="20"/>
+
+    <menuitem id="menu_security_round_logs"
+              name="Round Logs"
+              parent="menu_security_management"
+              action="action_facilities_security_round_log"
+              sequence="30"/>
+
+    <menuitem id="menu_security_checkpoint_scans"
+              name="Checkpoint Scans"
+              parent="menu_security_management"
+              action="action_facilities_checkpoint_scan"
+              sequence="40"/>
+
+    <menuitem id="menu_security_performance_dashboard"
+              name="Performance Dashboard"
+              parent="menu_security_management"
+              action="action_facilities_security_performance_dashboard"
+              sequence="50"/>
+    -->
+
+    <!-- Asset Configuration -->
+    <menuitem id="menu_asset_config"
+              name="Asset Settings"
+              parent="menu_asset_management"
+              sequence="90"
+              groups="base.group_system"/>
+
+    <menuitem id="menu_asset_downtime_reasons_item"
+              name="Downtime Reasons"
+              parent="menu_asset_config"
+              action="action_asset_downtime_reasons"
+              sequence="15"
+              groups="base.group_system"/>
+
+    <!-- Asset Calendar Views -->
+    <menuitem id="menu_asset_calendar_views"
+              name="Calendar Views"
+              parent="menu_asset_analytics"
+              sequence="50"/>
+
+    <menuitem id="menu_warranty_calendar_item"
+              name="Warranty Calendar"
+              parent="menu_asset_calendar_views"
+              action="action_asset_warranty_calendar"
+              sequence="10"/>
+
+    <menuitem id="menu_purchase_timeline_item" 
+              name="Purchase Timeline" 
+              parent="menu_asset_calendar_views"
+              action="action_asset_purchase_calendar" 
+              sequence="20"/>
+
+    <!-- Asset Performance Dashboard in Asset Management -->
+    <menuitem id="menu_asset_performance_dashboard_item_asset"
+              name="Asset Performance Dashboard"
+              parent="menu_asset_analytics"
+              action="action_asset_performance_dashboard_client"
+              sequence="45"/>
+
+    <!-- Performance Analysis (Form) menu removed from Asset Analytics - replaced with KPI dashboard -->
+
+    <!-- FINANCIAL MANAGEMENT SECTION -->
+    <menuitem id="menu_financial_budgets"
+              name="Budgets"
+              parent="menu_financial_management"
+              action="action_financial_budget"
+              sequence="10"/>
+
+    <menuitem id="menu_cost_centers"
+              name="Cost Centers"
+              parent="menu_financial_management"
+              action="action_cost_center"
+              sequence="20"/>
+
+    <!-- Cost Center Hierarchy menu removed - not required for core functionality -->
+
+    <menuitem id="menu_expense_categories"
+              name="Expense Categories"
+              parent="menu_financial_management"
+              action="action_expense_category"
+              sequence="25"/>
+
+    <menuitem id="menu_budget_expenses"
+              name="Budget Expenses"
+              parent="menu_financial_management"
+              action="action_budget_expenses"
+              sequence="30"/>
+
+    <!-- Financial Dashboards menu removed - charts use deprecated chartjs widget -->
+
+    <!-- VENDOR MANAGEMENT SECTION (Using Standard Odoo Purchase Module) -->
+    <!-- All vendor management now uses standard Odoo purchase module -->
+    <!-- Custom vendor management menus removed -->
+
+    <!-- SAFETY & HSE SECTION -->
+    <menuitem id="menu_safety_incidents"
+              name="Safety Incidents"
+              parent="menu_safety_management"
+              action="action_safety_incident"
+              sequence="10"/>
+
+    <menuitem id="menu_incident_corrective_actions"
+              name="Corrective Actions"
+              parent="menu_safety_management"
+              action="action_incident_corrective_action"
+              sequence="20"/>
+
+    <menuitem id="menu_safety_statistics"
+              name="Safety Statistics"
+              parent="menu_safety_management"
+              action="action_safety_statistics"
+              sequence="30"/>
+
+</odoo>

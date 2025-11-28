@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Package Collect Wizard Form View -->
+    <record id="view_package_collect_wizard_form" model="ir.ui.view">
+        <field name="name">package.collect.wizard.form</field>
+        <field name="model">package.collect.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Collect Package">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            Collect Package: <field name="tracking_number" readonly="1" class="oe_inline"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Package Information">
+                            <field name="package_id" invisible="1"/>
+                            <field name="recipient_id"/>
+                        </group>
+                        <group string="Collection Information">
+                            <field name="collection_date"/>
+                            <field name="collected_by_staff_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Collector Details">
+                            <field name="is_recipient"/>
+                            <field name="relationship"/>
+                            <field name="collector_id" required="1"/>
+                            <field name="collector_name"/>
+                            <field name="collector_phone"/>
+                            <field name="collector_email"/>
+                        </group>
+                        <group string="Identification">
+                            <field name="id_type"/>
+                            <field name="id_number"/>
+                            <field name="id_verified"/>
+                        </group>
+                    </group>
+                    <group invisible="not requires_authorization">
+                        <group string="Authorization" colspan="2">
+                            <field name="requires_authorization" invisible="1"/>
+                            <field name="authorization_letter" filename="authorization_letter_filename"/>
+                            <field name="authorization_letter_filename" invisible="1"/>
+                            <div class="alert alert-warning" role="alert" invisible="not requires_authorization">
+                                <strong>Authorization Required:</strong> Since the collector is not the recipient, 
+                                an authorization letter must be provided.
+                            </div>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Package Condition">
+                            <field name="package_condition"/>
+                            <field name="condition_notes" invisible="package_condition == 'good'"/>
+                        </group>
+                        <group string="Verification">
+                            <button name="action_send_verification_code" string="Send Verification Code" 
+                                    type="object" class="oe_link" 
+                                    invisible="sms_verification_sent"/>
+                            <field name="sms_verification_sent" invisible="1"/>
+                            <field name="verification_code" invisible="not sms_verification_sent" 
+                                   placeholder="Enter 6-digit code"/>
+                            <button name="action_verify_code" string="Verify Code" 
+                                    type="object" class="btn-primary" 
+                                    invisible="not sms_verification_sent or otp_verified"/>
+                            <field name="otp_verified" invisible="1"/>
+                            <div class="alert alert-success" role="alert" invisible="not otp_verified">
+                                <i class="fa fa-check"/> Verification code confirmed
+                            </div>
+                        </group>
+                    </group>
+                    <group string="Signature">
+                        <field name="signature" widget="signature" required="1" 
+                               placeholder="Sign here to confirm package collection"/>
+                        <field name="signature_date" invisible="1"/>
+                    </group>
+                    <group>
+                        <group string="Photos">
+                            <field name="collector_photo" widget="image" class="oe_avatar"/>
+                            <field name="package_photo" widget="image" class="oe_avatar"/>
+                        </group>
+                        <group string="Additional Notes">
+                            <field name="notes" nolabel="1" placeholder="Any additional notes about the collection..."/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Confirm Collection" name="action_confirm_collection" 
+                            type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Package Collect Wizard Action -->
+    <record id="action_package_collect_wizard" model="ir.actions.act_window">
+        <field name="name">Collect Package</field>
+        <field name="res_model">package.collect.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
+
+
+
+
+
+
+
+
+
+

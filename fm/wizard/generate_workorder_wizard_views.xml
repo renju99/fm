@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Generate Work Order Wizard Form View -->
+    <record id="view_generate_workorder_wizard_form" model="ir.ui.view">
+        <field name="name">generate.workorder.wizard.form</field>
+        <field name="model">generate.workorder.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Work Orders">
+                <group>
+                    <group>
+                        <field name="schedule_id" readonly="1"/>
+                        <field name="lead_days" 
+                               help="Number of days ahead from current date to generate work orders"/>
+                    </group>
+                    <group>
+                        <field name="overwrite_existing" 
+                               help="If checked, existing work orders in the date range will be overwritten"/>
+                    </group>
+                </group>
+                
+                <div class="alert alert-info" role="alert">
+                    <strong>Information:</strong> Work orders will be generated for the next 
+                    <field name="lead_days" readonly="1" class="d-inline"/> days from today's date.
+                </div>
+                
+                <footer>
+                    <button name="action_generate_workorders" type="object" 
+                            string="Generate Work Orders" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Generate Work Order Wizard Action -->
+    <record id="action_generate_workorder_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Work Orders</field>
+        <field name="res_model">generate.workorder.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_schedule_id': active_id}</field>
+    </record>
+</odoo>

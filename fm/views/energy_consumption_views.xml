@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Energy Consumption List View - Minimal -->
+    <record id="view_energy_consumption_list" model="ir.ui.view">
+        <field name="name">facilities.energy.consumption.list</field>
+        <field name="model">facilities.energy.consumption</field>
+        <field name="arch" type="xml">
+            <list string="Energy Consumption Readings" 
+                  decoration-info="is_validated == True" 
+                  decoration-warning="is_anomaly == True"
+                  decoration-danger="anomaly_severity == 'critical'"
+                  create="true" edit="true" delete="true">
+                <field name="name"/>
+                <field name="meter_id"/>
+                <field name="reading_date"/>
+                <field name="consumption"/>
+                <field name="total_cost"/>
+                <field name="is_validated" widget="boolean_toggle"/>
+                <field name="is_anomaly" widget="boolean_toggle"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="reading_value" optional="hide"/>
+                <field name="reading_type" optional="hide"/>
+                <field name="anomaly_severity" optional="hide"/>
+                <field name="reading_user_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Energy Consumption Form View -->
+    <record id="view_energy_consumption_form" model="ir.ui.view">
+        <field name="name">facilities.energy.consumption.form</field>
+        <field name="model">facilities.energy.consumption</field>
+        <field name="arch" type="xml">
+            <form string="Energy Consumption Reading">
+                <header>
+                    <button name="action_validate_reading" type="object" string="Validate Reading" 
+                            invisible="is_validated == True" class="btn-primary"/>
+                    <button name="action_unvalidate_reading" type="object" string="Unvalidate Reading" 
+                            invisible="is_validated == False" class="btn-secondary"/>
+                    <field name="is_validated" widget="statusbar" statusbar_visible="draft,review,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group name="reading_info" string="Reading Information">
+                            <field name="meter_id" options="{'no_create': True}"/>
+                            <field name="reading_date"/>
+                            <field name="reading_value"/>
+                            <field name="consumption" readonly="1"/>
+                            <field name="reading_type"/>
+                            <field name="reading_user_id"/>
+                        </group>
+                        <group name="validation_info" string="Validation">
+                            <field name="is_validated"/>
+                            <field name="validated_by_id" invisible="is_validated == False"/>
+                            <field name="validated_date" invisible="is_validated == False"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="cost_info" string="Cost Information">
+                            <field name="cost_per_unit" readonly="1"/>
+                            <field name="total_cost" readonly="1"/>
+                            <field name="currency_id" readonly="1"/>
+                        </group>
+                        <group name="analysis" string="Analysis">
+                            <field name="daily_consumption" readonly="1"/>
+                            <field name="monthly_consumption" readonly="1"/>
+                            <field name="consumption_variance" readonly="1"/>
+                            <field name="variance_percentage" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="environmental" string="Environmental Factors">
+                            <field name="temperature"/>
+                            <field name="humidity"/>
+                            <field name="occupancy_factor"/>
+                        </group>
+                        <group name="anomaly" string="Anomaly Detection">
+                            <field name="is_anomaly"/>
+                            <field name="anomaly_severity" invisible="is_anomaly == False"/>
+                            <field name="anomaly_reason" invisible="is_anomaly == False"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="notes" string="Notes">
+                            <field name="notes" nolabel="1"/>
+                        </group>
+                        <group name="attachments" string="Attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Previous Reading" name="previous" invisible="not previous_reading_id">
+                            <field name="previous_reading_id" readonly="1" nolabel="1">
+                                <form string="Previous Reading">
+                                    <group>
+                                        <group>
+                                            <field name="reading_date"/>
+                                            <field name="reading_value"/>
+                                            <field name="consumption"/>
+                                        </group>
+                                        <group>
+                                            <field name="total_cost"/>
+                                            <field name="is_validated"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Energy Consumption Search View -->
+    <record id="view_energy_consumption_search" model="ir.ui.view">
+        <field name="name">facilities.energy.consumption.search</field>
+        <field name="model">facilities.energy.consumption</field>
+        <field name="arch" type="xml">
+            <search string="Energy Consumption Readings">
+                <field name="name"/>
+                <field name="meter_id"/>
+                <field name="reading_date"/>
+                <field name="reading_value"/>
+                <field name="consumption"/>
+                <field name="reading_type"/>
+                <field name="reading_user_id"/>
+                <field name="validated_by_id"/>
+                
+                <separator/>
+                <filter string="Validated" name="validated" domain="[('is_validated', '=', True)]"/>
+                <filter string="Not Validated" name="not_validated" domain="[('is_validated', '=', False)]"/>
+                <filter string="Anomalies" name="anomalies" domain="[('is_anomaly', '=', True)]"/>
+                <filter string="Manual Readings" name="manual" domain="[('reading_type', '=', 'manual')]"/>
+                <filter string="Automatic Readings" name="automatic" domain="[('reading_type', '=', 'automatic')]"/>
+                
+                <separator/>
+                
+                <separator/>
+                <filter string="High Variance" name="high_variance" domain="[('variance_percentage', '>', 50)]"/>
+                <filter string="Low Variance" name="low_variance" domain="[('variance_percentage', '&lt;', -50)]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Meter" name="group_meter" context="{'group_by': 'meter_id'}"/>
+                    <filter string="Reading Date" name="group_date" context="{'group_by': 'reading_date:day'}"/>
+                    <filter string="Reading Type" name="group_type" context="{'group_by': 'reading_type'}"/>
+                    <filter string="Validated" name="group_validated" context="{'group_by': 'is_validated'}"/>
+                    <filter string="Anomaly" name="group_anomaly" context="{'group_by': 'is_anomaly'}"/>
+                    <filter string="Reading User" name="group_user" context="{'group_by': 'reading_user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Energy Consumption Kanban View -->
+    <record id="view_energy_consumption_kanban" model="ir.ui.view">
+        <field name="name">facilities.energy.consumption.kanban</field>
+        <field name="model">facilities.energy.consumption</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="reading_date:day" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="meter_id"/>
+                <field name="reading_date"/>
+                <field name="reading_value"/>
+                <field name="consumption"/>
+                <field name="total_cost"/>
+                <field name="is_validated"/>
+                <field name="is_anomaly"/>
+                <field name="anomaly_severity"/>
+                <field name="reading_type"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="meter_id"/>
+                                        </strong>
+                                        <div class="o_kanban_record_subtitle">
+                                            <field name="reading_date"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_top_right">
+                                        <span t-if="record.is_validated.raw_value" class="badge badge-success">Validated</span>
+                                        <span t-else="" class="badge badge-warning">Not Validated</span>
+                                        <span t-if="record.is_anomaly.raw_value" 
+                                              t-att-class="'badge badge-' + (record.anomaly_severity.raw_value == 'critical' ? 'danger' : 'warning')">
+                                            Anomaly
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="text-muted">Reading Value</div>
+                                            <div><field name="reading_value"/></div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-muted">Consumption</div>
+                                            <div><field name="consumption"/></div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt8">
+                                        <div class="col-6">
+                                            <div class="text-muted">Cost</div>
+                                            <div><field name="total_cost"/></div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-muted">Type</div>
+                                            <div>
+                                                <span t-if="record.reading_type.raw_value == 'automatic'" class="badge badge-info">Auto</span>
+                                                <span t-else="" class="badge badge-secondary">Manual</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Energy Consumption Calendar View -->
+    <record id="view_energy_consumption_calendar" model="ir.ui.view">
+        <field name="name">facilities.energy.consumption.calendar</field>
+        <field name="model">facilities.energy.consumption</field>
+        <field name="arch" type="xml">
+            <calendar string="Energy Consumption Readings" date_start="reading_date" color="meter_id">
+                <field name="name"/>
+                <field name="meter_id"/>
+                <field name="consumption"/>
+                <field name="is_validated"/>
+                <field name="is_anomaly"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Energy Consumption Graph View -->
+    <record id="view_energy_consumption_graph" model="ir.ui.view">
+        <field name="name">facilities.energy.consumption.graph</field>
+        <field name="model">facilities.energy.consumption</field>
+        <field name="arch" type="xml">
+            <graph string="Energy Consumption Analysis" type="line">
+                <field name="reading_date" type="row"/>
+                <field name="consumption" type="measure"/>
+                <field name="total_cost" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Energy Consumption Pivot View -->
+    <record id="view_energy_consumption_pivot" model="ir.ui.view">
+        <field name="name">facilities.energy.consumption.pivot</field>
+        <field name="model">facilities.energy.consumption</field>
+        <field name="arch" type="xml">
+            <pivot string="Energy Consumption Analysis">
+                <field name="meter_id" type="row"/>
+                <field name="reading_date" type="col" interval="month"/>
+                <field name="consumption" type="measure"/>
+                <field name="total_cost" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Energy Consumption Actions -->
+    <record id="action_energy_consumption" model="ir.actions.act_window">
+        <field name="name">Energy Consumption</field>
+        <field name="res_model">facilities.energy.consumption</field>
+        <field name="view_mode">list,kanban,form,calendar,graph,pivot</field>
+        <field name="search_view_id" ref="view_energy_consumption_search"/>
+        <field name="context">{'search_default_this_month': 1, 'search_default_today': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first energy consumption reading!
+            </p>
+            <p>
+                Track energy consumption readings from your utility meters to monitor usage patterns,
+                identify anomalies, and calculate costs.
+            </p>
+        </field>
+    </record>
+</odoo>

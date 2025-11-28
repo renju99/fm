@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_workorder_start_permit_wizard_form" model="ir.ui.view">
+        <field name="name">facilities.workorder.start.permit.wizard.form</field>
+        <field name="model">facilities.workorder.start.permit.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <div class="alert alert-info" role="alert" aria-live="polite">
+                    <h4 class="alert-heading">
+                        <i class="fa fa-shield text-primary" aria-hidden="true"></i> Work Permit Required?
+                    </h4>
+                    <p>Before starting this work order, please confirm if a work permit is required.</p>
+                    <hr/>
+                    <p class="mb-0">
+                        <strong>Work Order:</strong> <field name="workorder_id" readonly="1" nolabel="1"/>
+                    </p>
+                </div>
+
+                <group>
+                    <group>
+                        <field name="requires_permit" widget="boolean_toggle"/>
+                    </group>
+                </group>
+
+                <div class="alert alert-info" role="alert" aria-live="polite">
+                    <p><strong>Please select:</strong> Does this work order require a work permit before starting?</p>
+                </div>
+
+                <group invisible="not requires_permit">
+                    <group>
+                        <field name="permit_type" required="requires_permit"/>
+                    </group>
+                    <group>
+                        <field name="permit_notes" placeholder="Additional notes about permit requirements..."/>
+                    </group>
+                </group>
+
+                <div class="alert alert-warning" role="alert" aria-live="polite" invisible="not requires_permit">
+                    <p><strong>Note:</strong> A permit will be created and you will be taken to the permit form to complete the details before work can begin.</p>
+                </div>
+
+                <div class="alert alert-success" role="alert" aria-live="polite" invisible="requires_permit">
+                    <p><strong>Note:</strong> Work order will be started immediately without permit requirements.</p>
+                </div>
+
+                <footer>
+                    <button string="Start Without Permit" 
+                            name="action_proceed_without_permit" 
+                            type="object" 
+                            class="btn-success"
+                            invisible="requires_permit"/>
+                    <button string="Create Permit &amp; Continue" 
+                            name="action_create_permit_and_start" 
+                            type="object" 
+                            class="btn-primary"
+                            invisible="not requires_permit"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_workorder_start_permit_wizard" model="ir.actions.act_window">
+        <field name="name">Start Work Order</field>
+        <field name="res_model">facilities.workorder.start.permit.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_facilities_workorder"/>
+    </record>
+</odoo>

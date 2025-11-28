@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Service Request Assignment Email Template -->
+    <record id="service_request_assignment_email_template" model="mail.template">
+        <field name="name">Service Request Assignment</field>
+        <field name="model_id" ref="model_facilities_service_request"/>
+        <field name="subject">Service Request Assigned: ${object.name} - ${object.title}</field>
+        <field name="email_to">${object.assigned_to_id.email}</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Hello ${object.assigned_to_id.name},
+                </p>
+                <br/>
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    A service request has been assigned to you:
+                </p>
+                <br/>
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F2F3; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
+                                    <tr>
+                                        <td align="center" style="min-height: 590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-height: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="top" style="font-size: 13px;">
+                                                        <div>
+                                                            <h3 style="margin: 0px; padding: 0px; color: #875A7B;">Service Request Details</h3>
+                                                            <br/>
+                                                            <p><strong>Request Number:</strong> ${object.name}</p>
+                                                            <p><strong>Title:</strong> ${object.title}</p>
+                                                            <p><strong>Service Type:</strong> ${object.service_type}</p>
+                                                            <p><strong>Priority:</strong> ${object.priority}</p>
+                                                            <p><strong>Requester:</strong> ${object.requester_id.name}</p>
+                                                            <p><strong>Request Date:</strong> ${format_datetime(object.request_date, object.requester_id.tz, object.requester_id.lang, 'medium')}</p>
+                                                            % if object.due_date:
+                                                            <p><strong>Due Date:</strong> ${format_datetime(object.due_date, object.requester_id.tz, object.requester_id.lang, 'medium')}</p>
+                                                            % endif
+                                                            % if object.sla_deadline:
+                                                            <p><strong>SLA Deadline:</strong> ${format_datetime(object.sla_deadline, object.requester_id.tz, object.requester_id.lang, 'medium')}</p>
+                                                            % endif
+                                                            <br/>
+                                                            <h4>Description:</h4>
+                                                            <div>${object.description}</div>
+                                                            <br/>
+                                                            <p style="text-align: center;">
+                                                                <a href="${object.get_portal_url()}" style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                                                    View Service Request
+                                                                </a>
+                                                            </p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Best regards,<br/>
+                    ${user.name}
+                </p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Service Request Resolution Email Template -->
+    <record id="service_request_resolution_email_template" model="mail.template">
+        <field name="name">Service Request Resolution</field>
+        <field name="model_id" ref="model_facilities_service_request"/>
+        <field name="subject">Service Request Resolved: ${object.name} - ${object.title}</field>
+        <field name="email_to">${object.requester_id.email}</field>
+        <field name="email_cc">${object.contact_email if object.contact_email and object.contact_email != object.requester_id.email else ''}</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Hello ${object.requester_id.name},
+                </p>
+                <br/>
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Your service request has been resolved:
+                </p>
+                <br/>
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F2F3; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
+                                    <tr>
+                                        <td align="center" style="min-height: 590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-height: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="top" style="font-size: 13px;">
+                                                        <div>
+                                                            <h3 style="margin: 0px; padding: 0px; color: #875A7B;">Service Request Resolved</h3>
+                                                            <br/>
+                                                            <p><strong>Request Number:</strong> ${object.name}</p>
+                                                            <p><strong>Title:</strong> ${object.title}</p>
+                                                            <p><strong>Service Type:</strong> ${object.service_type}</p>
+                                                            <p><strong>Request Date:</strong> ${format_datetime(object.request_date, object.requester_id.tz, object.requester_id.lang, 'medium')}</p>
+                                                            <p><strong>Resolution Date:</strong> ${format_datetime(object.resolution_date, object.requester_id.tz, object.requester_id.lang, 'medium')}</p>
+                                                            % if object.assigned_to_id:
+                                                            <p><strong>Resolved By:</strong> ${object.assigned_to_id.name}</p>
+                                                            % endif
+                                                            <br/>
+                                                            % if object.resolution_notes:
+                                                            <h4>Resolution Notes:</h4>
+                                                            <div>${object.resolution_notes}</div>
+                                                            <br/>
+                                                            % endif
+                                                            <p style="text-align: center;">
+                                                                <a href="${object.get_portal_url()}" style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                                                    View Service Request
+                                                                </a>
+                                                            </p>
+                                                            <br/>
+                                                            <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                                                                We would appreciate your feedback on the service provided. Please rate your experience and let us know how we can improve.
+                                                            </p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Best regards,<br/>
+                    ${user.name}
+                </p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Service Request Status Update Email Template -->
+    <record id="service_request_status_update_email_template" model="mail.template">
+        <field name="name">Service Request Status Update</field>
+        <field name="model_id" ref="model_facilities_service_request"/>
+        <field name="subject">Service Request Update: ${object.name} - ${object.title}</field>
+        <field name="email_to">${object.contact_email}</field>
+        <field name="email_cc"></field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #007bff; margin-bottom: 20px;">📋 Service Request Status Update</h2>
+                
+                <p style="font-size: 14px;">Hello,</p>
+                <p style="font-size: 14px;">Your service request status has been updated:</p>
+                
+                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #007bff;">
+                    <h3 style="color: #007bff; margin-top: 0;">Request Details</h3>
+                    <p><strong>Request Number:</strong> ${object.name}</p>
+                    <p><strong>Title:</strong> ${object.title}</p>
+                    <p><strong>Service Type:</strong> ${object.service_type}</p>
+                    <p><strong>Priority:</strong> ${object.priority}</p>
+                    <p><strong>Current Status:</strong> <span style="background-color: #007bff; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold;">${object.state}</span></p>
+                    <p><strong>Days Open:</strong> ${object.days_open} days</p>
+                    % if object.assigned_to_id:
+                    <p><strong>Assigned To:</strong> ${object.assigned_to_id.name}</p>
+                    % endif
+                </div>
+                
+                % if object.state == 'submitted':
+                <div style="background-color: #e7f3ff; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #007bff;">
+                    <p style="margin: 0; color: #004085; font-weight: bold;">📋 Your service request has been submitted and is awaiting assignment to a technician.</p>
+                </div>
+                % elif object.state == 'in_progress':
+                <div style="background-color: #e8f5e8; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #17a2b8;">
+                    <p style="margin: 0; color: #004085; font-weight: bold;">🔧 Work has started on your service request. Our technician is actively working to resolve your issue.</p>
+                </div>
+                % elif object.state == 'resolved':
+                <div style="background-color: #e8f5e8; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #28a745;">
+                    <p style="margin: 0; color: #155724; font-weight: bold;">✅ Your service request has been resolved!</p>
+                </div>
+                % endif
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="${object.get_portal_url()}" style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+                        🔗 View Service Request
+                    </a>
+                </div>
+                
+                <p style="font-size: 13px; color: #666;">Best regards,<br/><strong>Facilities Management Team</strong></p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Service Request SLA Breach Warning Email Template -->
+    <record id="service_request_sla_warning_email_template" model="mail.template">
+        <field name="name">Service Request SLA Warning</field>
+        <field name="model_id" ref="model_facilities_service_request"/>
+        <field name="subject">SLA Warning: ${object.name} - ${object.title}</field>
+        <field name="email_to">${object.assigned_to_id.email}</field>
+        <field name="email_cc">${object.team_id.leader_id.email if object.team_id and object.team_id.leader_id else ''}</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Hello ${object.assigned_to_id.name if object.assigned_to_id else 'Team'},
+                </p>
+                <br/>
+                <p style="margin: 0px; padding: 0px; font-size: 13px; color: #d9534f;">
+                    <strong>⚠️ SLA WARNING: The following service request is at risk of breaching its SLA deadline:</strong>
+                </p>
+                <br/>
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F2F3; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
+                                    <tr>
+                                        <td align="center" style="min-height: 590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-height: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="top" style="font-size: 13px;">
+                                                        <div>
+                                                            <h3 style="margin: 0px; padding: 0px; color: #d9534f;">SLA Breach Warning</h3>
+                                                            <br/>
+                                                            <p><strong>Request Number:</strong> ${object.name}</p>
+                                                            <p><strong>Title:</strong> ${object.title}</p>
+                                                            <p><strong>Priority:</strong> ${object.priority}</p>
+                                                            <p><strong>Requester:</strong> ${object.requester_id.name}</p>
+                                                            <p><strong>Request Date:</strong> ${format_datetime(object.request_date, object.requester_id.tz, object.requester_id.lang, 'medium')}</p>
+                                                            <p><strong style="color: #d9534f;">SLA Deadline:</strong> ${format_datetime(object.sla_deadline, object.requester_id.tz, object.requester_id.lang, 'medium')}</p>
+                                                            <p><strong>Days Open:</strong> ${object.days_open}</p>
+                                                            <br/>
+                                                            <p style="color: #d9534f;">
+                                                                <strong>Immediate attention required to prevent SLA breach!</strong>
+                                                            </p>
+                                                            <br/>
+                                                            <p style="text-align: center;">
+                                                                <a href="${object.get_portal_url()}" style="background-color: #d9534f; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                                                    View Service Request
+                                                                </a>
+                                                            </p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Best regards,<br/>
+                    ${user.name}
+                </p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Service Request Creation Confirmation Email Template -->
+    <record id="service_request_creation_email_template" model="mail.template">
+        <field name="name">Service Request Creation Confirmation</field>
+        <field name="model_id" ref="model_facilities_service_request"/>
+        <field name="subject">Service Request Created: ${object.name} - ${object.title}</field>
+        <field name="email_to">${object.requester_id.email}</field>
+        <field name="email_cc">${object.contact_email if object.contact_email and object.contact_email != object.requester_id.email else ''}</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Hello ${object.requester_id.name},
+                </p>
+                <br/>
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Thank you for submitting your service request. We have received your request and it has been assigned the following details:
+                </p>
+                <br/>
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F2F3; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
+                                    <tr>
+                                        <td align="center" style="min-height: 590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-height: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="top" style="font-size: 13px;">
+                                                        <div>
+                                                            <h3 style="margin: 0px; padding: 0px; color: #875A7B;">Service Request Confirmation</h3>
+                                                            <br/>
+                                                            <div style="background-color: #e8f5e8; padding: 12px; border-left: 4px solid #28a745; margin: 16px 0;">
+                                                                <p style="margin: 0; color: #155724;"><strong>✅ Confirmation:</strong> Your service request has been successfully created and submitted for processing.</p>
+                                                            </div>
+                                                            <br/>
+                                                            <p><strong>Request Number:</strong> ${object.name}</p>
+                                                            <p><strong>Title:</strong> ${object.title}</p>
+                                                            <p><strong>Service Type:</strong> ${object.service_type}</p>
+                                                            <p><strong>Priority:</strong> ${object.priority}</p>
+                                                            <p><strong>Status:</strong> 
+                                                                <span style="padding: 4px 8px; border-radius: 4px; font-weight: bold; color: white; background-color: #007bff;">
+                                                                    ${object.state}
+                                                                </span>
+                                                            </p>
+                                                            <p><strong>Request Date:</strong> ${format_datetime(object.request_date, object.requester_id.tz, object.requester_id.lang, 'medium')}</p>
+                                                            % if object.due_date:
+                                                            <p><strong>Expected Due Date:</strong> ${format_datetime(object.due_date, object.requester_id.tz, object.requester_id.lang, 'medium')}</p>
+                                                            % endif
+                                                            % if object.sla_deadline:
+                                                            <p><strong>SLA Deadline:</strong> ${format_datetime(object.sla_deadline, object.requester_id.tz, object.requester_id.lang, 'medium')}</p>
+                                                            % endif
+                                                            % if object.contact_phone:
+                                                            <p><strong>Contact Phone:</strong> ${object.contact_phone}</p>
+                                                            % endif
+                                                            % if object.contact_email:
+                                                            <p><strong>Contact Email:</strong> ${object.contact_email}</p>
+                                                            % endif
+                                                            <br/>
+                                                            <h4>Description:</h4>
+                                                            <div style="background-color: #f8f9fa; padding: 12px; border-radius: 4px;">
+                                                                ${object.description}
+                                                            </div>
+                                                            <br/>
+                                                            <div style="background-color: #e7f3ff; padding: 12px; border-left: 4px solid #007bff; margin: 16px 0;">
+                                                                <p style="margin: 0; color: #004085;"><strong>📋 What's Next:</strong></p>
+                                                                <ul style="color: #004085; margin: 8px 0;">
+                                                                    <li>Our team will review your request and assign it to the appropriate technician</li>
+                                                                    <li>You will receive email notifications for all status updates</li>
+                                                                    <li>You can track the progress of your request using the link below</li>
+                                                                    <li>If urgent, please contact our support team directly</li>
+                                                                </ul>
+                                                            </div>
+                                                            <br/>
+                                                            <p style="text-align: center;">
+                                                                <a href="${object.get_portal_url()}" style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                                                    Track Your Request
+                                                                </a>
+                                                            </p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Thank you for choosing our services. We will keep you updated on the progress of your request.
+                </p>
+                <br/>
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Best regards,<br/>
+                    ${user.name}<br/>
+                    Facilities Management Team
+                </p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+</odoo>
+

@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Asset Tree View -->
+    <record id="view_facilities_asset_tree" model="ir.ui.view">
+        <field name="name">facilities.asset.tree</field>
+        <field name="model">facilities.asset</field>
+        <field name="arch" type="xml">
+            <list string="Assets" decoration-muted="not active" decoration-danger="risk_score > 70" 
+                  decoration-warning="asset_health_score &lt; 0.60" decoration-info="criticality == 'critical'">
+                <field name="name"/>
+                <field name="asset_code"/>
+                <field name="facility_id"/>
+                <field name="category_id"/>
+                <field name="condition"/>
+                <field name="criticality" widget="priority"/>
+                <field name="state"/>
+                <field name="asset_health_score" widget="progressbar"/>
+                <!-- Optional fields - hidden by default but available in view options -->
+                <field name="barcode" optional="hide"/>
+                <field name="room_id" optional="hide"/>
+                <field name="building_id" optional="hide"/>
+                <field name="floor_id" optional="hide"/>
+                <field name="installation_status" optional="hide"/>
+                <field name="warranty_status" optional="hide"/>
+                <field name="risk_score" optional="hide"/>
+                <field name="purchase_cost" widget="monetary" optional="hide"/>
+                <field name="current_value" widget="monetary" optional="hide"/>
+                <field name="actual_utilization" widget="percentage" optional="hide"/>
+                <field name="responsible_id" optional="hide"/>
+                <field name="active" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Asset Form View -->
+    <record id="view_facility_asset_form" model="ir.ui.view">
+        <field name="name">facilities.asset.form</field>
+        <field name="model">facilities.asset</field>
+        <field name="arch" type="xml">
+            <form string="Asset">
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,active,maintenance,disposed"
+                           statusbar_colors='{"draft":"gray","active":"blue","maintenance":"orange","disposed":"red"}'/>
+                    <button name="action_activate" string="Activate" type="object"
+                            invisible="state != 'draft'" class="oe_highlight"/>
+                    <button name="action_set_maintenance" string="Set to Maintenance" type="object"
+                            invisible="state != 'active'" class="oe_highlight"/>
+                    <button name="action_set_active" string="Set Active" type="object"
+                            invisible="state != 'maintenance'" class="oe_highlight"/>
+                    <button name="action_dispose" string="Dispose" type="object"
+                            invisible="state == 'disposed'" class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_dashboard" type="object" icon="fa-tachometer" string="Dashboard"
+                                help="Open asset dashboard"/>
+                    </div>
+                    <div class="oe_right">
+                        <field name="image_1920" widget="image" class="oe_avatar"
+                               options="{'preview_image': 'image_1920'}"/>
+                        <field name="barcode_image" widget="image" class="oe_avatar"
+                               options="{'preview_image': 'barcode_image', 'size': [128,128]}"/>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="Asset Name"/>
+                        </h1>
+                        <label for="asset_code" class="oe_edit_only"/>
+                        <h2>
+                            <field name="asset_code" placeholder="Asset Code"/>
+                        </h2>
+                        <label for="barcode" class="oe_edit_only"/>
+                        <div>
+                            <field name="barcode" widget="barcode"/>
+                        </div>
+                    </div>
+                    <group>
+                        <group string="Identification">
+                            <field name="asset_tag"/>
+                            <field name="serial_number"/>
+                            <field name="category_id"/>
+                        </group>
+                        <group string="Location &amp; Responsibility">
+                            <field name="facility_id"/>
+                            <field name="room_id"/>
+                            <field name="building_id" readonly="1"/>
+                            <field name="floor_id" readonly="1"/>
+                            <field name="responsible_id"/>
+                            <field name="department_id"/>
+                        </group>
+                    </group>
+
+                    <!-- Enhanced Status Cards -->
+                    <div class="row mt-3">
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Health Score</h5>
+                                    <h3><field name="asset_health_score" widget="percentage"/></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Risk Score</h5>
+                                    <h3><field name="risk_score"/>/100</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card bg-info text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Utilization</h5>
+                                    <h3><field name="actual_utilization" widget="percentage"/></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card bg-success text-white" invisible="warranty_status != 'valid'">
+                                <div class="card-body">
+                                    <h5 class="card-title">Warranty</h5>
+                                    <h3><field name="warranty_status"/></h3>
+                                </div>
+                            </div>
+                            <div class="card bg-danger text-white" invisible="warranty_status != 'expired'">
+                                <div class="card-body">
+                                    <h5 class="card-title">Warranty</h5>
+                                    <h3><field name="warranty_status"/></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                        </div>
+                    </div>
+
+                    <notebook>
+                        <page string="Asset Details" name="asset_details">
+                            <group>
+                                <group string="Business Information">
+                                    <field name="criticality" widget="priority"/>
+                                    <field name="environmental_impact"/>
+                                    <field name="energy_rating"/>
+                                    <field name="installation_status"/>
+                                </group>
+                                <group string="Physical Condition">
+                                    <field name="condition"/>
+                                    <field name="last_inspected_date"/>
+                                    <field name="next_inspection_date"/>
+                                    <field name="commissioned_date"/>
+                                    <field name="decommissioned_date"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Location" name="location">
+                            <group>
+                                <group string="Physical Location">
+                                    <field name="gps_coordinates" placeholder="latitude,longitude"/>
+                                    <field name="floor_plan_location" placeholder="x,y coordinates"/>
+                                    <field name="location" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Energy Management" name="energy_management">
+                            <group>
+                                <group string="Energy Configuration">
+                                    <field name="is_energy_consuming"/>
+                                    <field name="energy_rating"/>
+                                    <field name="power_consumption_watts"/>
+                                    <field name="annual_energy_consumption"/>
+                                    <field name="energy_cost_per_hour"/>
+                                </group>
+                                <group string="Energy Performance">
+                                    <field name="energy_efficiency_score" readonly="1"/>
+                                    <field name="monthly_energy_cost" readonly="1"/>
+                                    <field name="energy_consumption_trend" readonly="1"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Utility Meters">
+                                    <field name="primary_meter_id" options="{'no_create': True}"/>
+                                    <field name="utility_meter_ids" nolabel="1" context="{'default_asset_id': id}"/>
+                                </group>
+                            </group>
+                            <div class="oe_button_box" name="button_box">
+                                <button name="action_view_energy_consumption" type="object" class="oe_stat_button" icon="fa-bolt">
+                                    <field name="monthly_energy_cost" widget="statinfo" string="Energy Consumption"/>
+                                </button>
+                                <button name="action_view_utility_meters" type="object" class="oe_stat_button" icon="fa-tachometer">
+                                    <field name="utility_meter_ids" widget="statinfo" string="Utility Meters"/>
+                                </button>
+                            </div>
+                        </page>
+                        
+                        <page string="Financial &amp; Performance" name="financial_performance">
+                            <group>
+                                <group string="Financial Information">
+                                    <field name="purchase_cost" widget="monetary"/>
+                                    <field name="current_value" widget="monetary"/>
+                                    <field name="insurance_value" widget="monetary"/>
+                                    <field name="replacement_cost" widget="monetary"/>
+                                    <field name="annual_operating_cost" widget="monetary"/>
+                                    <field name="total_cost_of_ownership" widget="monetary" readonly="1"/>
+                                    <field name="maintenance_cost_ytd" widget="monetary" readonly="1"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </group>
+                                <group string="Performance Metrics">
+                                    <field name="operating_hours_total"/>
+                                    <field name="operating_hours_yearly"/>
+                                    <field name="utilization_target" widget="percentage"/>
+                                    <field name="actual_utilization" widget="percentage" readonly="1"/>
+                                    <field name="asset_health_score" widget="progressbar" readonly="1"/>
+                                    <field name="risk_score" widget="gauge" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Acquisition &amp; Lifecycle" name="acquisition_lifecycle">
+                            <group>
+                                <group>
+                                    <field name="purchased_date"/>
+                                    <field name="installed_date"/>
+                                    <field name="purchase_cost" widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </group>
+                                <group>
+                                    <field name="expected_lifespan"/>
+                                    <field name="warranty_expires_date"/>
+                                    <field name="warranty_status"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Manufacturer &amp; Service" name="manufacturer_service">
+                            <group>
+                                <group>
+                                    <field name="manufacturer_id"/>
+                                    <field name="model_number"/>
+                                </group>
+                                <group>
+                                    <field name="service_provider_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Depreciation Records" name="depreciation_records">
+                            <field name="depreciation_ids">
+                                <list>
+                                    <field name="asset_id"/>
+                                    <field name="depreciation_date"/>
+                                    <field name="value_before"/>
+                                    <field name="depreciation_amount"/>
+                                    <field name="value_after"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Maintenance Schedules" name="maintenance_schedules">
+                            <field name="maintenance_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="maintenance_type"/>
+                                    <field name="interval_number"/>
+                                    <field name="interval_type"/>
+                                    <field name="last_maintenance_date"/>
+                                    <field name="next_maintenance_date"/>
+                                    <field name="active"/>
+                                    <field name="status"/>
+                                    <button name="action_generate_work_order" type="object" string="Generate Work Order" class="btn-primary" 
+                                            invisible="maintenance_type != 'preventive'"/>
+                                </list>
+                            </field>
+                            <div class="oe_button_box" name="button_box">
+                                <button name="action_create_maintenance_schedule" type="object" 
+                                        string="Create Maintenance Schedule" class="btn-primary"
+                                        help="Create a new maintenance schedule for this asset"/>
+                                <button name="create_default_maintenance_schedule" type="object" 
+                                        string="Create Default Schedule" class="btn-secondary"
+                                        help="Create a default monthly preventive maintenance schedule"
+                                        invisible="maintenance_ids"/>
+                            </div>
+                        </page>
+                        <page string="Notes &amp; Documents" name="notes_documents">
+                            <field name="notes"/>
+                            <separator string="Documents"/>
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                        <page string="History Timeline" name="history_timeline">
+                            <field name="history_events_html" readonly="1" widget="html"/>
+                        </page>
+                    </notebook>
+                    Timeline
+                    <field name="active" groups="base.group_no_one"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Asset Form Inherit for create attribute -->
+    <record id="view_facility_asset_form_inherit" model="ir.ui.view">
+        <field name="name">facilities.asset.form.inherit</field>
+        <field name="model">facilities.asset</field>
+        <field name="inherit_id" ref="facilities_management.view_facility_asset_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="create">true</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Asset Search View -->
+    <record id="view_facilities_asset_search" model="ir.ui.view">
+        <field name="name">facilities.asset.search</field>
+        <field name="model">facilities.asset</field>
+        <field name="arch" type="xml">
+            <search string="Assets">
+                <field name="name"/>
+                <field name="asset_code"/>
+                <field name="barcode"/>
+                <field name="serial_number"/>
+                <field name="asset_tag"/>
+                <field name="category_id"/>
+                <field name="facility_id"/>
+                <field name="room_id"/>
+                <field name="building_id"/>
+                <field name="floor_id"/>
+                <field name="responsible_id"/>
+                <field name="manufacturer_id"/>
+                <field name="model_number"/>
+                
+                <!-- Quick Filters -->
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Critical Assets" name="critical" domain="[('criticality', '=', 'critical')]"/>
+                <filter string="High Risk" name="high_risk" domain="[('risk_score', '&gt;', 70)]"/>
+                <filter string="Poor Health" name="poor_health" domain="[('asset_health_score', '&lt;', 0.60)]"/>
+                <separator/>
+                <filter string="Warranty Expired" name="warranty_expired" domain="[('warranty_status', '=', 'expired')]"/>
+                <separator/>
+                <filter string="Under Maintenance" name="under_maintenance" domain="[('state', '=', 'maintenance')]"/>
+                <filter string="In Service" name="in_service" domain="[('state', '=', 'active')]"/>
+                
+                <!-- Date Filters -->
+                <separator/>
+                <filter string="Purchased This Year" name="purchased_this_year" 
+                        domain="[('purchased_date', '&gt;=', (context_today() - relativedelta(years=1)).strftime('%Y-01-01'))]"/>
+                <filter string="Warranty Expiring Soon" name="warranty_expiring" 
+                        domain="[('warranty_expires_date', '&lt;=', (context_today() + relativedelta(months=3)).strftime('%Y-%m-%d')), ('warranty_expires_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Category" name="groupby_category" context="{'group_by':'category_id'}"/>
+                    <filter string="Criticality" name="groupby_criticality" context="{'group_by':'criticality'}"/>
+                    <filter string="Facility" name="groupby_facility" context="{'group_by':'facility_id'}"/>
+                    <filter string="Room" name="groupby_room" context="{'group_by':'room_id'}"/>
+                    <filter string="Building" name="groupby_building" context="{'group_by':'building_id'}"/>
+                    <filter string="Floor" name="groupby_floor" context="{'group_by':'floor_id'}"/>
+                    <filter string="Condition" name="groupby_condition" context="{'group_by':'condition'}"/>
+                    <filter string="State" name="groupby_state" context="{'group_by':'state'}"/>
+                    <filter string="Installation Status" name="groupby_installation" context="{'group_by':'installation_status'}"/>
+                    <filter string="Responsible Person" name="groupby_responsible" context="{'group_by':'responsible_id'}"/>
+                    <filter string="Manufacturer" name="groupby_manufacturer" context="{'group_by':'manufacturer_id'}"/>
+                    <filter string="Department" name="groupby_department" context="{'group_by':'department_id'}"/>
+                    <filter string="Warranty Status" name="groupby_warranty_status" context="{'group_by':'warranty_status'}"/>
+                    <filter string="Energy Rating" name="groupby_energy" context="{'group_by':'energy_rating'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- Asset List View with Bulk Actions -->
+    <record id="view_facilities_asset_tree_with_actions" model="ir.ui.view">
+        <field name="name">facilities.asset.tree.with.actions</field>
+        <field name="model">facilities.asset</field>
+        <field name="inherit_id" ref="facilities_management.view_facilities_asset_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="%(facilities_management.action_create_maintenance_schedule_wizard)d" 
+                            string="Create Maintenance Schedules" 
+                            type="action" 
+                            class="btn-primary"
+                            help="Create maintenance schedules for selected assets"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Asset List Action -->
+    <record id="action_facilities_asset" model="ir.actions.act_window">
+        <field name="name">Facility Assets</field>
+        <field name="res_model">facilities.asset</field>
+        <field name="view_mode">list,form,calendar</field>
+        <field name="view_id" ref="facilities_management.view_facilities_asset_tree_with_actions"/>
+        <field name="context">{
+            'search_default_filter_active': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first facility asset!
+            </p>
+            <p>
+                Manage your facility assets including equipment, furniture, and infrastructure.
+                Use calendar view to track important dates like warranty expiration.
+            </p>
+        </field>
+    </record>
+
+</odoo>

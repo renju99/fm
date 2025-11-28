@@ -1,0 +1,131 @@
+<odoo>
+    <!-- Tree View for Asset Maintenance Schedule -->
+    <record id="view_asset_maintenance_schedule_tree" model="ir.ui.view">
+        <field name="name">asset.maintenance.schedule.tree</field>
+        <field name="model">asset.maintenance.schedule</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="schedule_type"/>
+                <field name="asset_id" invisible="schedule_type == 'location'"/>
+                <field name="facility_id" invisible="schedule_type == 'asset'"/>
+                <field name="maintenance_type"/>
+                <field name="next_maintenance_date"/>
+                <field name="active"/>
+                <!-- Optional fields - hidden by default but available in view options -->
+                <field name="building_id" invisible="schedule_type == 'asset'" optional="hide"/>
+                <field name="interval_number" optional="hide"/>
+                <field name="interval_type" optional="hide"/>
+                <field name="last_maintenance_date" optional="hide"/>
+                <field name="job_plan_id" optional="hide" 
+                       invisible="maintenance_type != 'preventive'"/>
+                <!-- Add Action Button -->
+                <button name="action_generate_workorder_wizard" type="object" string="Generate Work Order" class="btn-primary"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View for Asset Maintenance Schedule -->
+    <record id="view_asset_maintenance_schedule_form" model="ir.ui.view">
+        <field name="name">asset.maintenance.schedule.form</field>
+        <field name="model">asset.maintenance.schedule</field>
+        <field name="arch" type="xml">
+            <form string="Asset Maintenance Schedule" readonly="active">
+                <header>
+                    <button name="toggle_active" type="object" string="Deactivate"
+                            invisible="not active"
+                            help="Deactivate the schedule. It will no longer appear in default lists."/>
+                    <button name="toggle_active" type="object" string="Activate"
+                            invisible="active"
+                            class="oe_highlight"
+                            help="Activate the schedule. It will appear in default lists."/>
+                    <!-- Add Button -->
+                    <button name="action_generate_workorder_wizard" type="object" string="Generate Work Order" class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="schedule_type" widget="radio" options="{'horizontal': true}"/>
+                            <field name="maintenance_type"/>
+                        </group>
+                        <group>
+                            <field name="job_plan_id" 
+                                   invisible="maintenance_type != 'preventive'"
+                                   required="maintenance_type == 'preventive'"
+                                   help="Select a job plan to automatically populate tasks in generated work orders. Only available for preventive maintenance schedules."/>
+                        </group>
+                    </group>
+                    
+                    <!-- Asset-based Schedule Fields -->
+                    <group string="Asset Information" invisible="schedule_type != 'asset'">
+                        <group>
+                            <field name="asset_id" required="schedule_type == 'asset'"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Location-based Schedule Fields -->
+                    <group string="Location Information" invisible="schedule_type != 'location'">
+                        <group>
+                            <field name="facility_id"/>
+                            <field name="building_id"/>
+                            <field name="floor_id"/>
+                            <field name="room_id"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group>
+                            <field name="last_maintenance_date"/>
+                            <field name="next_maintenance_date"/>
+                            <field name="interval_number"/>
+                            <field name="interval_type"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Info message for non-preventive maintenance -->
+                    <div class="alert alert-info" role="alert" invisible="maintenance_type == 'preventive'">
+                        <strong>Note:</strong> Job plans are only available for preventive maintenance schedules.
+                        For other maintenance types, tasks will need to be defined manually in the generated work orders.
+                    </div>
+                    
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                    <field name="active" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Calendar View for Asset Maintenance Schedule -->
+    <record id="view_asset_maintenance_schedule_calendar" model="ir.ui.view">
+        <field name="name">asset.maintenance.schedule.calendar</field>
+        <field name="model">asset.maintenance.schedule</field>
+        <field name="arch" type="xml">
+            <calendar string="Maintenance Schedule Calendar" date_start="next_maintenance_date" mode="month" color="asset_id">
+                <field name="name"/>
+                <field name="asset_id"/>
+                <field name="maintenance_type"/>
+                <field name="job_plan_id" invisible="maintenance_type != 'preventive'"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Action for Asset Maintenance Schedule -->
+    <record id="action_asset_maintenance_schedule" model="ir.actions.act_window">
+        <field name="name">Maintenance Schedules</field>
+        <field name="res_model">asset.maintenance.schedule</field>
+        <field name="view_mode">list,form,calendar</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Asset Maintenance Schedule
+            </p><p>
+                Define recurring maintenance tasks for your assets based on intervals.
+            </p>
+        </field>
+    </record>
+</odoo>

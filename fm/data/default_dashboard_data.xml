@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Create a default dashboard record for each company -->
+        <record id="default_facilities_dashboard" model="facilities.management.dashboard">
+            <field name="name">Main Facilities Dashboard</field>
+            <field name="active">True</field>
+            <field name="period_type">month</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+    </data>
+</odoo>
+

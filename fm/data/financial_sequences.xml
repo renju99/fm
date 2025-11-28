@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Financial Management Sequences -->
+        <record id="seq_financial_budget" model="ir.sequence">
+            <field name="name">Financial Budget</field>
+            <field name="code">facilities.financial.budget</field>
+            <field name="prefix">FB</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+        
+        <record id="seq_budget_expense" model="ir.sequence">
+            <field name="name">Budget Expense</field>
+            <field name="code">facilities.budget.expense</field>
+            <field name="prefix">EXP</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+        
+        <!-- Vendor Management Sequences -->
+        <!-- Note: Vendor management now uses standard Odoo purchase module -->
+        <!-- Custom vendor sequences removed -->
+        
+        <!-- Compliance Management Sequences -->
+        <record id="seq_compliance_audit" model="ir.sequence">
+            <field name="name">Compliance Audit</field>
+            <field name="code">facilities.compliance.audit</field>
+            <field name="prefix">AUD</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+        
+        <record id="seq_audit_finding" model="ir.sequence">
+            <field name="name">Audit Finding</field>
+            <field name="code">facilities.audit.finding</field>
+            <field name="prefix">AF</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+        
+        <record id="seq_safety_incident" model="ir.sequence">
+            <field name="name">Safety Incident</field>
+            <field name="code">facilities.safety.incident</field>
+            <field name="prefix">SI</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+        
+        <record id="seq_compliance_certificate" model="ir.sequence">
+            <field name="name">Compliance Certificate</field>
+            <field name="code">facilities.compliance.certificate</field>
+            <field name="prefix">CERT</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+        
+    </data>
+</odoo>

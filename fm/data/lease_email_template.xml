@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Lease Document Email Template -->
+        <record id="lease_email_template" model="mail.template">
+            <field name="name">Facilities Lease Document Email</field>
+            <field name="model_id" ref="model_facilities_lease"/>
+            <field name="subject">Lease Agreement - {{ object.name }}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear {{ object.tenant_name }},</p>
+                    <p>Please find attached your lease agreement document.</p>
+                    <p>Contract Details:</p>
+                    <ul>
+                        <li><strong>Contract Number:</strong> {{ object.name }}</li>
+                        <li><strong>Property:</strong> {{ object.location }}</li>
+                        <li><strong>Start Date:</strong> {{ object.contract_start_date }}</li>
+                        <li><strong>End Date:</strong> {{ object.contract_end_date }}</li>
+                        <li><strong>Annual Rent:</strong> {{ object.currency_id.symbol }}{{ "{:,.2f}".format(object.annual_rent) }}</li>
+                    </ul>
+                    <p>Please review the document and let us know if you have any questions.</p>
+                    <p>Best regards,<br/>{{ object.company_id.name }}</p>
+                </div>
+            </field>
+            <field name="email_to">{{ object.tenant_partner_id.email }}</field>
+            <field name="email_from">{{ object.company_id.email or "noreply@company.com" }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <!-- Lease Expiration Reminder Email Template -->
+        <record id="lease_reminder_email_template" model="mail.template">
+            <field name="name">Facilities Lease Expiration Reminder</field>
+            <field name="model_id" ref="model_facilities_lease"/>
+            <field name="subject">Lease Agreement Expiration Reminder - {{ object.name }}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear {{ object.tenant_name }},</p>
+                    <p>This is a reminder that your lease agreement is approaching its expiration date.</p>
+                    <p><strong>Lease Details:</strong></p>
+                    <ul>
+                        <li><strong>Contract Number:</strong> {{ object.name }}</li>
+                        <li><strong>Property:</strong> {{ object.location }}</li>
+                        <li><strong>Expiration Date:</strong> {{ object.contract_end_date }}</li>
+                        <li><strong>Annual Rent:</strong> {{ object.currency_id.symbol }}{{ "{:,.2f}".format(object.annual_rent) }}</li>
+                    </ul>
+                    <p>Please contact us if you would like to renew your lease or discuss any changes.</p>
+                    <p>Best regards,<br/>{{ object.company_id.name }}</p>
+                </div>
+            </field>
+            <field name="email_to">{{ object.tenant_partner_id.email }}</field>
+            <field name="email_from">{{ object.company_id.email or "noreply@company.com" }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+    </data>
+</odoo>

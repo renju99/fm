@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Error Log Tree View -->
+    <record id="view_maintenance_workorder_error_log_tree" model="ir.ui.view">
+        <field name="name">maintenance.workorder.error.log.tree</field>
+        <field name="model">maintenance.workorder.error.log</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="not resolved" decoration-success="resolved">
+                <field name="workorder_id"/>
+                <field name="error_type" widget="badge" 
+                       decoration-danger="error_type in ['validation', 'user', 'access']"
+                       decoration-warning="error_type in ['sla', 'assignment', 'cost']"
+                       decoration-info="error_type == 'general'"/>
+                <field name="error_message"/>
+                <field name="error_date" widget="datetime"/>
+                <field name="user_id"/>
+                <field name="resolved" widget="boolean_toggle"/>
+                <field name="resolution_date" widget="datetime"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Error Log Form View -->
+    <record id="view_maintenance_workorder_error_log_form" model="ir.ui.view">
+        <field name="name">maintenance.workorder.error.log.form</field>
+        <field name="model">maintenance.workorder.error.log</field>
+        <field name="arch" type="xml">
+            <form string="Error Log">
+                <header>
+                    <button name="action_resolve" string="Resolve" type="object" class="oe_highlight"
+                            invisible="resolved"/>
+                    <button name="action_view_workorder" string="View Work Order" type="object"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Error Information">
+                            <field name="workorder_id" readonly="1"/>
+                            <field name="error_type" readonly="1"/>
+                            <field name="error_date" readonly="1"/>
+                            <field name="user_id" readonly="1"/>
+                        </group>
+                        <group string="Resolution">
+                            <field name="resolved" widget="boolean_toggle"/>
+                            <field name="resolution_date" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Error Details">
+                        <field name="error_message" readonly="1"/>
+                        <field name="error_details" readonly="1"/>
+                        <field name="resolution_notes" placeholder="Add resolution notes..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Error Log Search View -->
+    <record id="view_maintenance_workorder_error_log_search" model="ir.ui.view">
+        <field name="name">maintenance.workorder.error.log.search</field>
+        <field name="model">maintenance.workorder.error.log</field>
+        <field name="arch" type="xml">
+            <search string="Search Error Logs">
+                <field name="workorder_id"/>
+                <field name="error_type"/>
+                <field name="user_id"/>
+                <field name="error_date"/>
+                <filter string="Unresolved" name="unresolved" domain="[('resolved', '=', False)]"/>
+                <filter string="Resolved" name="resolved" domain="[('resolved', '=', True)]"/>
+                <filter string="Today" name="today" domain="[('error_date', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                <filter string="This Week" name="this_week" domain="[('error_date', '>=', (context_today() - relativedelta(weeks=1)))]"/>
+                <filter string="This Month" name="this_month" domain="[('error_date', '>=', datetime.datetime.now().strftime('%Y-%m-01'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Error Type" name="group_error_type" context="{'group_by': 'error_type'}"/>
+                    <filter string="Work Order" name="group_workorder" context="{'group_by': 'workorder_id'}"/>
+                    <filter string="User" name="group_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'error_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Error Log Action -->
+    <record id="action_maintenance_workorder_error_log" model="ir.actions.act_window">
+        <field name="name">Error Logs</field>
+        <field name="res_model">maintenance.workorder.error.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('facilities_management.view_maintenance_workorder_error_log_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('facilities_management.view_maintenance_workorder_error_log_form')})]"/>
+        <field name="context">{'search_default_unresolved': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No error logs found!
+            </p>
+            <p>
+                Error logs are automatically created when issues occur with work orders.
+                They help track and resolve problems in the maintenance system.
+            </p>
+        </field>
+    </record>
+
+    <!-- Inherit Work Order Form to Add Error Log Button -->
+    <record id="view_workorder_form_inherit_error_handling" model="ir.ui.view">
+        <field name="name">facilities.workorder.form.inherit.error.handling</field>
+        <field name="model">facilities.workorder</field>
+        <field name="inherit_id" ref="facilities_management.view_workorder_enhanced_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" name="action_view_error_logs" type="object"
+                        invisible="error_count == 0" icon="fa-exclamation-triangle">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Errors</span>
+                        <span class="o_stat_value">
+                            <field name="error_count"/>
+                        </span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Work Order Form to Add Error Handling Fields -->
+    <record id="view_workorder_form_inherit_error_fields" model="ir.ui.view">
+        <field name="name">facilities.workorder.form.inherit.error.fields</field>
+        <field name="model">facilities.workorder</field>
+        <field name="inherit_id" ref="facilities_management.view_workorder_enhanced_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_status']" position="after">
+                <field name="error_count" invisible="1"/>
+                <field name="last_error_date" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Error Log Menu Item -->
+    <menuitem id="menu_maintenance_error_logs"
+              name="Error Logs"
+              parent="facilities_management.menu_maintenance_admin"
+              action="action_maintenance_workorder_error_log"
+              sequence="30"
+              groups="facilities_management.group_facilities_manager"/>
+</odoo>

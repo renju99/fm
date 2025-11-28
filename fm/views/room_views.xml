@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_facilities_room_tree" model="ir.ui.view">
+        <field name="name">facilities.room.tree</field>
+        <field name="model">facilities.room</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="room_type"/>
+                <field name="floor_id"/>
+                <field name="building_id"/>
+                <field name="facility_id"/>
+                <field name="manager_id"/>
+                <field name="active" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_facilities_room_form" model="ir.ui.view">
+        <field name="name">facilities.room.form</field>
+        <field name="model">facilities.room</field>
+        <field name="arch" type="xml">
+            <form string="Room">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="Room Name/Number" required="True"/></h1>
+                        <label for="code" class="oe_edit_only"/>
+                        <h2><field name="code" placeholder="Room Code" required="True" readonly="1"/></h2>
+                    </div>
+
+                    <group>
+                        <group string="Room Details">
+                            <field name="floor_id" required="True"/>
+                            <field name="building_id" readonly="1"/>
+                            <field name="facility_id" readonly="1"/>
+                            <field name="manager_id"/>
+                            <field name="room_type"/>
+                            <field name="capacity"/>
+                            <field name="area_sqm"/>
+                        </group>
+                        <group string="QR Code">
+                            <field name="qr_code_generated" invisible="1"/>
+                            <div class="oe_button_box" name="button_box">
+                                <button name="action_generate_qr_code" type="object" 
+                                        class="oe_stat_button" icon="fa-qrcode"
+                                        string="Generate QR Code" 
+                                        invisible="qr_code_generated"
+                                        help="Generate QR code for service request creation"/>
+                                <button name="action_view_qr_code" type="object" 
+                                        class="oe_stat_button" icon="fa-qrcode"
+                                        string="View QR Code" 
+                                        invisible="not qr_code_generated"
+                                        help="View generated QR code"/>
+                                <button name="action_regenerate_qr_code" type="object" 
+                                        class="oe_stat_button" icon="fa-refresh"
+                                        string="Regenerate QR Code" 
+                                        invisible="not qr_code_generated"
+                                        help="Regenerate QR code"/>
+                                <button name="action_download_qr_code" type="object" 
+                                        class="oe_stat_button" icon="fa-download"
+                                        string="Download QR Code" 
+                                        invisible="not qr_code_generated"
+                                        help="Download QR code image"/>
+                            </div>
+                            <field name="qr_code_image" widget="image" 
+                                   invisible="not qr_code_generated" 
+                                   readonly="1" 
+                                   string="QR Code Image"/>
+                            <field name="qr_code_url" readonly="1" 
+                                   invisible="not qr_code_generated"
+                                   string="Service Request URL"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Usage &amp; Notes">
+                            <field name="usage"/>
+                            <field name="notes"/>
+                        </group>
+                    </group>
+                    <field name="active" groups="base.group_no_one"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_facilities_room_search" model="ir.ui.view">
+        <field name="name">facilities.room.search</field>
+        <field name="model">facilities.room</field>
+        <field name="arch" type="xml">
+            <search string="Rooms">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="room_type"/>
+                <field name="floor_id"/>
+                <field name="building_id"/>
+                <field name="facility_id"/>
+                <field name="manager_id"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Floor" name="groupby_floor" context="{'group_by':'floor_id'}"/>
+                    <filter string="Building" name="groupby_building" context="{'group_by':'building_id'}"/>
+                    <filter string="Facility" name="groupby_facility" context="{'group_by':'facility_id'}"/>
+                    <filter string="Room Type" name="groupby_room_type" context="{'group_by':'room_type'}"/>
+                    <filter string="Manager" name="groupby_manager" context="{'group_by':'manager_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- QR Code View for Popup -->
+    <record id="view_room_qr_code_form" model="ir.ui.view">
+        <field name="name">facilities.room.qr.code.form</field>
+        <field name="model">facilities.room</field>
+        <field name="arch" type="xml">
+            <form string="Room QR Code">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h2>QR Code for Service Request Creation</h2>
+                    </div>
+                    <group>
+                        <group string="Room Information">
+                            <field name="code" readonly="1"/>
+                            <field name="floor_id" readonly="1"/>
+                            <field name="building_id" readonly="1"/>
+                            <field name="facility_id" readonly="1"/>
+                        </group>
+                        <group string="QR Code">
+                            <field name="qr_code_image" widget="image" readonly="1" string="QR Code"/>
+                            <div class="alert alert-info" role="alert">
+                                <strong>Instructions:</strong>
+                                <ul>
+                                    <li>Print this QR code and place it in the room</li>
+                                    <li>Users can scan the QR code to create service requests</li>
+                                    <li>The service request will be automatically linked to this room</li>
+                                </ul>
+                            </div>
+                        </group>
+                    </group>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_download_qr_code" type="object" 
+                                class="btn btn-primary" icon="fa-download"
+                                string="Download QR Code"/>
+                        <button name="action_regenerate_qr_code" type="object" 
+                                class="btn btn-secondary" icon="fa-refresh"
+                                string="Regenerate QR Code"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_facilities_room" model="ir.actions.act_window">
+        <field name="name">Rooms</field>
+        <field name="res_model">facilities.room</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Room
+            </p>
+        </field>
+    </record>
+
+</odoo>

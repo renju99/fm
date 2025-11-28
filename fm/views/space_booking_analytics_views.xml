@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Enhanced Tree View for Analytics -->
+    <record id="view_space_booking_tree_analytics" model="ir.ui.view">
+        <field name="name">facilities.space.booking.tree.analytics</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <list string="Booking Analytics" create="false" edit="false">
+                <field name="name"/>
+                <field name="room_id"/>
+                <field name="user_id"/>
+                <field name="booking_type"/>
+                <field name="department_id"/>
+                <field name="priority"/>
+                <field name="attendees"/>
+                <field name="required_capacity"/>
+                <field name="capacity_utilization" widget="percentage"/>
+                <field name="start_datetime"/>
+                <field name="end_datetime"/>
+                <field name="duration_hours" widget="float_time"/>
+                <field name="total_cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="state"/>
+                <field name="rating" widget="priority"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Enhanced Pivot View -->
+    <record id="view_space_booking_pivot" model="ir.ui.view">
+        <field name="name">facilities.space.booking.pivot</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <pivot string="Booking Analytics" disable_linking="True">
+                <field name="room_id" type="row"/>
+                <field name="booking_type" type="row"/>
+                <field name="department_id" type="row"/>
+                <field name="start_datetime" interval="month" type="col"/>
+                <field name="attendees" type="measure"/>
+                <field name="duration_hours" type="measure"/>
+                <field name="total_cost" type="measure"/>
+                <field name="capacity_utilization" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Room Utilization Pivot -->
+    <record id="view_room_utilization_pivot" model="ir.ui.view">
+        <field name="name">facilities.space.booking.room.utilization.pivot</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <pivot string="Room Utilization Analysis" disable_linking="True">
+                <field name="room_id" type="row"/>
+                <field name="start_datetime" interval="week" type="col"/>
+                <field name="duration_hours" type="measure"/>
+                <field name="capacity_utilization" type="measure"/>
+                <field name="id" string="Number of Bookings" type="measure" operator="count"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Cost Analysis Pivot -->
+    <record id="view_cost_analysis_pivot" model="ir.ui.view">
+        <field name="name">facilities.space.booking.cost.analysis.pivot</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <pivot string="Cost Analysis" disable_linking="True">
+                <field name="department_id" type="row"/>
+                <field name="booking_type" type="row"/>
+                <field name="start_datetime" interval="month" type="col"/>
+                <field name="total_cost" type="measure"/>
+                <field name="duration_hours" type="measure"/>
+                <field name="attendees" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Enhanced Graph View: Bookings per Room -->
+    <record id="view_space_booking_graph" model="ir.ui.view">
+        <field name="name">facilities.space.booking.graph</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <graph string="Bookings per Room" type="bar" stacked="True">
+                <field name="room_id" type="row"/>
+                <field name="booking_type" type="col"/>
+                <field name="duration_hours" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Cost Trends Graph -->
+    <record id="view_cost_trends_graph" model="ir.ui.view">
+        <field name="name">facilities.space.booking.cost.trends.graph</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <graph string="Cost Trends" type="line">
+                <field name="start_datetime" interval="month" type="row"/>
+                <field name="booking_type" type="col"/>
+                <field name="total_cost" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Utilization Trends Graph -->
+    <record id="view_utilization_trends_graph" model="ir.ui.view">
+        <field name="name">facilities.space.booking.utilization.trends.graph</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <graph string="Room Utilization Trends" type="line">
+                <field name="start_datetime" interval="week" type="row"/>
+                <field name="room_id" type="col"/>
+                <field name="capacity_utilization" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Booking Types Distribution -->
+    <record id="view_booking_types_distribution_graph" model="ir.ui.view">
+        <field name="name">facilities.space.booking.types.distribution.graph</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <graph string="Booking Types Distribution" type="pie">
+                <field name="booking_type" type="row"/>
+                <field name="id" string="Bookings" type="measure" operator="count"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Priority Analysis Graph -->
+    <record id="view_priority_analysis_graph" model="ir.ui.view">
+        <field name="name">facilities.space.booking.priority.analysis.graph</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <graph string="Priority Analysis" type="bar">
+                <field name="priority" type="row"/>
+                <field name="state" type="col"/>
+                <field name="id" string="Bookings" type="measure" operator="count"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Department Usage Graph -->
+    <record id="view_department_usage_graph" model="ir.ui.view">
+        <field name="name">facilities.space.booking.department.usage.graph</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <graph string="Department Usage" type="bar">
+                <field name="department_id" type="row"/>
+                <field name="booking_type" type="col"/>
+                <field name="duration_hours" type="measure"/>
+                <field name="total_cost" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Enhanced Calendar View: Upcoming Bookings -->
+    <record id="view_space_booking_calendar_analytics" model="ir.ui.view">
+        <field name="name">facilities.space.booking.calendar.analytics</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <calendar string="Booking Calendar Analytics"
+                      date_start="start_datetime"
+                      date_stop="end_datetime"
+                      color="priority"
+                      mode="month"
+                      event_open_popup="true">
+                <field name="name"/>
+                <field name="room_id"/>
+                <field name="user_id"/>
+                <field name="booking_type"/>
+                <field name="department_id"/>
+                <field name="priority"/>
+                <field name="attendees"/>
+                <field name="total_cost"/>
+                <field name="capacity_utilization"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Analytics Dashboard View -->
+    <record id="view_space_booking_analytics_dashboard" model="ir.ui.view">
+        <field name="name">facilities.space.booking.analytics.dashboard</field>
+        <field name="model">facilities.space.booking</field>
+        <field name="arch" type="xml">
+            <kanban class="oe_background_grey o_kanban_dashboard o_space_analytics_kanban" create="false" edit="false">
+                <field name="room_id"/>
+                <field name="total_cost"/>
+                <field name="duration_hours"/>
+                <field name="capacity_utilization"/>
+                <field name="booking_type"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click o_kanban_dashboard_tile">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">Space Booking Analytics</div>
+                                    <div class="o_secondary">Performance Insights</div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_content">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <a name="action_view_utilization_report" type="object" class="btn btn-primary btn-block" role="button">
+                                            <i class="fa fa-bar-chart"/> Utilization Report
+                                        </a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a name="action_view_cost_analysis" type="object" class="btn btn-success btn-block" role="button">
+                                            <i class="fa fa-money"/> Cost Analysis
+                                        </a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a name="action_view_trends" type="object" class="btn btn-info btn-block" role="button">
+                                            <i class="fa fa-line-chart"/> Trends
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-6">
+                                        <a name="action_view_department_analysis" type="object" class="btn btn-warning btn-block" role="button">
+                                            <i class="fa fa-users"/> Department Analysis
+                                        </a>
+                                    </div>
+                                    <div class="col-6">
+                                        <a name="action_view_booking_patterns" type="object" class="btn btn-secondary btn-block" role="button">
+                                            <i class="fa fa-calendar"/> Booking Patterns
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Main Analytics Action -->
+    <record id="action_space_booking_analytics" model="ir.actions.act_window">
+        <field name="name">Space Booking Analytics</field>
+        <field name="res_model">facilities.space.booking</field>
+        <field name="view_mode">kanban,pivot,graph,calendar,list</field>
+        <field name="views" eval="[
+            (ref('view_space_booking_analytics_dashboard'), 'kanban'),
+            (ref('view_space_booking_pivot'), 'pivot'),
+            (ref('view_space_booking_graph'), 'graph'),
+            (ref('view_space_booking_calendar_analytics'), 'calendar'),
+            (ref('view_space_booking_tree_analytics'), 'tree')
+        ]"/>
+        <field name="context">{
+            'search_default_confirmed': 1,
+            'group_by': ['room_id']
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No booking analytics yet!
+            </p>
+            <p>
+                Analyze booking utilization trends, costs, and performance metrics here.
+            </p>
+        </field>
+    </record>
+
+    <!-- Room Utilization Analytics Action -->
+    <record id="action_room_utilization_analytics" model="ir.actions.act_window">
+        <field name="name">Room Utilization Analytics</field>
+        <field name="res_model">facilities.space.booking</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="views" eval="[
+            (ref('view_room_utilization_pivot'), 'pivot'),
+            (ref('view_utilization_trends_graph'), 'graph')
+        ]"/>
+        <field name="domain">[('state', 'in', ['confirmed', 'completed'])]</field>
+        <field name="context">{'group_by': ['room_id']}</field>
+    </record>
+
+    <!-- Cost Analysis Action -->
+    <record id="action_cost_analysis" model="ir.actions.act_window">
+        <field name="name">Cost Analysis</field>
+        <field name="res_model">facilities.space.booking</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="views" eval="[
+            (ref('view_cost_analysis_pivot'), 'pivot'),
+            (ref('view_cost_trends_graph'), 'graph')
+        ]"/>
+        <field name="domain">[('state', 'in', ['confirmed', 'completed']), ('total_cost', '>', 0)]</field>
+        <field name="context">{'group_by': ['department_id']}</field>
+    </record>
+
+    <!-- Department Usage Analytics Action -->
+    <record id="action_department_usage_analytics" model="ir.actions.act_window">
+        <field name="name">Department Usage Analytics</field>
+        <field name="res_model">facilities.space.booking</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="views" eval="[
+            (ref('view_department_usage_graph'), 'graph'),
+            (ref('view_space_booking_pivot'), 'pivot')
+        ]"/>
+        <field name="domain">[('state', 'in', ['confirmed', 'completed'])]</field>
+        <field name="context">{'group_by': ['department_id']}</field>
+    </record>
+
+    <!-- Booking Types Distribution Action -->
+    <record id="action_booking_types_distribution" model="ir.actions.act_window">
+        <field name="name">Booking Types Distribution</field>
+        <field name="res_model">facilities.space.booking</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="views" eval="[
+            (ref('view_booking_types_distribution_graph'), 'graph'),
+            (ref('view_space_booking_pivot'), 'pivot')
+        ]"/>
+        <field name="domain">[('state', 'in', ['confirmed', 'completed'])]</field>
+        <field name="context">{'group_by': ['booking_type']}</field>
+    </record>
+
+    <!-- Priority Analysis Action -->
+    <record id="action_priority_analysis" model="ir.actions.act_window">
+        <field name="name">Priority Analysis</field>
+        <field name="res_model">facilities.space.booking</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="views" eval="[
+            (ref('view_priority_analysis_graph'), 'graph'),
+            (ref('view_space_booking_pivot'), 'pivot')
+        ]"/>
+        <field name="context">{'group_by': ['priority']}</field>
+    </record>
+
+    <!-- Equipment Usage Analytics Action -->
+    <record id="action_equipment_usage_analytics" model="ir.actions.act_window">
+        <field name="name">Equipment Usage Analytics</field>
+        <field name="res_model">facilities.space.booking</field>
+        <field name="view_mode">pivot,list</field>
+        <field name="domain">[('required_equipment_ids', '!=', False), ('state', 'in', ['confirmed', 'completed'])]</field>
+        <field name="context">{'group_by': ['required_equipment_ids']}</field>
+    </record>
+
+    <!-- Predictive Analytics Action (Future Enhancement) -->
+    <record id="action_predictive_analytics" model="ir.actions.act_window">
+        <field name="name">Predictive Analytics</field>
+        <field name="res_model">facilities.space.booking</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="views" eval="[
+            (ref('view_utilization_trends_graph'), 'graph'),
+            (ref('view_room_utilization_pivot'), 'pivot')
+        ]"/>
+        <field name="domain">[('state', 'in', ['confirmed', 'completed'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Predictive Analytics Dashboard
+            </p>
+            <p>
+                Forecast room utilization, predict peak booking times, and identify optimization opportunities.
+            </p>
+        </field>
+    </record>
+
+</odoo>

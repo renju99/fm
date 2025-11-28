@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Booking Reject Wizard Form View -->
+    <record id="view_booking_reject_wizard_form" model="ir.ui.view">
+        <field name="name">facilities.booking.reject.wizard.form</field>
+        <field name="model">facilities.booking.reject.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reject Booking">
+                <p class="text-muted">
+                    You are about to reject the booking. Please provide a reason for the rejection.
+                </p>
+                <group>
+                    <field name="booking_id" readonly="1"/>
+                    <field name="notify_user"/>
+                </group>
+                <group>
+                    <field name="rejection_reason" nolabel="1" 
+                           placeholder="Please provide a detailed reason for rejecting this booking..."/>
+                </group>
+                <footer>
+                    <button name="action_reject_booking" type="object" string="Reject Booking" 
+                            class="btn-danger"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <!-- Demo Service Catalog Items -->
+    <record id="service_catalog_hvac_repair" model="facilities.service.catalog">
+        <field name="name">HVAC System Repair</field>
+        <field name="code">HVAC-REPAIR</field>
+        <field name="category">maintenance</field>
+        <field name="description">Request repair services for heating, ventilation, and air conditioning systems</field>
+        <field name="short_description">HVAC system maintenance and repairs</field>
+        <field name="available">True</field>
+        <field name="default_priority">3</field>
+        <field name="estimated_cost">150.00</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="service_catalog_it_support" model="facilities.service.catalog">
+        <field name="name">IT Support Request</field>
+        <field name="code">IT-SUPPORT</field>
+        <field name="category">it_support</field>
+        <field name="description">General IT support for hardware, software, and network issues</field>
+        <field name="short_description">IT technical support and troubleshooting</field>
+        <field name="available">True</field>
+        <field name="default_priority">2</field>
+        <field name="estimated_cost">0.00</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="service_catalog_office_supplies" model="facilities.service.catalog">
+        <field name="name">Office Supplies Request</field>
+        <field name="code">OFFICE-SUPPLIES</field>
+        <field name="category">procurement</field>
+        <field name="description">Request office supplies, stationery, and consumables</field>
+        <field name="short_description">Office supplies and stationery requests</field>
+        <field name="available">True</field>
+        <field name="default_priority">1</field>
+        <field name="estimated_cost">50.00</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <record id="service_catalog_cleaning_service" model="facilities.service.catalog">
+        <field name="name">Cleaning Service Request</field>
+        <field name="code">CLEANING</field>
+        <field name="category">facility_service</field>
+        <field name="description">Request additional cleaning services for offices, common areas, or special events</field>
+        <field name="short_description">Additional cleaning and janitorial services</field>
+        <field name="available">True</field>
+        <field name="default_priority">2</field>
+        <field name="estimated_cost">75.00</field>
+        <field name="sequence">40</field>
+    </record>
+
+    <record id="service_catalog_access_request" model="facilities.service.catalog">
+        <field name="name">Building Access Request</field>
+        <field name="code">ACCESS-REQ</field>
+        <field name="category">access_request</field>
+        <field name="description">Request access to buildings, rooms, or systems</field>
+        <field name="short_description">Building and system access requests</field>
+        <field name="available">True</field>
+        <field name="default_priority">2</field>
+        <field name="approval_required">True</field>
+        <field name="estimated_cost">0.00</field>
+        <field name="sequence">50</field>
+    </record>
+
+    <!-- Demo Service Contacts -->
+    <record id="service_contact_facilities_manager" model="facilities.service.contact">
+        <field name="name">Facilities Manager</field>
+        <field name="email">facilities@company.com</field>
+        <field name="phone">+1-555-0101</field>
+        <field name="category">management</field>
+        <field name="priority_level">3</field>
+        <field name="specialization">Facilities Management</field>
+        <field name="available_hours">8:00 AM - 6:00 PM</field>
+        <field name="description">Primary contact for facilities management issues</field>
+    </record>
+
+    <record id="service_contact_it_helpdesk" model="facilities.service.contact">
+        <field name="name">IT Helpdesk</field>
+        <field name="email">helpdesk@company.com</field>
+        <field name="phone">+1-555-0102</field>
+        <field name="mobile">+1-555-0103</field>
+        <field name="category">technical</field>
+        <field name="priority_level">1</field>
+        <field name="specialization">IT Support</field>
+        <field name="available_hours">24/7</field>
+        <field name="description">First-line IT support for technical issues</field>
+    </record>
+
+    <record id="service_contact_maintenance_team" model="facilities.service.contact">
+        <field name="name">Maintenance Team Lead</field>
+        <field name="email">maintenance@company.com</field>
+        <field name="phone">+1-555-0104</field>
+        <field name="category">technical</field>
+        <field name="priority_level">2</field>
+        <field name="specialization">Building Maintenance</field>
+        <field name="available_hours">7:00 AM - 5:00 PM</field>
+        <field name="description">Lead technician for building maintenance and repairs</field>
+    </record>
+
+    <record id="service_contact_emergency" model="facilities.service.contact">
+        <field name="name">Emergency Contact</field>
+        <field name="phone">+1-555-0911</field>
+        <field name="mobile">+1-555-0911</field>
+        <field name="category">emergency</field>
+        <field name="priority_level">4</field>
+        <field name="specialization">Emergency Response</field>
+        <field name="available_hours">24/7</field>
+        <field name="description">Emergency contact for urgent facility issues</field>
+    </record>
+
+    <!-- Demo Service Documents -->
+    <record id="service_document_hvac_guide" model="facilities.service.document">
+        <field name="name">HVAC Troubleshooting Guide</field>
+        <field name="document_type">troubleshooting</field>
+        <field name="category">maintenance</field>
+        <field name="description">Step-by-step guide for basic HVAC troubleshooting</field>
+        <field name="content">&lt;h3&gt;HVAC Troubleshooting Steps&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Check thermostat settings&lt;/li&gt;
+&lt;li&gt;Verify power supply&lt;/li&gt;
+&lt;li&gt;Inspect air filters&lt;/li&gt;
+&lt;li&gt;Check circuit breakers&lt;/li&gt;
+&lt;li&gt;Contact maintenance if issues persist&lt;/li&gt;
+&lt;/ol&gt;</field>
+        <field name="published">True</field>
+        <field name="featured">True</field>
+        <field name="sequence">10</field>
+        <field name="keywords">HVAC, troubleshooting, air conditioning, heating</field>
+    </record>
+
+    <record id="service_document_it_faq" model="facilities.service.document">
+        <field name="name">IT Support FAQ</field>
+        <field name="document_type">faq</field>
+        <field name="category">it_support</field>
+        <field name="description">Frequently asked questions about IT support</field>
+        <field name="content">&lt;h3&gt;Frequently Asked Questions&lt;/h3&gt;
+&lt;h4&gt;Q: How do I reset my password?&lt;/h4&gt;
+&lt;p&gt;A: Contact IT helpdesk or use the self-service password reset portal.&lt;/p&gt;
+&lt;h4&gt;Q: My computer is running slowly, what should I do?&lt;/h4&gt;
+&lt;p&gt;A: Try restarting your computer first. If the issue persists, contact IT support.&lt;/p&gt;
+&lt;h4&gt;Q: How do I request new software?&lt;/h4&gt;
+&lt;p&gt;A: Submit a service request through the IT Support category.&lt;/p&gt;</field>
+        <field name="published">True</field>
+        <field name="sequence">20</field>
+        <field name="keywords">IT, FAQ, password, software, computer</field>
+    </record>
+
+    <record id="service_document_office_supplies" model="facilities.service.document">
+        <field name="name">Office Supplies Ordering Guide</field>
+        <field name="document_type">procedure</field>
+        <field name="category">procurement</field>
+        <field name="description">How to order office supplies and stationery</field>
+        <field name="content">&lt;h3&gt;Office Supplies Ordering Process&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Check current inventory&lt;/li&gt;
+&lt;li&gt;Submit request through Service Catalog&lt;/li&gt;
+&lt;li&gt;Include detailed specifications&lt;/li&gt;
+&lt;li&gt;Wait for approval if required&lt;/li&gt;
+&lt;li&gt;Receive notification when order is processed&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Standard delivery time: 3-5 business days&lt;/p&gt;</field>
+        <field name="published">True</field>
+        <field name="sequence">30</field>
+        <field name="keywords">office supplies, ordering, procurement, stationery</field>
+    </record>
+
+    <!-- Demo Document Tags -->
+    <record id="service_document_tag_urgent" model="facilities.service.document.tag">
+        <field name="name">Urgent</field>
+        <field name="color">1</field>
+        <field name="description">Documents for urgent or time-sensitive issues</field>
+    </record>
+
+    <record id="service_document_tag_beginner" model="facilities.service.document.tag">
+        <field name="name">Beginner</field>
+        <field name="color">2</field>
+        <field name="description">Documents suitable for beginners</field>
+    </record>
+
+    <record id="service_document_tag_advanced" model="facilities.service.document.tag">
+        <field name="name">Advanced</field>
+        <field name="color">3</field>
+        <field name="description">Documents for advanced users</field>
+    </record>
+
+    <!-- Associate tags with documents -->
+    <record id="service_document_hvac_guide" model="facilities.service.document">
+        <field name="tag_ids" eval="[(6, 0, [ref('service_document_tag_beginner')])]"/>
+    </record>
+
+    <record id="service_document_it_faq" model="facilities.service.document">
+        <field name="tag_ids" eval="[(6, 0, [ref('service_document_tag_beginner')])]"/>
+    </record>
+
+    <!-- Associate contacts with service areas -->
+    <record id="service_contact_facilities_manager" model="facilities.service.contact">
+        <field name="service_area_ids" eval="[(6, 0, [ref('service_catalog_hvac_repair'), ref('service_catalog_cleaning_service')])]"/>
+    </record>
+
+    <record id="service_contact_it_helpdesk" model="facilities.service.contact">
+        <field name="service_area_ids" eval="[(6, 0, [ref('service_catalog_it_support')])]"/>
+    </record>
+
+    <record id="service_contact_maintenance_team" model="facilities.service.contact">
+        <field name="service_area_ids" eval="[(6, 0, [ref('service_catalog_hvac_repair')])]"/>
+    </record>
+</odoo>
+

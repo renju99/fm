@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Room Equipment Tree View -->
+    <record id="view_room_equipment_tree" model="ir.ui.view">
+        <field name="name">facilities.room.equipment.tree</field>
+        <field name="model">facilities.room.equipment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="equipment_type"/>
+                <field name="manufacturer"/>
+                <field name="model"/>
+                <field name="status"/>
+                <field name="current_location"/>
+                <field name="is_portable"/>
+                <field name="total_bookings"/>
+                <field name="last_used"/>
+                <field name="next_maintenance"/>
+                <button name="action_view_bookings" type="object" icon="fa-calendar" 
+                        title="View Bookings"/>
+                <button name="action_schedule_maintenance" type="object" icon="fa-wrench" 
+                        title="Schedule Maintenance"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Room Equipment Form View -->
+    <record id="view_room_equipment_form" model="ir.ui.view">
+        <field name="name">facilities.room.equipment.form</field>
+        <field name="model">facilities.room.equipment</field>
+        <field name="arch" type="xml">
+            <form string="Room Equipment">
+                <header>
+                    <button name="action_schedule_maintenance" type="object" string="Schedule Maintenance"
+                            class="btn-warning"/>
+                    <field name="status" widget="statusbar" statusbar_visible="available,maintenance,broken"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-calendar" name="action_view_bookings" type="object">
+                            <field name="total_bookings" widget="statinfo" string="Bookings"/>
+                        </button>
+                    </div>
+
+                    <field name="image" widget="image" class="oe_avatar"/>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Equipment Name"/>
+                        </h1>
+                        <h3>
+                            <field name="equipment_type"/>
+                        </h3>
+                    </div>
+
+                    <group>
+                        <group name="basic_info">
+                            <field name="manufacturer"/>
+                            <field name="model"/>
+                            <field name="serial_number"/>
+                            <field name="capacity"/>
+                            <field name="is_portable"/>
+                        </group>
+                        <group name="location_info">
+                            <field name="current_location"/>
+                            <field name="room_ids" widget="many2many_tags" 
+                                   invisible="is_portable"/>
+                            <field name="purchased_date"/>
+                            <field name="purchase_cost" widget="monetary" 
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Specifications" name="specifications">
+                            <group>
+                                <field name="specifications" nolabel="1" 
+                                       placeholder="Enter technical specifications..."/>
+                            </group>
+                            <group>
+                                <field name="power_requirements" placeholder="Power requirements..."/>
+                            </group>
+                        </page>
+
+                        <page string="Maintenance" name="maintenance">
+                            <group>
+                                <group name="maintenance_dates">
+                                    <field name="last_maintenance"/>
+                                    <field name="next_maintenance"/>
+                                </group>
+                                <group name="usage_stats">
+                                    <field name="total_bookings" readonly="1"/>
+                                    <field name="last_used" readonly="1"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="maintenance_notes" nolabel="1" 
+                                       placeholder="Maintenance notes and history..."/>
+                            </group>
+                        </page>
+
+                        <page string="Description" name="description">
+                            <group>
+                                <field name="description" nolabel="1" 
+                                       placeholder="Equipment description..."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Room Equipment Kanban View -->
+    <record id="view_room_equipment_kanban" model="ir.ui.view">
+        <field name="name">facilities.room.equipment.kanban</field>
+        <field name="model">facilities.room.equipment</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="equipment_type"/>
+                <field name="status"/>
+                <field name="current_location"/>
+                <field name="is_portable"/>
+                <field name="total_bookings"/>
+                <field name="image"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <img t-if="record.image.value" 
+                                     t-att-src="record.image.value" 
+                                     t-att-alt="record.name.value" class="oe_kanban_avatar float-left"/>
+                                <div t-else="" class="oe_kanban_avatar float-left bg-light d-flex align-items-center justify-content-center">
+                                    <i class="fa fa-cog fa-lg text-muted" title="Equipment Icon"></i>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <strong><field name="name"/></strong>
+                                    <div>
+                                        <span t-if="record.equipment_type.raw_value" class="badge badge-info">
+                                            <field name="equipment_type"/>
+                                        </span>
+                                        <span t-attf-class="badge badge-#{record.status.raw_value == 'available' ? 'success' : record.status.raw_value == 'maintenance' ? 'warning' : 'danger'} ml-1">
+                                            <field name="status"/>
+                                        </span>
+                                        <span t-if="record.is_portable.raw_value" class="badge badge-secondary ml-1">
+                                            Portable
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div t-if="record.current_location.raw_value">
+                                    <i class="fa fa-map-marker" title="Location"/> <field name="current_location"/>
+                                </div>
+                                <div class="text-muted">
+                                    <i class="fa fa-calendar" title="Bookings"/> <field name="total_bookings"/> bookings
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <button name="action_view_bookings" type="object" class="btn btn-sm btn-primary">
+                                    View Bookings
+                                </button>
+                                <button name="action_schedule_maintenance" type="object" class="btn btn-sm btn-warning">
+                                    Maintenance
+                                </button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Room Equipment Search View -->
+    <record id="view_room_equipment_search" model="ir.ui.view">
+        <field name="name">facilities.room.equipment.search</field>
+        <field name="model">facilities.room.equipment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="equipment_type"/>
+                <field name="manufacturer"/>
+                <field name="model"/>
+                <field name="current_location"/>
+                
+                <separator/>
+                
+                <filter name="available" string="Available" domain="[('status', '=', 'available')]"/>
+                <filter name="maintenance" string="Under Maintenance" domain="[('status', '=', 'maintenance')]"/>
+                <filter name="broken" string="Broken" domain="[('status', '=', 'broken')]"/>
+                <filter name="portable" string="Portable" domain="[('is_portable', '=', True)]"/>
+                
+                <separator/>
+                
+                <filter name="av_equipment" string="A/V Equipment" domain="[('equipment_type', '=', 'av')]"/>
+                <filter name="computing" string="Computing" domain="[('equipment_type', '=', 'computing')]"/>
+                <filter name="furniture" string="Furniture" domain="[('equipment_type', '=', 'furniture')]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter name="group_type" string="Equipment Type" context="{'group_by': 'equipment_type'}"/>
+                    <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
+                    <filter name="group_location" string="Location" context="{'group_by': 'current_location'}"/>
+                    <filter name="group_manufacturer" string="Manufacturer" context="{'group_by': 'manufacturer'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+</odoo>

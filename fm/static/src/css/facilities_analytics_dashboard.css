@@ -1,0 +1,108 @@
+.o_facilities_analytics_dashboard {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+}
+
+.o_facilities_analytics_dashboard .card {
+    border-radius: 8px;
+}
+
+.o_facilities_analytics_dashboard .cursor-pointer {
+    cursor: pointer;
+}
+
+.o_facilities_analytics_dashboard .hover-shadow:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-2px);
+}
+
+.o_facilities_analytics_dashboard .bg-primary-subtle {
+    background-color: rgba(13, 110, 253, 0.1) !important;
+}
+
+.o_facilities_analytics_dashboard .bg-success-subtle {
+    background-color: rgba(25, 135, 84, 0.1) !important;
+}
+
+.o_facilities_analytics_dashboard .bg-warning-subtle {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+}
+
+.o_facilities_analytics_dashboard .bg-danger-subtle {
+    background-color: rgba(220, 53, 69, 0.1) !important;
+}
+
+.o_facilities_analytics_dashboard .bg-info-subtle {
+    background-color: rgba(13, 202, 240, 0.1) !important;
+}
+
+.o_facilities_analytics_dashboard h2 {
+    color: #212529;
+    font-weight: 600;
+}
+
+.o_facilities_analytics_dashboard .card-header {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.o_facilities_analytics_dashboard .table th {
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+/* Chart hover effects for drill-down */
+.o_facilities_analytics_dashboard canvas {
+    cursor: default;
+}
+
+.o_facilities_analytics_dashboard .card-header {
+    position: relative;
+}
+
+.o_facilities_analytics_dashboard .card-header::after {
+    content: ' 🔍';
+    font-size: 0.9rem;
+    opacity: 0.6;
+    margin-left: 5px;
+}
+
+/* KPI Card animations */
+.o_facilities_analytics_dashboard .card {
+    transition: all 0.2s ease-in-out;
+}
+
+.o_facilities_analytics_dashboard .card.cursor-pointer:hover {
+    transform: translateY(-3px);
+}
+
+.o_facilities_analytics_dashboard .rounded-circle {
+    transition: transform 0.2s ease-in-out;
+}
+
+.o_facilities_analytics_dashboard .card.cursor-pointer:hover .rounded-circle {
+    transform: scale(1.1);
+}
+
+/* Filters section */
+.o_facilities_analytics_dashboard .form-label {
+    margin-bottom: 0.25rem;
+}
+
+.o_facilities_analytics_dashboard .form-select,
+.o_facilities_analytics_dashboard .form-control {
+    font-size: 0.875rem;
+    border-radius: 6px;
+}
+
+.o_facilities_analytics_dashboard .form-select:focus,
+.o_facilities_analytics_dashboard .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+

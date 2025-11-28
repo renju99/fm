@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="seq_asset_maintenance" model="ir.sequence">
+        <field name="name">Asset Maintenance Schedule Reference</field>
+        <field name="code">asset.maintenance.schedule</field>
+        <field name="prefix">MAINT/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_maintenance_workorder" model="ir.sequence">
+        <field name="name">Facilities Work Order Reference</field>
+        <field name="code">facilities.workorder</field>
+        <field name="prefix">WO/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_facility_code" model="ir.sequence">
+        <field name="name">Facility Code</field>
+        <field name="code">facilities.facility</field>
+        <field name="prefix">FAC</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_building_code" model="ir.sequence">
+        <field name="name">Building Code</field>
+        <field name="code">facilities.building</field>
+        <field name="prefix">BLD</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_floor_code" model="ir.sequence">
+        <field name="name">Floor Code</field>
+        <field name="code">facilities.floor</field>
+        <field name="prefix">FLR</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_room_code" model="ir.sequence">
+        <field name="name">Room Code</field>
+        <field name="code">facilities.room</field>
+        <field name="prefix">ROM</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_maintenance_job_plan" model="ir.sequence">
+        <field name="name">Maintenance Job Plan Sequence</field>
+        <field name="code">maintenance.job.plan</field>
+        <field name="prefix">JP</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_facilities_asset_barcode" model="ir.sequence">
+        <field name="name">Asset Barcode</field>
+        <field name="code">facilities.asset.barcode</field>
+        <field name="prefix">AS</field>
+        <field name="padding">4</field>
+    </record>
+
+    <!-- Add asset code sequence -->
+    <record id="seq_facilities_asset" model="ir.sequence">
+        <field name="name">Asset Code</field>
+        <field name="code">facilities.asset</field>
+        <field name="prefix">AST</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Service Request Sequence -->
+    <record id="seq_service_request" model="ir.sequence">
+        <field name="name">Service Request</field>
+        <field name="code">facilities.service.request</field>
+        <field name="prefix">SR</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

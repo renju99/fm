@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Utility Meter Sequence -->
+        <record id="seq_utility_meter" model="ir.sequence">
+            <field name="name">Utility Meter Code</field>
+            <field name="code">facilities.utility.meter</field>
+            <field name="prefix">MTR</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Energy Consumption Sequence -->
+        <record id="seq_energy_consumption" model="ir.sequence">
+            <field name="name">Energy Consumption Reading</field>
+            <field name="code">facilities.energy.consumption</field>
+            <field name="prefix">ECR</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sustainability Report Sequence -->
+        <record id="seq_sustainability_report" model="ir.sequence">
+            <field name="name">Sustainability Report Code</field>
+            <field name="code">facilities.sustainability.report</field>
+            <field name="prefix">SR</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Energy Cost Analysis Sequence -->
+        <record id="seq_energy_cost_analysis" model="ir.sequence">
+            <field name="name">Energy Cost Analysis Code</field>
+            <field name="code">facilities.energy.cost.analysis</field>
+            <field name="prefix">ECA</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Energy Alert Sequence -->
+        <record id="seq_energy_alert" model="ir.sequence">
+            <field name="name">Energy Alert Code</field>
+            <field name="code">facilities.energy.alert</field>
+            <field name="prefix">EAL</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Energy Benchmark Sequence -->
+        <record id="seq_energy_benchmark" model="ir.sequence">
+            <field name="name">Energy Benchmark Code</field>
+            <field name="code">facilities.energy.benchmark</field>
+            <field name="prefix">EBM</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Energy Benchmark Report Sequence -->
+        <record id="seq_energy_benchmark_report" model="ir.sequence">
+            <field name="name">Energy Benchmark Report Code</field>
+            <field name="code">facilities.energy.benchmark.report</field>
+            <field name="prefix">EBR</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Service Contact Tree View -->
+    <record id="view_service_contact_tree" model="ir.ui.view">
+        <field name="name">service.contact.tree</field>
+        <field name="model">facilities.service.contact</field>
+        <field name="arch" type="xml">
+            <list string="Service Contacts" decoration-muted="not active">
+                <field name="name"/>
+                <field name="category"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="mobile"/>
+                <field name="specialization"/>
+                <field name="priority_level"/>
+                <field name="available_hours"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Service Contact Form View -->
+    <record id="view_service_contact_form" model="ir.ui.view">
+        <field name="name">service.contact.form</field>
+        <field name="model">facilities.service.contact</field>
+        <field name="arch" type="xml">
+            <form string="Service Contact">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_send_email" type="object" class="oe_stat_button" icon="fa-envelope" invisible="not email">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Send Email</span>
+                            </div>
+                        </button>
+                        <button name="action_call_contact" type="object" class="oe_stat_button" icon="fa-phone" invisible="not phone and not mobile">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Call</span>
+                            </div>
+                        </button>
+                        <button name="action_view_location" type="object" class="oe_stat_button" icon="fa-map-marker" invisible="not room_id and not building_id">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">View Location</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active"/>
+                    
+                    <field name="image" widget="image" class="oe_avatar" options="{'preview_image': 'image', 'size': [90, 90]}"/>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Contact Name"/>
+                        </h1>
+                        <h2>
+                            <field name="specialization" placeholder="Specialization"/>
+                        </h2>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="category"/>
+                            <field name="priority_level"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="available_hours"/>
+                            <field name="timezone"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Contact Information" name="contact_info">
+                            <group>
+                                <group string="Contact Details">
+                                    <field name="email" widget="email"/>
+                                    <field name="phone" widget="phone"/>
+                                    <field name="mobile" widget="phone"/>
+                                </group>
+                                <group string="User/Partner Association">
+                                    <field name="user_id"/>
+                                    <field name="partner_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Service Areas" name="service_areas">
+                            <group>
+                                <field name="service_area_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                        
+                        <page string="Location" name="location">
+                            <group>
+                                <group string="Office Location">
+                                    <field name="office_location"/>
+                                    <field name="building_id"/>
+                                    <field name="floor_id" domain="[('building_id', '=', building_id)]"/>
+                                    <field name="room_id" domain="[('floor_id', '=', floor_id)]"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Access Control" name="access">
+                            <group>
+                                <group string="User Groups">
+                                    <field name="audience_ids" widget="many2many_tags"/>
+                                </group>
+                                <group string="Departments">
+                                    <field name="department_ids" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="External Service" name="external" invisible="category != 'external'">
+                            <group>
+                                <group string="Service Provider">
+                                    <field name="service_provider"/>
+                                    <field name="contract_number"/>
+                                    <field name="service_url" widget="url"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Escalation" name="escalation">
+                            <group>
+                                <field name="escalation_contact_id" domain="[('id', '!=', id)]"/>
+                            </group>
+                        </page>
+                        
+                        <page string="Description &amp; Notes" name="description">
+                            <group>
+                                <field name="description" widget="html" placeholder="Additional information about this contact"/>
+                            </group>
+                            <group>
+                                <field name="notes" placeholder="Additional notes"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Service Contact Kanban View -->
+    <record id="view_service_contact_kanban" model="ir.ui.view">
+        <field name="name">service.contact.kanban</field>
+        <field name="model">facilities.service.contact</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="name"/>
+                <field name="category"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="mobile"/>
+                <field name="specialization"/>
+                <field name="priority_level"/>
+                <field name="active"/>
+                <field name="image"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click" t-att-class="{'oe_kanban_color_2': !record.active.raw_value}">
+                            <div class="o_kanban_image">
+                                <img t-if="record.image.value" t-att-src="record.image.value" alt="Contact Image"/>
+                                <t t-else="">
+                                    <i class="fa fa-user-circle fa-2x" title="Contact icon"/>
+                                </t>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                        <small class="o_kanban_record_subtitle text-muted" t-if="record.specialization.value">
+                                            <field name="specialization"/>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <field name="category" widget="badge"/>
+                                    <t t-if="record.priority_level.value">
+                                        <br/>
+                                        <span class="badge badge-pill badge-info">
+                                            Level <field name="priority_level"/>
+                                        </span>
+                                    </t>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <t t-if="record.email.value">
+                                            <i class="fa fa-envelope" title="Email"/> <field name="email"/>
+                                        </t>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <t t-if="record.phone.value or record.mobile.value">
+                                            <i class="fa fa-phone" title="Phone"/>
+                                            <t t-if="record.mobile.value">
+                                                <field name="mobile"/>
+                                            </t>
+                                            <t t-elif="record.phone.value">
+                                                <field name="phone"/>
+                                            </t>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Service Contact Search View -->
+    <record id="view_service_contact_search" model="ir.ui.view">
+        <field name="name">service.contact.search</field>
+        <field name="model">facilities.service.contact</field>
+        <field name="arch" type="xml">
+            <search string="Service Contacts">
+                <field name="name"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="mobile"/>
+                <field name="specialization"/>
+                <field name="category"/>
+                <field name="service_area_ids"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Technical Support" name="technical" domain="[('category', '=', 'technical')]"/>
+                <filter string="Emergency Contact" name="emergency" domain="[('category', '=', 'emergency')]"/>
+                <filter string="Internal Team" name="internal" domain="[('category', '=', 'internal')]"/>
+                <filter string="External Service" name="external" domain="[('category', '=', 'external')]"/>
+                <separator/>
+                <filter string="Level 1" name="level1" domain="[('priority_level', '=', '1')]"/>
+                <filter string="Level 2" name="level2" domain="[('priority_level', '=', '2')]"/>
+                <filter string="Level 3" name="level3" domain="[('priority_level', '=', '3')]"/>
+                <filter string="Level 4" name="level4" domain="[('priority_level', '=', '4')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Category" name="group_by_category" context="{'group_by': 'category'}"/>
+                    <filter string="Priority Level" name="group_by_priority" context="{'group_by': 'priority_level'}"/>
+                    <filter string="Building" name="group_by_building" context="{'group_by': 'building_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_service_contact" model="ir.actions.act_window">
+        <field name="name">Service Contacts</field>
+        <field name="res_model">facilities.service.contact</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{
+            'search_default_active': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first service contact!
+            </p>
+            <p>
+                Maintain a comprehensive directory of contacts relevant to service requests.
+                Include internal teams, external vendors, and emergency contacts.
+            </p>
+        </field>
+    </record>
+</odoo>

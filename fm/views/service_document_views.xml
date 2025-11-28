@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Service Document Tree View -->
+    <record id="view_service_document_tree" model="ir.ui.view">
+        <field name="name">service.document.tree</field>
+        <field name="model">facilities.service.document</field>
+        <field name="arch" type="xml">
+            <list string="Service Documents" decoration-muted="not active or not published">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="document_type"/>
+                <field name="category"/>
+                <field name="author_id"/>
+                <field name="version"/>
+                <field name="published"/>
+                <field name="active"/>
+                <field name="view_count"/>
+                <field name="download_count"/>
+                <field name="last_viewed"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Service Document Form View -->
+    <record id="view_service_document_form" model="ir.ui.view">
+        <field name="name">service.document.form</field>
+        <field name="model">facilities.service.document</field>
+        <field name="arch" type="xml">
+            <form string="Service Document">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_document" type="object" class="oe_stat_button" icon="fa-eye">
+                            <field name="view_count" widget="statinfo" string="Views"/>
+                        </button>
+                        <button name="action_download_document" type="object" class="oe_stat_button" icon="fa-download" invisible="not attachment_id">
+                            <field name="download_count" widget="statinfo" string="Downloads"/>
+                        </button>
+                    </div>
+                    
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Unpublished" bg_color="bg-warning" invisible="published"/>
+                    <widget name="web_ribbon" title="Featured" bg_color="bg-success" invisible="not featured"/>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Document Title"/>
+                        </h1>
+                        <h2>
+                            <field name="version" placeholder="Version"/>
+                        </h2>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="document_type"/>
+                            <field name="category"/>
+                            <field name="author_id"/>
+                            <field name="active"/>
+                            <field name="published"/>
+                            <field name="featured"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="icon"/>
+                            <field name="color" widget="color"/>
+                            <field name="review_date"/>
+                            <field name="next_review_date"/>
+                            <field name="reviewer_id"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <field name="description" placeholder="Brief description or summary"/>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Content" name="content">
+                            <group>
+                                <group string="File Attachment">
+                                    <field name="attachment_id"/>
+                                    <field name="file_name" readonly="1"/>
+                                    <field name="file_size" readonly="1" widget="integer"/>
+                                    <field name="file_type" readonly="1"/>
+                                </group>
+                                <group string="External Links">
+                                    <field name="external_url" widget="url"/>
+                                    <field name="video_url" widget="url"/>
+                                </group>
+                            </group>
+                            <group string="Document Content" invisible="attachment_id or external_url or video_url">
+                                <field name="content" widget="html" placeholder="Document content for text-based documents"/>
+                            </group>
+                        </page>
+                        
+                        <page string="Access Control" name="access">
+                            <group>
+                                <group string="User Groups">
+                                    <field name="audience_ids" widget="many2many_tags"/>
+                                </group>
+                                <group string="Departments">
+                                    <field name="department_ids" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Related Services" name="services">
+                            <field name="service_ids" widget="many2many_tags"/>
+                        </page>
+                        
+                        <page string="Tags &amp; Keywords" name="tags">
+                            <group>
+                                <group>
+                                    <field name="tag_ids" widget="many2many_tags"/>
+                                </group>
+                                <group>
+                                    <field name="keywords" placeholder="Keywords for searching this document"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Statistics" name="statistics">
+                            <group>
+                                <group>
+                                    <field name="view_count" readonly="1"/>
+                                    <field name="download_count" readonly="1"/>
+                                    <field name="last_viewed" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="display_type" readonly="1"/>
+                                    <field name="is_file_document" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Service Document Kanban View -->
+    <record id="view_service_document_kanban" model="ir.ui.view">
+        <field name="name">service.document.kanban</field>
+        <field name="model">facilities.service.document</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="name"/>
+                <field name="document_type"/>
+                <field name="category"/>
+                <field name="published"/>
+                <field name="active"/>
+                <field name="featured"/>
+                <field name="icon"/>
+                <field name="color"/>
+                <field name="view_count"/>
+                <field name="download_count"/>
+                <field name="attachment_id"/>
+                <field name="external_url"/>
+                <field name="video_url"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click" t-attf-class="#{record.color.raw_value ? 'oe_kanban_color_' + record.color.raw_value : ''}" t-att-class="{'oe_kanban_color_2': !record.published.raw_value or !record.active.raw_value}">
+                            <div class="o_kanban_image">
+                                <t t-if="record.icon.value">
+                                    <i t-attf-class="fa #{record.icon.raw_value} fa-2x" title="Service Icon"/>
+                                </t>
+                                <t t-elif="record.video_url.value">
+                                    <i class="fa fa-video-camera fa-2x" title="Video Document"/>
+                                </t>
+                                <t t-elif="record.external_url.value">
+                                    <i class="fa fa-external-link fa-2x" title="External Link"/>
+                                </t>
+                                <t t-elif="record.attachment_id.value">
+                                    <i class="fa fa-file fa-2x" title="File Attachment"/>
+                                </t>
+                                <t t-else="">
+                                    <i class="fa fa-file-text fa-2x" title="Text Document"/>
+                                </t>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                        <t t-if="record.featured.raw_value">
+                                            <span class="fa fa-star text-warning" title="Featured"/>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <field name="document_type" widget="badge"/>
+                                    <field name="category" widget="badge"/>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <t t-if="!record.published.raw_value">
+                                            <span class="badge badge-pill badge-warning">Unpublished</span>
+                                        </t>
+                                        <t t-if="!record.active.raw_value">
+                                            <span class="badge badge-pill badge-danger">Archived</span>
+                                        </t>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <span class="badge badge-pill badge-info">
+                                            <i class="fa fa-eye" title="View count"/> <field name="view_count"/>
+                                        </span>
+                                        <t t-if="record.download_count.value > 0">
+                                            <span class="badge badge-pill badge-info">
+                                                <i class="fa fa-download" title="Download count"/> <field name="download_count"/>
+                                            </span>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_footer">
+                                <div class="o_kanban_footer_left">
+                                    <a name="action_view_document" type="object" class="btn btn-primary btn-sm" role="button" t-if="record.published.raw_value and record.active.raw_value">
+                                        View
+                                    </a>
+                                    <a name="action_download_document" type="object" class="btn btn-secondary btn-sm" role="button" t-if="record.attachment_id.value">
+                                        Download
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Service Document Search View -->
+    <record id="view_service_document_search" model="ir.ui.view">
+        <field name="name">service.document.search</field>
+        <field name="model">facilities.service.document</field>
+        <field name="arch" type="xml">
+            <search string="Service Documents">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="content"/>
+                <field name="keywords"/>
+                <field name="author_id"/>
+                <field name="category"/>
+                <field name="document_type"/>
+                <field name="tag_ids"/>
+                <separator/>
+                <filter string="Published" name="published" domain="[('published', '=', True)]"/>
+                <filter string="Unpublished" name="unpublished" domain="[('published', '=', False)]"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Featured" name="featured" domain="[('featured', '=', True)]"/>
+                <filter string="File Documents" name="file_documents" domain="[('attachment_id', '!=', False)]"/>
+                <filter string="External Links" name="external_links" domain="[('external_url', '!=', False)]"/>
+                <filter string="Video Links" name="video_links" domain="[('video_url', '!=', False)]"/>
+                <separator/>
+                <filter string="Review Due" name="review_due" domain="[('next_review_date', '&lt;=', context_today())]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Document Type" name="group_by_document_type" context="{'group_by': 'document_type'}"/>
+                    <filter string="Category" name="group_by_category" context="{'group_by': 'category'}"/>
+                    <filter string="Author" name="group_by_author" context="{'group_by': 'author_id'}"/>
+                    <filter string="Published Status" name="group_by_published" context="{'group_by': 'published'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Service Document Tag Views -->
+    <record id="view_service_document_tag_tree" model="ir.ui.view">
+        <field name="name">service.document.tag.tree</field>
+        <field name="model">facilities.service.document.tag</field>
+        <field name="arch" type="xml">
+            <list string="Document Tags" editable="bottom">
+                <field name="name"/>
+                <field name="color" widget="color"/>
+                <field name="document_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_service_document_tag_form" model="ir.ui.view">
+        <field name="name">service.document.tag.form</field>
+        <field name="model">facilities.service.document.tag</field>
+        <field name="arch" type="xml">
+            <form string="Document Tag">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="color" widget="color"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="document_count"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description" placeholder="Description of this tag"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_service_document" model="ir.actions.act_window">
+        <field name="name">Service Documents</field>
+        <field name="res_model">facilities.service.document</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{
+            'search_default_active': 1,
+            'search_default_published': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first service document!
+            </p>
+            <p>
+                Service documents provide help center resources for users, including user guides, FAQs, 
+                procedures, and troubleshooting information.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_service_document_tag" model="ir.actions.act_window">
+        <field name="name">Document Tags</field>
+        <field name="res_model">facilities.service.document.tag</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{
+            'search_default_active': 1
+        }</field>
+    </record>
+
+    <record id="action_service_document_public" model="ir.actions.act_window">
+        <field name="name">Help Center</field>
+        <field name="res_model">facilities.service.document</field>
+        <field name="view_mode">kanban</field>
+        <field name="domain">[('published', '=', True), ('active', '=', True)]</field>
+        <field name="context">{}</field>
+    </record>
+</odoo>

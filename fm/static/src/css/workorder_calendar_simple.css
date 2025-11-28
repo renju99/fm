@@ -1,0 +1,272 @@
+/* Simple Work Order Calendar Styling - Bright and Visible */
+
+/* Priority-based colors - Simple and bright */
+.o_calendar_view .fc-event[data-priority="4"] {
+    background-color: #ff4444 !important; /* Critical - Bright Red */
+    border-color: #cc0000 !important;
+    color: white !important;
+}
+
+.o_calendar_view .fc-event[data-priority="3"] {
+    background-color: #ff8800 !important; /* High - Bright Orange */
+    border-color: #e66a00 !important;
+    color: white !important;
+}
+
+.o_calendar_view .fc-event[data-priority="2"] {
+    background-color: #44bb44 !important; /* Normal - Bright Green */
+    border-color: #2a8a2a !important;
+    color: white !important;
+}
+
+.o_calendar_view .fc-event[data-priority="1"] {
+    background-color: #4488ff !important; /* Low - Bright Blue */
+    border-color: #2a66cc !important;
+    color: white !important;
+}
+
+.o_calendar_view .fc-event[data-priority="0"] {
+    background-color: #888888 !important; /* Very Low - Light Gray */
+    border-color: #666666 !important;
+    color: white !important;
+}
+
+/* Status-based colors - Simple and bright */
+.o_calendar_view .fc-event[data-state="draft"] {
+    background-color: #aaaaaa !important; /* Draft - Light Gray */
+    border-color: #888888 !important;
+    color: #333333 !important;
+}
+
+.o_calendar_view .fc-event[data-state="assigned"] {
+    background-color: #4488ff !important; /* Assigned - Bright Blue */
+    border-color: #2a66cc !important;
+    color: white !important;
+}
+
+.o_calendar_view .fc-event[data-state="in_progress"] {
+    background-color: #ffdd44 !important; /* In Progress - Bright Yellow */
+    border-color: #e6c400 !important;
+    color: #333333 !important;
+}
+
+.o_calendar_view .fc-event[data-state="on_hold"] {
+    background-color: #ff8800 !important; /* On Hold - Bright Orange */
+    border-color: #e66a00 !important;
+    color: white !important;
+}
+
+.o_calendar_view .fc-event[data-state="completed"] {
+    background-color: #44bb44 !important; /* Completed - Bright Green */
+    border-color: #2a8a2a !important;
+    color: white !important;
+}
+
+.o_calendar_view .fc-event[data-state="cancelled"] {
+    background-color: #ff4444 !important; /* Cancelled - Bright Red */
+    border-color: #cc0000 !important;
+    color: white !important;
+}
+
+/* SLA Status colors - Simple and bright */
+.o_calendar_view .fc-event[data-sla-status="on_time"] {
+    background-color: #44bb44 !important; /* On Time - Bright Green */
+    border-color: #2a8a2a !important;
+    color: white !important;
+}
+
+.o_calendar_view .fc-event[data-sla-status="at_risk"] {
+    background-color: #ffdd44 !important; /* At Risk - Bright Yellow */
+    border-color: #e6c400 !important;
+    color: #333333 !important;
+}
+
+.o_calendar_view .fc-event[data-sla-status="breached"] {
+    background-color: #ff4444 !important; /* Breached - Bright Red */
+    border-color: #cc0000 !important;
+    color: white !important;
+}
+
+.o_calendar_view .fc-event[data-sla-status="completed"] {
+    background-color: #44aaff !important; /* Completed - Bright Cyan */
+    border-color: #2a88cc !important;
+    color: white !important;
+}
+
+/* Work Order Type colors - Simple and bright */
+.o_calendar_view .fc-event[data-work-order-type="preventive"] {
+    background-color: #44bb44 !important; /* Preventive - Bright Green */
+    border-color: #2a8a2a !important;
+    color: white !important;
+}
+
+.o_calendar_view .fc-event[data-work-order-type="corrective"] {
+    background-color: #ff4444 !important; /* Corrective - Bright Red */
+    border-color: #cc0000 !important;
+    color: white !important;
+}
+
+.o_calendar_view .fc-event[data-work-order-type="predictive"] {
+    background-color: #aa44ff !important; /* Predictive - Bright Purple */
+    border-color: #8822cc !important;
+    color: white !important;
+}
+
+.o_calendar_view .fc-event[data-work-order-type="inspection"] {
+    background-color: #44aaff !important; /* Inspection - Bright Cyan */
+    border-color: #2a88cc !important;
+    color: white !important;
+}
+
+/* Enhanced event styling for better visibility */
+.o_calendar_view .fc-event {
+    border-radius: 4px !important;
+    border-width: 2px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+    transition: all 0.3s ease !important;
+    opacity: 0.95 !important;
+}
+
+.o_calendar_view .fc-event:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+    opacity: 1 !important;
+}
+
+/* Event title styling - Better visibility */
+.o_calendar_view .fc-event .fc-title {
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    padding: 2px 4px !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+}
+
+/* Event time styling - Better visibility */
+.o_calendar_view .fc-event .fc-time {
+    font-size: 10px !important;
+    opacity: 0.9 !important;
+    font-weight: 500 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+}
+
+/* Overdue work orders - More visible */
+.o_calendar_view .fc-event.overdue {
+    background: linear-gradient(45deg, #ff4444, #cc0000) !important;
+    border-color: #aa0000 !important;
+    animation: pulse-red 2s infinite !important;
+}
+
+@keyframes pulse-red {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* SLA deadline approaching - More visible */
+.o_calendar_view .fc-event.sla-at-risk {
+    background: linear-gradient(45deg, #ffdd44, #e6c400) !important;
+    border-color: #ccaa00 !important;
+    animation: pulse-yellow 3s infinite !important;
+}
+
+@keyframes pulse-yellow {
+    0% { opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+/* Calendar header styling */
+.o_calendar_view .fc-toolbar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    padding: 15px !important;
+    border-radius: 8px 8px 0 0 !important;
+}
+
+.o_calendar_view .fc-toolbar h2 {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+.o_calendar_view .fc-button {
+    background-color: rgba(255,255,255,0.2) !important;
+    border-color: rgba(255,255,255,0.3) !important;
+    color: white !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease !important;
+}
+
+.o_calendar_view .fc-button:hover {
+    background-color: rgba(255,255,255,0.3) !important;
+    border-color: rgba(255,255,255,0.5) !important;
+}
+
+.o_calendar_view .fc-button-primary {
+    background-color: rgba(255,255,255,0.9) !important;
+    color: #667eea !important;
+    border-color: white !important;
+}
+
+.o_calendar_view .fc-button-primary:hover {
+    background-color: white !important;
+    color: #667eea !important;
+}
+
+/* Calendar grid styling */
+.o_calendar_view .fc-daygrid-day {
+    border-color: #e9ecef !important;
+}
+
+.o_calendar_view .fc-daygrid-day:hover {
+    background-color: #f8f9fa !important;
+}
+
+.o_calendar_view .fc-daygrid-day.fc-day-today {
+    background-color: #e3f2fd !important;
+    border-color: #2196f3 !important;
+}
+
+/* Simple legend styling */
+.calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 15px 0;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .o_calendar_view .fc-event .fc-title {
+        font-size: 10px !important;
+    }
+    
+    .o_calendar_view .fc-event .fc-time {
+        font-size: 8px !important;
+    }
+    
+    .calendar-legend {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

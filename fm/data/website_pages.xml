@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Service Request Portal Page View -->
+    <record id="service_request_portal_page_view" model="ir.ui.view">
+        <field name="name">Service Request Portal Page</field>
+        <field name="type">qweb</field>
+        <field name="key">facilities_management.service_request_portal_page</field>
+        <field name="arch" type="xml">
+            <t name="Service Request Portal" t-name="facilities_management.service_request_portal_page">
+                <t t-call="website.layout">
+                    <div class="container mt-5">
+                        <div class="row">
+                            <div class="col-lg-8 offset-lg-2">
+                                <div class="text-center mb-5">
+                                    <h1 class="display-4">Service Request Portal</h1>
+                                    <p class="lead">Submit and track your facility service requests</p>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fa fa-plus-circle fa-3x text-primary mb-3"></i>
+                                                <h5 class="card-title">Submit New Request</h5>
+                                                <p class="card-text">Report maintenance issues, request services, or get support.</p>
+                                                <a href="/my/service-request/new" class="btn btn-primary">Create Request</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fa fa-list fa-3x text-info mb-3"></i>
+                                                <h5 class="card-title">Track Requests</h5>
+                                                <p class="card-text">View status and updates on your submitted requests.</p>
+                                                <a href="/my/service-requests" class="btn btn-info">My Requests</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fa fa-book fa-3x text-success mb-3"></i>
+                                                <h5 class="card-title">Service Catalog</h5>
+                                                <p class="card-text">Browse available services and request them directly.</p>
+                                                <a href="/my/service-catalog" class="btn btn-success">Browse Catalog</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fa fa-question-circle fa-3x text-warning mb-3"></i>
+                                                <h5 class="card-title">Help Center</h5>
+                                                <p class="card-text">Access help documents and contact information.</p>
+                                                <a href="/my/help-center" class="btn btn-warning">Get Help</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center mt-5">
+                                    <p class="text-muted">
+                                        Need immediate assistance? Contact our facilities team at 
+                                        <a href="mailto:facilities@company.com">facilities@company.com</a> or 
+                                        <a href="tel:+1-555-0101">+1-555-0101</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </field>
+    </record>
+
+    <!-- Service Request Portal Website Page -->
+    <record id="service_request_portal_page" model="website.page">
+        <field name="name">Service Requests Portal</field>
+        <field name="type">qweb</field>
+        <field name="url">/service-requests</field>
+        <field name="website_published">True</field>
+        <field name="is_published">True</field>
+        <field name="website_id" eval="False"/>
+        <field name="view_id" ref="service_request_portal_page_view"/>
+    </record>
+
+    <!-- Service Request Form Page View -->
+    <record id="service_request_form_page_view" model="ir.ui.view">
+        <field name="name">Service Request Form Page</field>
+        <field name="type">qweb</field>
+        <field name="key">facilities_management.service_request_form_page</field>
+        <field name="arch" type="xml">
+            <t name="Submit Service Request" t-name="facilities_management.service_request_form_page">
+                <t t-call="website.layout">
+                    <div class="container mt-5">
+                        <div class="row">
+                            <div class="col-lg-8 offset-lg-2">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="mb-0">
+                                            <i class="fa fa-plus-circle"></i> Submit Service Request
+                                        </h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <t t-if="request.env.user and request.env.user.id != 4">
+                                            <!-- User is logged in - show working options -->
+                                            <div class="alert alert-success">
+                                                <strong>Welcome, <span t-esc="request.env.user.name"/>!</strong> You can now submit a service request.
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <div class="card">
+                                                        <div class="card-body text-center">
+                                                            <i class="fa fa-plus-circle fa-3x text-primary mb-3"></i>
+                                                            <h5>Create New Request</h5>
+                                                            <p class="text-muted">Submit a new service request</p>
+                                                            <a href="/my/service-request/new" class="btn btn-primary">
+                                                                <i class="fa fa-plus"></i> New Request
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                        <div class="col-md-6 mb-3">
+                                                    <div class="card">
+                                                        <div class="card-body text-center">
+                                                            <i class="fa fa-list fa-3x text-info mb-3"></i>
+                                                            <h5>View My Requests</h5>
+                                                            <p class="text-muted">Track existing requests</p>
+                                            <a href="/my/service-requests" class="btn btn-info">
+                                                <i class="fa fa-list"></i> My Requests
+                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <t t-else="">
+                                            <!-- User is not logged in - show login prompt -->
+                                            <div class="alert alert-info text-center">
+                                                <h4><i class="fa fa-info-circle"></i> Login Required</h4>
+                                                <p><strong>You need to be logged in to submit a service request.</strong></p>
+                                                <p>After logging in, you'll be redirected back to this form to submit your request.</p>
+                                                <a href="/web/login?redirect=/submit-service-request" class="btn btn-primary btn-lg">
+                                                    <i class="fa fa-sign-in"></i> Login to Continue
+                                                </a>
+                                            </div>
+                                        </t>
+                                        
+                                        <!-- Working Service Request Form -->
+                                        <div class="alert alert-success">
+                                            <h4><i class="fa fa-check-circle"></i> Submit Your Service Request</h4>
+                                            <p>Fill out the form below to submit your service request:</p>
+                                        </div>
+                                        
+                                        <form action="/my/service-request/create" method="post" enctype="multipart/form-data">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="title" class="required">Title <span class="text-danger">*</span></label>
+                                                        <input type="text" name="title" id="title" class="form-control" required="required" placeholder="Brief description of your request"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="service_type" class="required">Service Type <span class="text-danger">*</span></label>
+                                                        <select name="service_type" id="service_type" class="form-control" required="required">
+                                                            <option value="">Select Service Type</option>
+                                                            <option value="maintenance">Maintenance Request</option>
+                                                            <option value="facility_service">Facility Service Request</option>
+                                                            <option value="it_support">IT Support Request</option>
+                                                            <option value="hr_request">Human Resources Request</option>
+                                                            <option value="procurement">Procurement Request</option>
+                                                            <option value="access_request">Access Request</option>
+                                                            <option value="other">Other Request</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label for="description" class="required">Description <span class="text-danger">*</span></label>
+                                                <textarea name="description" id="description" class="form-control" rows="4" required="required" placeholder="Please provide detailed information about your request..."></textarea>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="priority">Priority</label>
+                                                        <select name="priority" id="priority" class="form-control">
+                                                            <option value="1">Low</option>
+                                                            <option value="2" selected="selected">Normal</option>
+                                                            <option value="3">High</option>
+                                                            <option value="4">Urgent</option>
+                                                            <option value="5">Critical</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="contact_phone">Contact Phone</label>
+                                                        <input type="tel" name="contact_phone" id="contact_phone" class="form-control" placeholder="Your phone number"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label for="contact_email">Contact Email</label>
+                                                <input type="email" name="contact_email" id="contact_email" class="form-control" placeholder="Your email address"/>
+                                            </div>
+                                            
+                                            <div class="form-group text-center mt-4">
+                                                <button type="submit" class="btn btn-success btn-lg">
+                                                    <i class="fa fa-paper-plane"></i> Submit Service Request
+                                                </button>
+                                                <a href="/service-requests" class="btn btn-outline-secondary btn-lg ml-2">
+                                                    <i class="fa fa-arrow-left"></i> Back to Portal
+                                                </a>
+                                            </div>
+                                        </form>
+                                        
+                                        <!-- Hidden form for reference (not functional) -->
+                                        <div style="display: none;">
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="title" class="required">Title <span class="text-danger">*</span></label>
+                                                        <input type="text" name="title" id="title" class="form-control" required="True" placeholder="Brief description of your request"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="service_type" class="required">Service Type <span class="text-danger">*</span></label>
+                                                        <select name="service_type" id="service_type" class="form-control" required="True">
+                                                            <option value="">Select Service Type</option>
+                                                            <option value="maintenance">Maintenance Request</option>
+                                                            <option value="facility_service">Facility Service Request</option>
+                                                            <option value="it_support">IT Support Request</option>
+                                                            <option value="hr_request">Human Resources Request</option>
+                                                            <option value="procurement">Procurement Request</option>
+                                                            <option value="access_request">Access Request</option>
+                                                            <option value="other">Other Request</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="description" class="required">Description <span class="text-danger">*</span></label>
+                                                <textarea name="description" id="description" class="form-control" rows="5" required="True" placeholder="Please provide detailed information about your service request..."></textarea>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="priority">Priority</label>
+                                                        <select name="priority" id="priority" class="form-control">
+                                                            <option value="1">Low</option>
+                                                            <option value="2" selected="True">Normal</option>
+                                                            <option value="3">High</option>
+                                                            <option value="4">Very High</option>
+                                                            <option value="5">Critical</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="contact_phone">Phone Number</label>
+                                                        <input type="tel" name="contact_phone" id="contact_phone" class="form-control"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="contact_email">Email Address</label>
+                                                        <input type="email" name="contact_email" id="contact_email" class="form-control"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="attachment">Attachment (Optional)</label>
+                                                <input type="file" name="attachment" id="attachment" class="form-control-file"/>
+                                                <small class="form-text text-muted">Upload images or documents related to your request</small>
+                                            </div>
+
+                                            <div class="form-group text-center">
+                                                <button type="button" class="btn btn-primary btn-lg" disabled="disabled">
+                                                    <i class="fa fa-paper-plane"></i> Submit Service Request (Login Required)
+                                                </button>
+                                                <a href="/service-requests" class="btn btn-secondary btn-lg ml-2">
+                                                    <i class="fa fa-arrow-left"></i> Back
+                                                </a>
+                                            </div>
+                                        </div> <!-- End hidden form -->
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </field>
+    </record>
+
+    <!-- Simple Service Request Form Page -->
+    <record id="service_request_form_page" model="website.page">
+        <field name="name">Submit Service Request</field>
+        <field name="type">qweb</field>
+        <field name="url">/submit-service-request</field>
+        <field name="website_published">True</field>
+        <field name="is_published">True</field>
+        <field name="website_id" eval="False"/>
+        <field name="view_id" ref="service_request_form_page_view"/>
+    </record>
+
+    <!-- My Service Requests List Page View -->
+    <record id="my_service_requests_page_view" model="ir.ui.view">
+        <field name="name">My Service Requests Page</field>
+        <field name="type">qweb</field>
+        <field name="key">facilities_management.my_service_requests_page</field>
+        <field name="arch" type="xml">
+            <t name="My Service Requests" t-name="facilities_management.my_service_requests_page">
+                <t t-call="website.layout">
+                    <div class="container mt-5">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h1 class="display-4">My Service Requests</h1>
+                                    <div>
+                                        <a href="/my/service-request/new" class="btn btn-primary">
+                                            <i class="fa fa-plus"></i> New Request
+                                        </a>
+                                        <a href="/my" class="btn btn-outline-secondary ml-2">
+                                            <i class="fa fa-arrow-left"></i> Back to Portal
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <t t-if="request.env.user and request.env.user.id != 4">
+                                    <!-- User is logged in - show backend integration -->
+                                    <div class="alert alert-info">
+                                        <h5><i class="fa fa-info-circle"></i> Access Your Service Requests</h5>
+                                        <p>Click the button below to view and manage all your service requests in the full interface:</p>
+                                        <a href="/my/service-requests" class="btn btn-primary btn-lg">
+                                            <i class="fa fa-list"></i> View My Service Requests
+                                        </a>
+                                    </div>
+
+                                    <div class="row mt-4">
+                                        <div class="col-md-4">
+                                            <div class="card">
+                                                <div class="card-body text-center">
+                                                    <i class="fa fa-plus-circle fa-3x text-primary mb-3"></i>
+                                                    <h5>Create New Request</h5>
+                                                    <a href="/my/service-request/new" class="btn btn-primary">
+                                                        <i class="fa fa-plus"></i> New Request
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-4">
+                                            <div class="card">
+                                                <div class="card-body text-center">
+                                                    <i class="fa fa-book fa-3x text-success mb-3"></i>
+                                                    <h5>Service Catalog</h5>
+                                                    <a href="/service-catalog" class="btn btn-success">
+                                                        <i class="fa fa-book"></i> Browse Catalog
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-4">
+                                            <div class="card">
+                                                <div class="card-body text-center">
+                                                    <i class="fa fa-question-circle fa-3x text-warning mb-3"></i>
+                                                    <h5>Help Center</h5>
+                                                    <a href="/help-center" class="btn btn-warning">
+                                                        <i class="fa fa-question-circle"></i> Get Help
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <!-- User is not logged in -->
+                                    <div class="alert alert-warning text-center">
+                                        <h4><i class="fa fa-lock"></i> Login Required</h4>
+                                        <p>You need to be logged in to view your service requests.</p>
+                                        <a href="/web/login?redirect=/my-service-requests" class="btn btn-primary">
+                                            <i class="fa fa-sign-in"></i> Login
+                                        </a>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </field>
+    </record>
+
+    <!-- My Service Requests List Page -->
+    <record id="my_service_requests_page" model="website.page">
+        <field name="name">My Service Requests</field>
+        <field name="type">qweb</field>
+        <field name="url">/my-service-requests</field>
+        <field name="website_published">True</field>
+        <field name="is_published">True</field>
+        <field name="website_id" eval="False"/>
+        <field name="view_id" ref="my_service_requests_page_view"/>
+    </record>
+
+    <!-- Service Catalog Page View -->
+    <record id="service_catalog_page_view" model="ir.ui.view">
+        <field name="name">Service Catalog Page</field>
+        <field name="type">qweb</field>
+        <field name="key">facilities_management.service_catalog_page</field>
+        <field name="arch" type="xml">
+            <t name="Service Catalog" t-name="facilities_management.service_catalog_page">
+                <t t-call="website.layout">
+                    <div class="container mt-5">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h1 class="display-4">Service Catalog</h1>
+                                    <a href="/service-requests" class="btn btn-outline-secondary">
+                                        <i class="fa fa-arrow-left"></i> Back to Portal
+                                    </a>
+                                </div>
+
+                                <t t-if="request.env.user and request.env.user.id != 4">
+                                    <!-- User is logged in - show backend integration -->
+                                    <div class="alert alert-info">
+                                        <h5><i class="fa fa-book"></i> Browse Service Catalog</h5>
+                                        <p>View all available services and submit requests directly:</p>
+                                        <a href="/my/service-catalog" class="btn btn-success btn-lg">
+                                            <i class="fa fa-book"></i> Open Service Catalog
+                                        </a>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <!-- User is not logged in -->
+                                    <div class="alert alert-warning text-center">
+                                        <h4><i class="fa fa-lock"></i> Login Required</h4>
+                                        <p>You need to be logged in to browse the service catalog.</p>
+                                        <a href="/web/login?redirect=/service-catalog" class="btn btn-primary">
+                                            <i class="fa fa-sign-in"></i> Login
+                                        </a>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </field>
+    </record>
+
+    <!-- Service Catalog Page -->
+    <record id="service_catalog_page" model="website.page">
+        <field name="name">Service Catalog</field>
+        <field name="type">qweb</field>
+        <field name="url">/service-catalog</field>
+        <field name="website_published">True</field>
+        <field name="is_published">True</field>
+        <field name="website_id" eval="False"/>
+        <field name="view_id" ref="service_catalog_page_view"/>
+    </record>
+
+    <!-- Help Center Page View -->
+    <record id="help_center_page_view" model="ir.ui.view">
+        <field name="name">Help Center Page</field>
+        <field name="type">qweb</field>
+        <field name="key">facilities_management.help_center_page</field>
+        <field name="arch" type="xml">
+            <t name="Help Center" t-name="facilities_management.help_center_page">
+                <t t-call="website.layout">
+                    <div class="container mt-5">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h1 class="display-4">Help Center</h1>
+                                    <a href="/service-requests" class="btn btn-outline-secondary">
+                                        <i class="fa fa-arrow-left"></i> Back to Portal
+                                    </a>
+                                </div>
+
+                                <t t-if="request.env.user and request.env.user.id != 4">
+                                    <!-- User is logged in - show backend integration -->
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5><i class="fa fa-file-text"></i> Documentation</h5>
+                                                    <p>Access help documents and guides:</p>
+                                                    <a href="/my/help-center" class="btn btn-info">
+                                                        <i class="fa fa-file-text"></i> Browse Documents
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5><i class="fa fa-address-book"></i> Contact Directory</h5>
+                                                    <p>Find contact information for support:</p>
+                                                    <a href="/my/help-center" class="btn btn-warning">
+                                                        <i class="fa fa-address-book"></i> View Contacts
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <!-- User is not logged in -->
+                                    <div class="alert alert-warning text-center">
+                                        <h4><i class="fa fa-lock"></i> Login Required</h4>
+                                        <p>You need to be logged in to access the help center.</p>
+                                        <a href="/web/login?redirect=/help-center" class="btn btn-primary">
+                                            <i class="fa fa-sign-in"></i> Login
+                                        </a>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </field>
+    </record>
+
+    <!-- Help Center Page -->
+    <record id="help_center_page" model="website.page">
+        <field name="name">Help Center</field>
+        <field name="type">qweb</field>
+        <field name="url">/help-center</field>
+        <field name="website_published">True</field>
+        <field name="is_published">True</field>
+        <field name="website_id" eval="False"/>
+        <field name="view_id" ref="help_center_page_view"/>
+    </record>
+</odoo>

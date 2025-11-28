@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_facility_report_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Facility Report</field>
+        <field name="res_model">facility.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_facility_id': active_id}</field>
+    </record>
+</odoo>

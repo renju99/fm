@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Additional Email Templates -->
+    
+    <!-- Booking Rejection Email Template -->
+    <record id="mail_template_space_booking_rejected" model="mail.template">
+        <field name="name">Space Booking Rejected</field>
+        <field name="model_id" ref="model_facilities_space_booking"/>
+        <field name="subject">Booking Rejected - ${object.name}</field>
+        <field name="email_to">${object.contact_email or object.user_id.email}</field>
+        <field name="body_html"><![CDATA[
+            <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
+                <div style="background-color: #dc3545; padding: 20px; color: white;">
+                    <h2 style="color: white; margin-bottom: 20px;">Booking Rejected</h2>
+                </div>
+
+                <div style="padding: 20px;">
+                    <p>Dear ${object.user_id.name},</p>
+                    <p>Unfortunately, your space booking request has been rejected.</p>
+
+                    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Booking Reference:</td>
+                                <td style="padding: 8px;">${object.name}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Room:</td>
+                                <td style="padding: 8px;">${object.room_id.name}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Date &amp; Time:</td>
+                                <td style="padding: 8px;">${object.start_datetime} - ${object.end_datetime}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    % if object.rejection_reason:
+                    <div style="background-color: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ffc107;">
+                        <p style="margin: 0; font-weight: bold;">Reason for Rejection:</p>
+                        <p style="margin: 5px 0 0 0;">${object.rejection_reason}</p>
+                    </div>
+                    % endif
+
+                    <p>You may create a new booking request with different parameters or contact the facilities team for assistance.</p>
+                    <p>Best regards,<br/>Facilities Management Team</p>
+                </div>
+            </div>
+        ]]></field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Booking Reminder Email Template -->
+    <record id="mail_template_space_booking_reminder" model="mail.template">
+        <field name="name">Space Booking Reminder</field>
+        <field name="model_id" ref="model_facilities_space_booking"/>
+        <field name="subject">Booking Reminder - ${object.name} Tomorrow</field>
+        <field name="email_to">${object.contact_email or object.user_id.email}</field>
+        <field name="body_html"><![CDATA[
+            <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
+                <div style="background-color: #17a2b8; padding: 20px; color: white;">
+                    <h2 style="color: white; margin-bottom: 20px;">Booking Reminder</h2>
+                </div>
+
+                <div style="padding: 20px;">
+                    <p>Dear ${object.user_id.name},</p>
+                    <p>This is a friendly reminder about your upcoming space booking.</p>
+
+                    <div style="background-color: #e7f3ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Booking Reference:</td>
+                                <td style="padding: 8px;">${object.name}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Room:</td>
+                                <td style="padding: 8px;">${object.room_id.name}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Start Time:</td>
+                                <td style="padding: 8px;">${object.start_datetime}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Duration:</td>
+                                <td style="padding: 8px;">${object.duration_hours} hours</td>
+                            </tr>
+                            % if object.purpose:
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Purpose:</td>
+                                <td style="padding: 8px;">${object.purpose}</td>
+                            </tr>
+                            % endif
+                        </table>
+                    </div>
+
+                    % if object.required_equipment_ids:
+                    <div style="background-color: #fff3cd; padding: 10px; border-radius: 5px; margin: 15px 0;">
+                        <p style="margin: 0; font-weight: bold;">Required Equipment:</p>
+                        <ul style="margin: 5px 0;">
+                            % for equipment in object.required_equipment_ids:
+                            <li>${equipment.name}</li>
+                            % endfor
+                        </ul>
+                    </div>
+                    % endif
+
+                    <p>Please ensure you arrive on time and have everything you need for your booking.</p>
+                    <p>Best regards,<br/>Facilities Management Team</p>
+                </div>
+            </div>
+        ]]></field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Check-in/Check-out Notification Template -->
+    <record id="mail_template_space_booking_checked_in" model="mail.template">
+        <field name="name">Space Booking Check-in Confirmation</field>
+        <field name="model_id" ref="model_facilities_space_booking"/>
+        <field name="subject">Checked in to ${object.room_id.name} - ${object.name}</field>
+        <field name="email_to">${object.contact_email or object.user_id.email}</field>
+        <field name="body_html"><![CDATA[
+            <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
+                <div style="background-color: #28a745; padding: 20px; color: white;">
+                    <h2 style="color: white; margin-bottom: 20px;">Successfully Checked In</h2>
+                </div>
+
+                <div style="padding: 20px;">
+                    <p>Dear ${object.user_id.name},</p>
+                    <p>You have successfully checked in to your booking.</p>
+
+                    <div style="background-color: #d4edda; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Room:</td>
+                                <td style="padding: 8px;">${object.room_id.name}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Check-in Time:</td>
+                                <td style="padding: 8px;">${object.check_in_time}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Scheduled End:</td>
+                                <td style="padding: 8px;">${object.end_datetime}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <p>Enjoy your space! Remember to check out when you're finished.</p>
+                    <p>Best regards,<br/>Facilities Management Team</p>
+                </div>
+            </div>
+        ]]></field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Cron Jobs for Enhanced Features -->
+    
+    <!-- Auto Check-in/Check-out Cron -->
+    <record id="cron_auto_check_in_out" model="ir.cron">
+        <field name="name">Auto Check-in/Check-out Space Bookings</field>
+        <field name="model_id" ref="model_facilities_space_booking"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_check_in_out()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="False"/>
+    </record>
+
+    <!-- Reminder Notifications Cron -->
+    <record id="cron_send_booking_reminders" model="ir.cron">
+        <field name="name">Send Booking Reminder Notifications</field>
+        <field name="model_id" ref="model_facilities_space_booking"/>
+        <field name="state">code</field>
+        <field name="code">model.send_reminder_notifications()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Equipment Maintenance Reminder Cron -->
+    <record id="cron_equipment_maintenance_reminder" model="ir.cron">
+        <field name="name">Equipment Maintenance Reminder</field>
+        <field name="model_id" ref="model_facilities_room_equipment"/>
+        <field name="state">code</field>
+        <field name="code">model.send_maintenance_reminders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Overdue Booking Notification Cron -->
+    <record id="cron_overdue_booking_notification" model="ir.cron">
+        <field name="name">Overdue Booking Notifications</field>
+        <field name="model_id" ref="model_facilities_space_booking"/>
+        <field name="state">code</field>
+        <field name="code">model.send_overdue_notifications()</field>
+        <field name="interval_number">30</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Sequences for New Models -->
+    
+    <!-- Booking Template Sequence -->
+    <record id="seq_booking_template" model="ir.sequence">
+        <field name="name">Booking Template</field>
+        <field name="code">facilities.booking.template</field>
+        <field name="prefix">BT-</field>
+        <field name="padding">3</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Room Equipment Sequence -->
+    <record id="seq_room_equipment" model="ir.sequence">
+        <field name="name">Room Equipment</field>
+        <field name="code">facilities.room.equipment</field>
+        <field name="prefix">EQ-</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+</odoo>

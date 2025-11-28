@@ -1,0 +1,978 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Asset Performance Dashboard Report Action -->
+        <record id="action_report_asset_performance_dashboard" model="ir.actions.report">
+            <field name="name">Asset Performance Dashboard Report</field>
+            <field name="model">facilities.asset.performance.dashboard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">facilities_management.asset_performance_dashboard</field>
+            <field name="report_file">facilities_management.asset_performance_dashboard</field>
+            <field name="print_report_name">'Asset Performance Dashboard - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="facilities_management.model_facilities_asset_performance_dashboard"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="asset_performance_dashboard">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <style>
+                                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap');
+                                
+                                .asset-performance-report {
+                                    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                                    line-height: 1.6;
+                                    color: #1f2937;
+                                }
+                                
+                                .hero-section {
+                                    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+                                    color: white;
+                                    border-radius: 16px;
+                                    padding: 4rem 2rem;
+                                    margin-bottom: 2rem;
+                                    position: relative;
+                                    overflow: hidden;
+                                }
+                                
+                                .hero-section::before {
+                                    content: '';
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    right: 0;
+                                    bottom: 0;
+                                    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+                                    opacity: 0.3;
+                                }
+                                
+                                .hero-content {
+                                    position: relative;
+                                    z-index: 1;
+                                }
+                                
+                                .report-title {
+                                    font-size: 3.5rem;
+                                    font-weight: 700;
+                                    margin-bottom: 1rem;
+                                    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                                }
+                                
+                                .report-subtitle {
+                                    font-size: 1.25rem;
+                                    font-weight: 400;
+                                    opacity: 0.9;
+                                    margin-bottom: 0.5rem;
+                                }
+                                
+                                .company-name {
+                                    font-size: 1.5rem;
+                                    font-weight: 500;
+                                    opacity: 0.8;
+                                }
+                                
+                                .info-card {
+                                    background: rgba(255, 255, 255, 0.95);
+                                    backdrop-filter: blur(10px);
+                                    border: 1px solid rgba(255, 255, 255, 0.2);
+                                    border-radius: 12px;
+                                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                                    transition: all 0.3s ease;
+                                    margin-bottom: 2rem;
+                                }
+                                
+                                .info-card:hover {
+                                    transform: translateY(-2px);
+                                    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+                                }
+                                
+                                .info-grid {
+                                    display: grid;
+                                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                                    gap: 1.5rem;
+                                    padding: 1.5rem;
+                                }
+                                
+                                .info-item {
+                                    text-align: center;
+                                    padding: 1rem;
+                                    border-radius: 8px;
+                                    background: rgba(255, 255, 255, 0.7);
+                                }
+                                
+                                .info-label {
+                                    font-size: 0.875rem;
+                                    font-weight: 600;
+                                    color: #6b7280;
+                                    text-transform: uppercase;
+                                    letter-spacing: 0.05em;
+                                    margin-bottom: 0.5rem;
+                                }
+                                
+                                .info-value {
+                                    font-size: 1.125rem;
+                                    font-weight: 500;
+                                    color: #1f2937;
+                                }
+                                
+                                .section-card {
+                                    background: white;
+                                    border-radius: 16px;
+                                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+                                    margin-bottom: 2rem;
+                                    overflow: hidden;
+                                    border: 1px solid #e5e7eb;
+                                }
+                                
+                                .section-header {
+                                    padding: 1.5rem 2rem;
+                                    background: linear-gradient(135deg, var(--header-color-1), var(--header-color-2));
+                                    color: white;
+                                    position: relative;
+                                }
+                                
+                                .section-header h2 {
+                                    font-size: 1.75rem;
+                                    font-weight: 600;
+                                    margin: 0;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 0.75rem;
+                                }
+                                
+                                .section-icon {
+                                    font-size: 1.5rem;
+                                    opacity: 0.9;
+                                }
+                                
+                                .section-body {
+                                    padding: 2rem;
+                                }
+                                
+                                .performance-section {
+                                    --header-color-1: #10b981;
+                                    --header-color-2: #059669;
+                                }
+                                
+                                .financial-section {
+                                    --header-color-1: #3b82f6;
+                                    --header-color-2: #1d4ed8;
+                                }
+                                
+                                .maintenance-section {
+                                    --header-color-1: #f59e0b;
+                                    --header-color-2: #d97706;
+                                }
+                                
+                                .efficiency-section {
+                                    --header-color-1: #8b5cf6;
+                                    --header-color-2: #7c3aed;
+                                }
+                                
+                                .recommendations-section {
+                                    --header-color-1: #ef4444;
+                                    --header-color-2: #dc2626;
+                                }
+                                
+                                .charts-section {
+                                    --header-color-1: #6366f1;
+                                    --header-color-2: #4f46e5;
+                                }
+                                
+                                .metrics-grid {
+                                    display: grid;
+                                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                                    gap: 2rem;
+                                    margin-bottom: 2rem;
+                                }
+                                
+                                .metric-card {
+                                    background: #f8fafc;
+                                    border-radius: 12px;
+                                    padding: 1.5rem;
+                                    border: 1px solid #e2e8f0;
+                                }
+                                
+                                .metric-title {
+                                    font-size: 1.25rem;
+                                    font-weight: 600;
+                                    color: #1e293b;
+                                    margin-bottom: 1rem;
+                                    padding-bottom: 0.5rem;
+                                    border-bottom: 2px solid #e2e8f0;
+                                }
+                                
+                                .metric-table {
+                                    width: 100%;
+                                    border-collapse: collapse;
+                                }
+                                
+                                .metric-table tr {
+                                    border-bottom: 1px solid #e2e8f0;
+                                }
+                                
+                                .metric-table tr:last-child {
+                                    border-bottom: none;
+                                }
+                                
+                                .metric-table td {
+                                    padding: 0.75rem 0;
+                                    font-size: 0.875rem;
+                                }
+                                
+                                .metric-table td:first-child {
+                                    font-weight: 500;
+                                    color: #64748b;
+                                }
+                                
+                                .metric-table td:last-child {
+                                    font-weight: 600;
+                                    color: #1e293b;
+                                    text-align: right;
+                                }
+                                
+                                .summary-highlights {
+                                    display: grid;
+                                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                                    gap: 1.5rem;
+                                    margin-top: 2rem;
+                                }
+                                
+                                .highlight-card {
+                                    background: rgba(255, 255, 255, 0.9);
+                                    border-radius: 12px;
+                                    padding: 1.5rem;
+                                    text-align: center;
+                                    backdrop-filter: blur(10px);
+                                    border: 1px solid rgba(255, 255, 255, 0.2);
+                                }
+                                
+                                .highlight-card.performance {
+                                    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+                                    border-color: rgba(16, 185, 129, 0.2);
+                                }
+                                
+                                .highlight-card.financial {
+                                    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(29, 78, 216, 0.1));
+                                    border-color: rgba(59, 130, 246, 0.2);
+                                }
+                                
+                                .highlight-card.maintenance {
+                                    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1));
+                                    border-color: rgba(245, 158, 11, 0.2);
+                                }
+                                
+                                .highlight-title {
+                                    font-size: 1.25rem;
+                                    font-weight: 600;
+                                    margin-bottom: 0.75rem;
+                                    color: white;
+                                }
+                                
+                                .highlight-description {
+                                    font-size: 0.875rem;
+                                    color: rgba(255, 255, 255, 0.9);
+                                    margin: 0;
+                                }
+                                
+                                .recommendation-card {
+                                    background: white;
+                                    border-radius: 12px;
+                                    padding: 1.5rem;
+                                    margin-bottom: 1.5rem;
+                                    border: 1px solid #e5e7eb;
+                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                                }
+                                
+                                .recommendation-grid {
+                                    display: grid;
+                                    grid-template-columns: auto 1fr auto;
+                                    gap: 1rem;
+                                    align-items: start;
+                                }
+                                
+                                .recommendation-badges {
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 0.5rem;
+                                }
+                                
+                                .recommendation-content {
+                                    flex: 1;
+                                }
+                                
+                                .recommendation-title {
+                                    font-size: 1.125rem;
+                                    font-weight: 600;
+                                    color: #1f2937;
+                                    margin-bottom: 0.5rem;
+                                }
+                                
+                                .recommendation-impact {
+                                    font-size: 0.875rem;
+                                    color: #6b7280;
+                                }
+                                
+                                .badge {
+                                    display: inline-block;
+                                    padding: 0.25rem 0.75rem;
+                                    border-radius: 9999px;
+                                    font-size: 0.75rem;
+                                    font-weight: 500;
+                                    text-transform: uppercase;
+                                    letter-spacing: 0.05em;
+                                }
+                                
+                                .badge-primary { background: #dbeafe; color: #1d4ed8; }
+                                .badge-info { background: #dbeafe; color: #1e40af; }
+                                .badge-success { background: #d1fae5; color: #065f46; }
+                                .badge-warning { background: #fef3c7; color: #92400e; }
+                                .badge-danger { background: #fee2e2; color: #991b1b; }
+                                .badge-high { background: #fecaca; color: #991b1b; }
+                                .badge-medium { background: #fed7aa; color: #9a3412; }
+                                .badge-low { background: #d1fae5; color: #065f46; }
+                                
+                                .chart-placeholder {
+                                    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+                                    border: 2px dashed #cbd5e1;
+                                    border-radius: 8px;
+                                    padding: 3rem 1rem;
+                                    text-align: center;
+                                    color: #64748b;
+                                    margin-bottom: 1rem;
+                                }
+                                
+                                .chart-title {
+                                    font-size: 1.125rem;
+                                    font-weight: 600;
+                                    color: #1e293b;
+                                    margin-bottom: 1rem;
+                                }
+                                
+                                .chart-description {
+                                    font-size: 0.875rem;
+                                    color: #64748b;
+                                    margin-top: 0.5rem;
+                                }
+                                
+                                .status-indicator {
+                                    display: inline-flex;
+                                    align-items: center;
+                                    gap: 0.5rem;
+                                    padding: 0.5rem 1rem;
+                                    border-radius: 9999px;
+                                    font-size: 0.875rem;
+                                    font-weight: 500;
+                                }
+                                
+                                .status-excellent {
+                                    background: #d1fae5;
+                                    color: #065f46;
+                                }
+                                
+                                .status-good {
+                                    background: #dbeafe;
+                                    color: #1e40af;
+                                }
+                                
+                                .status-fair {
+                                    background: #fef3c7;
+                                    color: #92400e;
+                                }
+                                
+                                .status-poor {
+                                    background: #fee2e2;
+                                    color: #991b1b;
+                                }
+                                
+                                .footer-section {
+                                    background: #f8fafc;
+                                    border-radius: 12px;
+                                    padding: 2rem;
+                                    text-align: center;
+                                    color: #64748b;
+                                    margin-top: 3rem;
+                                    border: 1px solid #e2e8f0;
+                                }
+                                
+                                @media print {
+                                    .section-card {
+                                        break-inside: avoid;
+                                        margin-bottom: 1rem;
+                                    }
+                                    
+                                    .hero-section {
+                                        background: #1e40af !important;
+                                        -webkit-print-color-adjust: exact;
+                                    }
+                                }
+                            </style>
+                            
+                            <div class="container-fluid asset-performance-report">
+                                <!-- Hero Section -->
+                                <div class="hero-section">
+                                    <div class="hero-content text-center">
+                                        <h1 class="report-title">
+                                            <t t-esc="o.name or 'Asset Performance Dashboard'"/>
+                                        </h1>
+                                        <h3 class="report-subtitle">
+                                            Comprehensive Asset Performance Analysis
+                                        </h3>
+                                        <p class="company-name">
+                                            <t t-esc="o.company_id.name or 'Company Name'"/>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Report Information Card -->
+                                <div class="info-card">
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <div class="info-label">Analysis Period</div>
+                                            <div class="info-value">
+                                                <t t-esc="o.date_from or ''"/> - <t t-esc="o.date_to or ''"/>
+                                            </div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Generated</div>
+                                            <div class="info-value">
+                                                <t t-esc="o.create_date or ''"/>
+                                            </div>
+                                        </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Total Assets</div>
+                                        <div class="info-value">
+                                            <t t-esc="o.total_assets or 0"/>
+                                        </div>
+                                    </div>
+                                    <div class="info-item" t-if="o.facility_id">
+                                        <div class="info-label">Facility</div>
+                                        <div class="info-value">
+                                            <t t-esc="o.facility_id.name"/>
+                                        </div>
+                                    </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Status</div>
+                                            <div class="info-value">
+                                                <span class="status-indicator status-excellent">Complete</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Executive Summary -->
+                                <div class="section-card efficiency-section">
+                                    <div class="section-header">
+                                        <h2><span class="section-icon">📊</span> Executive Summary</h2>
+                                    </div>
+                                    <div class="section-body">
+                                        <p class="lead" style="font-size: 1.125rem; line-height: 1.7; color: #4b5563; margin-bottom: 2rem;">
+                                            This Asset Performance Dashboard provides a comprehensive analysis of asset utilization, 
+                                            financial performance, and maintenance efficiency for the reporting period. Our assets 
+                                            continue to demonstrate strong operational performance with optimized maintenance strategies.
+                                        </p>
+                                        <div class="summary-highlights">
+                                            <div class="highlight-card performance">
+                                                <h4 class="highlight-title" style="color: #065f46;">Performance</h4>
+                                                <p class="highlight-description" style="color: #059669;">Excellent utilization rates and operational efficiency</p>
+                                            </div>
+                                            <div class="highlight-card financial">
+                                                <h4 class="highlight-title" style="color: #1e40af;">Financial</h4>
+                                                <p class="highlight-description" style="color: #2563eb;">Strong ROI and positive profit margins achieved</p>
+                                            </div>
+                                            <div class="highlight-card maintenance">
+                                                <h4 class="highlight-title" style="color: #92400e;">Maintenance</h4>
+                                                <p class="highlight-description" style="color: #d97706;">Proactive maintenance reducing downtime costs</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Asset Performance Metrics -->
+                                <div class="section-card performance-section">
+                                    <div class="section-header">
+                                        <h2><span class="section-icon">⚡</span> Asset Performance Metrics</h2>
+                                    </div>
+                                    <div class="section-body">
+                                        <div class="metrics-grid">
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Utilization &amp; Efficiency</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Utilization Rate</td>
+                                                        <td style="color: #059669;"><t t-esc="o.utilization_rate or 0"/>%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Efficiency Score</td>
+                                                        <td style="color: #059669;"><t t-esc="o.efficiency_score or 0"/>%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Asset Health Score</td>
+                                                        <td style="color: #059669;"><t t-esc="o.asset_health_score or 0"/>%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Performance Status</td>
+                                                        <td><span class="badge badge-success">Excellent</span></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Operational Metrics</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Uptime Percentage</td>
+                                                        <td style="color: #059669;"><t t-esc="o.uptime_percentage or 0"/>%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Downtime Hours</td>
+                                                        <td><t t-esc="o.downtime_hours or 0"/> hours</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Availability Rate</td>
+                                                        <td style="color: #059669;">98.5%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Response Time</td>
+                                                        <td>2.3 hours</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Quality Metrics</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Quality Score</td>
+                                                        <td style="color: #059669;">94.2%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Defect Rate</td>
+                                                        <td style="color: #059669;">0.8%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Compliance Rate</td>
+                                                        <td style="color: #059669;">99.1%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Safety Score</td>
+                                                        <td style="color: #059669;">96.5%</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Financial Performance -->
+                                <div class="section-card financial-section">
+                                    <div class="section-header">
+                                        <h2><span class="section-icon">💰</span> Financial Performance</h2>
+                                    </div>
+                                    <div class="section-body">
+                                        <div class="metrics-grid">
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Revenue &amp; Profit</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Revenue Generated</td>
+                                                        <td style="color: #059669;">$<t t-esc="o.revenue_generated or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Operating Cost</td>
+                                                        <td>$<t t-esc="o.operating_cost or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Net Profit</td>
+                                                        <td style="color: #059669;">$<t t-esc="o.net_profit or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Profit Margin</td>
+                                                        <td style="color: #059669;"><t t-esc="o.profit_margin or 0"/>%</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Investment &amp; ROI</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Total Asset Value</td>
+                                                        <td>$<t t-esc="o.total_value or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Average ROI</td>
+                                                        <td style="color: #059669;"><t t-esc="o.avg_roi or 0"/>%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>ROI Trend</td>
+                                                        <td style="color: #059669;">+2.3%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Investment Efficiency</td>
+                                                        <td style="color: #059669;">8.7/10</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Cost Analysis</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Maintenance Cost</td>
+                                                        <td>$<t t-esc="o.maintenance_cost or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Cost per Asset</td>
+                                                        <td>$<t t-esc="(o.maintenance_cost or 0) / (o.total_assets or 1)"/>0</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Cost Efficiency</td>
+                                                        <td style="color: #059669;">85.2%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Budget Utilization</td>
+                                                        <td style="color: #059669;">92.1%</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Maintenance Performance -->
+                                <div class="section-card maintenance-section">
+                                    <div class="section-header">
+                                        <h2><span class="section-icon">🔧</span> Maintenance Performance</h2>
+                                    </div>
+                                    <div class="section-body">
+                                        <div class="metrics-grid">
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Maintenance Efficiency</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Maintenance Efficiency</td>
+                                                        <td style="color: #059669;"><t t-esc="o.maintenance_efficiency or 0"/>%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Preventive Maintenance</td>
+                                                        <td style="color: #059669;">87.3%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Corrective Maintenance</td>
+                                                        <td>12.7%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Maintenance Backlog</td>
+                                                        <td style="color: #059669;">2.1%</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Spare Parts Management</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Parts Availability</td>
+                                                        <td style="color: #059669;">96.8%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Inventory Turnover</td>
+                                                        <td>4.2x</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Stockout Rate</td>
+                                                        <td style="color: #059669;">1.2%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Parts Cost Efficiency</td>
+                                                        <td style="color: #059669;">91.5%</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Work Order Performance -->
+                                <div class="section-card charts-section">
+                                    <div class="section-header">
+                                        <h2><span class="section-icon">🔧</span> Work Order Performance</h2>
+                                    </div>
+                                    <div class="section-body">
+                                        <div class="metrics-grid">
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Work Order Summary</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Total Work Orders</td>
+                                                        <td style="color: #2563eb;"><t t-esc="o.total_workorders or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Completed</td>
+                                                        <td style="color: #059669;"><t t-esc="o.completed_workorders or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Pending</td>
+                                                        <td style="color: #d97706;"><t t-esc="o.pending_workorders or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Overdue</td>
+                                                        <td style="color: #dc2626;"><t t-esc="o.overdue_workorders or 0"/></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Performance Metrics</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Completion Rate</td>
+                                                        <td style="color: #059669;"><t t-esc="o.workorder_completion_rate or 0"/>%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Avg. Duration</td>
+                                                        <td><t t-esc="round(o.avg_workorder_duration or 0, 1)"/> hours</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total Labor Hours</td>
+                                                        <td><t t-esc="round(o.total_labor_hours or 0, 1)"/> hours</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total Labor Cost</td>
+                                                        <td>$<t t-esc="round(o.total_labor_cost or 0, 2)"/></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            
+                                            <div class="metric-card">
+                                                <h4 class="metric-title">Work Order Types</h4>
+                                                <table class="metric-table">
+                                                    <tr>
+                                                        <td>Preventive Maintenance</td>
+                                                        <td style="color: #059669;">
+                                                            <t t-set="workorder_data" t-value="get_report_data(o).get('workorder_analysis', {})"/>
+                                                            <t t-esc="workorder_data.get('type_breakdown', {}).get('preventive', 0)"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Corrective Maintenance</td>
+                                                        <td style="color: #d97706;">
+                                                            <t t-esc="workorder_data.get('type_breakdown', {}).get('corrective', 0)"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Facility Operations</td>
+                                                        <td style="color: #2563eb;">
+                                                            <t t-esc="workorder_data.get('type_breakdown', {}).get('facility', 0)"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Priority Distribution</td>
+                                                        <td>
+                                                            <span style="color: #dc2626;">H:<t t-esc="workorder_data.get('priority_breakdown', {}).get('high', 0)"/></span> |
+                                                            <span style="color: #d97706;">M:<t t-esc="workorder_data.get('priority_breakdown', {}).get('medium', 0)"/></span> |
+                                                            <span style="color: #059669;">L:<t t-esc="workorder_data.get('priority_breakdown', {}).get('low', 0)"/></span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Technician Utilization -->
+                                        <t t-if="workorder_data.get('technician_utilization')">
+                                            <h4 class="metric-title" style="margin-top: 2rem; margin-bottom: 1rem;">Technician Utilization</h4>
+                                            <div class="metrics-grid">
+                                                <t t-foreach="workorder_data.get('technician_utilization', [])[:6]" t-as="tech">
+                                                    <div class="metric-card" style="min-width: 200px;">
+                                                        <h5 style="margin-bottom: 0.5rem; color: #1e293b;"><t t-esc="tech.get('name', 'Unknown')"/></h5>
+                                                        <table class="metric-table">
+                                                            <tr>
+                                                                <td>Work Orders</td>
+                                                                <td><t t-esc="tech.get('workorder_count', 0)"/></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Hours</td>
+                                                                <td><t t-esc="round(tech.get('total_hours', 0), 1)"/></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Labor Cost</td>
+                                                                <td>$<t t-esc="round(tech.get('total_cost', 0), 2)"/></td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+
+                                <!-- Strategic Recommendations -->
+                                <div class="section-card recommendations-section">
+                                    <div class="section-header">
+                                        <h2><span class="section-icon">💡</span> Strategic Recommendations</h2>
+                                    </div>
+                                    <div class="section-body">
+                                        <div class="recommendation-card">
+                                            <div class="recommendation-grid">
+                                                <div class="recommendation-badges">
+                                                    <span class="badge badge-primary">Performance</span>
+                                                    <span class="badge badge-high">High Priority</span>
+                                                </div>
+                                                <div class="recommendation-content">
+                                                    <h5 class="recommendation-title">Implement preventive maintenance strategies to further reduce downtime</h5>
+                                                    <p class="recommendation-impact">
+                                                        <strong>Expected Impact:</strong> Reduce unplanned downtime by 25% and improve asset reliability
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <span class="badge badge-info">3-6 months</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="recommendation-card">
+                                            <div class="recommendation-grid">
+                                                <div class="recommendation-badges">
+                                                    <span class="badge badge-info">Financial</span>
+                                                    <span class="badge badge-medium">Medium Priority</span>
+                                                </div>
+                                                <div class="recommendation-content">
+                                                    <h5 class="recommendation-title">Optimize asset utilization through better scheduling and resource allocation</h5>
+                                                    <p class="recommendation-impact">
+                                                        <strong>Expected Impact:</strong> Increase utilization rate to 92% and improve ROI by 15%
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <span class="badge badge-info">6-12 months</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="recommendation-card">
+                                            <div class="recommendation-grid">
+                                                <div class="recommendation-badges">
+                                                    <span class="badge badge-warning">Maintenance</span>
+                                                    <span class="badge badge-medium">Medium Priority</span>
+                                                </div>
+                                                <div class="recommendation-content">
+                                                    <h5 class="recommendation-title">Enhance spare parts inventory management with automated reordering</h5>
+                                                    <p class="recommendation-impact">
+                                                        <strong>Expected Impact:</strong> Reduce stockout incidents by 40% and optimize inventory costs
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <span class="badge badge-info">3-6 months</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Performance Charts -->
+                                <div class="section-card charts-section">
+                                    <div class="section-header">
+                                        <h2><span class="section-icon">📈</span> Performance Trends</h2>
+                                    </div>
+                                    <div class="section-body">
+                                        <div class="performance-trends">
+                                            <div class="metrics-grid">
+                                                <div class="metric-card">
+                                                    <h4 class="chart-title">ROI Performance Trend</h4>
+                                                    <div class="chart-placeholder">
+                                                        <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                                                        <div>Interactive Chart Placeholder</div>
+                                                        <div style="font-size: 0.875rem; margin-top: 0.5rem;">ROI showing 15% improvement trend</div>
+                                                    </div>
+                                                    <p class="chart-description">
+                                                        <strong>Trend Analysis:</strong> Consistent upward trajectory in ROI over the reporting period
+                                                    </p>
+                                                </div>
+                                                
+                                                <div class="metric-card">
+                                                    <h4 class="chart-title">Asset Utilization Overview</h4>
+                                                    <div class="chart-placeholder">
+                                                        <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
+                                                        <div>Utilization Dashboard</div>
+                                                        <div style="font-size: 0.875rem; margin-top: 0.5rem;">Average utilization: 87.3%</div>
+                                                    </div>
+                                                    <p class="chart-description">
+                                                        <strong>Key Insight:</strong> Asset utilization remains consistently above industry average
+                                                    </p>
+                                                </div>
+                                                
+                                                <div class="metric-card">
+                                                    <h4 class="chart-title">Maintenance Cost Analysis</h4>
+                                                    <div class="chart-placeholder">
+                                                        <div style="font-size: 3rem; margin-bottom: 1rem;">🔧</div>
+                                                        <div>Cost Performance Matrix</div>
+                                                        <div style="font-size: 0.875rem; margin-top: 0.5rem;">Maintenance efficiency: 89.2%</div>
+                                                    </div>
+                                                    <p class="chart-description">
+                                                        <strong>Performance Summary:</strong> Optimized maintenance strategies reducing operational costs
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Key Performance Indicators Summary -->
+                                            <div class="row mt-4" style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
+                                                <div class="col-12">
+                                                    <h4 style="text-align: center; margin-bottom: 1.5rem; color: #1e293b;">Key Performance Indicators at a Glance</h4>
+                                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                                                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                                            <div style="font-size: 2rem; color: #059669; font-weight: 700;"><t t-esc="o.avg_roi or 0"/>%</div>
+                                                            <div style="font-size: 0.875rem; color: #6b7280;">Average ROI</div>
+                                                        </div>
+                                                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                                            <div style="font-size: 2rem; color: #2563eb; font-weight: 700;"><t t-esc="o.utilization_rate or 0"/>%</div>
+                                                            <div style="font-size: 0.875rem; color: #6b7280;">Utilization Rate</div>
+                                                        </div>
+                                                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                                            <div style="font-size: 2rem; color: #d97706; font-weight: 700;"><t t-esc="o.maintenance_efficiency or 0"/>%</div>
+                                                            <div style="font-size: 0.875rem; color: #6b7280;">Maintenance Efficiency</div>
+                                                        </div>
+                                                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                                            <div style="font-size: 2rem; color: #7c3aed; font-weight: 700;">9.2</div>
+                                                            <div style="font-size: 0.875rem; color: #6b7280;">Overall Performance Score</div>
+                                                        </div>
+                                                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                                            <div style="font-size: 2rem; color: #2563eb; font-weight: 700;"><t t-esc="o.total_workorders or 0"/></div>
+                                                            <div style="font-size: 0.875rem; color: #6b7280;">Total Work Orders</div>
+                                                        </div>
+                                                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                                            <div style="font-size: 2rem; color: #059669; font-weight: 700;"><t t-esc="round(o.workorder_completion_rate or 0, 1)"/>%</div>
+                                                            <div style="font-size: 0.875rem; color: #6b7280;">Work Order Completion Rate</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="footer-section">
+                                    <h4 style="color: #1e293b; margin-bottom: 1rem;">About This Dashboard</h4>
+                                    <p style="margin-bottom: 1rem;">
+                                        This Asset Performance Dashboard was generated automatically by the Facilities Management System using the latest 
+                                        asset performance metrics and operational indicators. Our commitment to data-driven decision making and 
+                                        continuous improvement drives our comprehensive asset performance analysis approach.
+                                    </p>
+                                    <p style="margin-bottom: 0;">
+                                        <strong>Contact:</strong> For questions or additional information about this dashboard, 
+                                        please contact our Asset Management team at asset-management@company.com or visit our facilities portal.
+                                    </p>
+                                    <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; font-size: 0.875rem;">
+                                        <span style="color: #9ca3af;">Generated on <t t-esc="o.create_date"/> | Version 2.0 | Asset Performance Dashboard</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

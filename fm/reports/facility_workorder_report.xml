@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_facility_workorders" model="ir.actions.report">
+        <field name="name">Facility Work Order Report</field>
+        <field name="model">facilities.facility</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">facilities_management.facility_workorder_report</field>
+        <field name="report_file">facilities_management.facility_workorder_report</field>
+        <field name="print_report_name">'Facility Work Order Report - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="facilities_management.model_facilities_facility"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+
+    <template id="facility_workorder_report">
+        <t t-call="web.html_container">
+            <!-- Error handling for missing data -->
+            <t t-if="not docs">
+                <div style="background:red; color:white; padding:20px; margin:20px;">
+                    <h2>ERROR: No facility data received</h2>
+                    <p>Please check the report configuration and try again.</p>
+                </div>
+            </t>
+            
+            <t t-foreach="docs" t-as="facility">
+                <t t-set="o" t-value="facility"/>
+                <t t-call="web.external_layout">
+                    <div class="page" style="padding:10px;">
+                        
+                        <!-- Header Section -->
+                        <div style="background:#fff; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 2px 8px #e2e8f0;">
+                            <div style="display:flex; align-items:center; gap:20px; border-bottom:3px solid #e2e8f0; padding-bottom:15px;">
+                                <div style="flex:1;">
+                                    <h1 style="margin:0; color:#1e40af; font-size:2.2rem; font-weight:700;">Facility Work Order Report</h1>
+                                    <div style="font-size:16px; color:#374151; margin-top:5px;">
+                                        <span style="background:#dbeafe; color:#1e40af; padding:4px 10px; border-radius:6px; margin-right:10px;">
+                                            <b>Facility:</b> <span t-esc="facility.name or 'N/A'"/>
+                                        </span>
+                                        <span style="background:#fef3c7; color:#92400e; padding:4px 10px; border-radius:6px;">
+                                            <b>Code:</b> <span t-esc="facility.code or 'N/A'"/>
+                                        </span>
+                                        <!-- Date Range Information -->
+                                        <t t-if="date_from and date_to">
+                                            <span style="background:#ecfdf5; color:#065f46; padding:4px 10px; border-radius:6px; margin-left:10px;">
+                                                <b>Period:</b> <span t-esc="date_from"/> to <span t-esc="date_to"/>
+                                            </span>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div style="text-align:right;">
+                                    <div style="font-size:14px; color:#6b7280; margin-bottom:5px;">Generated on</div>
+                                    <div style="font-size:16px; color:#374151; font-weight:600;">
+                                        <span t-esc="facility.report_generation_date or 'Date not available'"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Facility Overview Section -->
+                        <div style="background:#fff; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 2px 8px #e2e8f0;">
+                            <h2 style="margin:0 0 15px 0; color:#1e40af; font-size:1.5rem; border-bottom:2px solid #e5e7eb; padding-bottom:10px;">
+                                📊 Facility Overview
+                            </h2>
+                            
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:15px;">
+                                <!-- Basic Info -->
+                                <div style="background:#f8fafc; padding:15px; border-radius:6px; border-left:4px solid #3b82f6;">
+                                    <h3 style="margin:0 0 10px 0; color:#1e40af; font-size:1.1rem;">Basic Information</h3>
+                                    <table style="width:100%; font-size:13px;">
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Manager:</td><td style="padding:3px 0;"><span t-esc="facility.manager_id.name if facility.manager_id else 'Not assigned'"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Property Type:</td><td style="padding:3px 0;"><span t-esc="facility.property_type or 'Not specified'"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Area:</td><td style="padding:3px 0;"><span t-esc="facility.area_sqm or 0"/> sqm</td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Floors:</td><td style="padding:3px 0;"><span t-esc="facility.number_of_floors or 0"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Status:</td><td style="padding:3px 0;"><span t-esc="facility.occupancy_status or 'Not specified'"/></td></tr>
+                                    </table>
+                                </div>
+
+                                <!-- Work Order Statistics -->
+                                <div style="background:#f0fdf4; padding:15px; border-radius:6px; border-left:4px solid #22c55e;">
+                                    <h3 style="margin:0 0 10px 0; color:#166534; font-size:1.1rem;">Work Order Statistics</h3>
+                                    <table style="width:100%; font-size:13px;">
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Total Work Orders:</td><td style="padding:3px 0; font-weight:700; color:#166534;">
+                                            <t t-if="date_from and date_to">
+                                                <span t-esc="len(workorders) or 0"/> <span style="font-size:11px; color:#6b7280;">(filtered)</span>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="facility.workorder_count or 0"/>
+                                            </t>
+                                        </td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Completed:</td><td style="padding:3px 0; color:#16a34a;"><span t-esc="facility.workorder_completed_count or 0"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">In Progress:</td><td style="padding:3px 0; color:#ca8a04;"><span t-esc="facility.workorder_in_progress_count or 0"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Draft:</td><td style="padding:3px 0; color:#6b7280;"><span t-esc="facility.workorder_draft_count or 0"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Cancelled:</td><td style="padding:3px 0; color:#dc2626;"><span t-esc="facility.workorder_cancelled_count or 0"/></td></tr>
+                                    </table>
+                                </div>
+
+                                <!-- SLA Statistics -->
+                                <div style="background:#fef2f2; padding:15px; border-radius:6px; border-left:4px solid #ef4444;">
+                                    <h3 style="margin:0 0 10px 0; color:#991b1b; font-size:1.1rem;">SLA Performance</h3>
+                                    <table style="width:100%; font-size:13px;">
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Compliance Rate:</td><td style="padding:3px 0; font-weight:700; color:#991b1b;"><span t-esc="facility.sla_compliance_rate or 0"/>%</td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Compliant:</td><td style="padding:3px 0; color:#16a34a;"><span t-esc="facility.sla_compliant_count or 0"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">At Risk:</td><td style="padding:3px 0; color:#ca8a04;"><span t-esc="facility.sla_at_risk_count or 0"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Breached:</td><td style="padding:3px 0; color:#dc2626;"><span t-esc="facility.sla_breached_count or 0"/></td></tr>
+                                    </table>
+                                </div>
+
+                                <!-- Cost Statistics -->
+                                <div style="background:#fef7ff; padding:15px; border-radius:6px; border-left:4px solid #a855f7;">
+                                    <h3 style="margin:0 0 10px 0; color:#7c3aed; font-size:1.1rem;">Cost Analysis</h3>
+                                    <table style="width:100%; font-size:13px;">
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Total Cost:</td><td style="padding:3px 0; font-weight:700; color:#7c3aed;"><span t-esc="facility.total_workorder_cost or 0"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Average Cost:</td><td style="padding:3px 0; color:#7c3aed;"><span t-esc="facility.avg_workorder_cost or 0"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Buildings:</td><td style="padding:3px 0;"><span t-esc="facility.building_count or 0"/></td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Work Orders Detail Section -->
+                        <div style="background:#fff; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 2px 8px #e2e8f0;">
+                            <h2 style="margin:0 0 15px 0; color:#1e40af; font-size:1.5rem; border-bottom:2px solid #e5e7eb; padding-bottom:10px;">
+                                🔧 Work Orders Detail
+                            </h2>
+                            
+                            <!-- Use filtered workorders from report data if available, otherwise get all -->
+                            <t t-if="workorders and len(workorders) > 0">
+                                <t t-set="display_workorders" t-value="workorders"/>
+                            </t>
+                            <t t-else="">
+                                <t t-set="display_workorders" t-value="facility.get_facility_workorders()"/>
+                            </t>
+                            
+                            <t t-if="display_workorders and len(display_workorders) > 0">
+                                <div style="overflow-x:auto;">
+                                    <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                                        <thead>
+                                            <tr style="background:#1e40af; color:white;">
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Work Order</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Asset</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Type</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Priority</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Status</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">SLA Status</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Start Date</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">End Date</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Duration (Hrs)</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Total Cost</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Technician</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="display_workorders" t-as="wo">
+                                                <tr style="border-bottom:1px solid #e5e7eb;">
+                                                    <td style="padding:8px; border:1px solid #e5e7eb; font-weight:600; color:#1e40af;">
+                                                        <span t-esc="wo.name or 'N/A'"/>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                        <span t-esc="wo.asset_id.name if wo.asset_id else 'N/A'"/>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                        <span t-esc="wo.maintenance_type or 'N/A'"/>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                        <t t-if="(wo.priority or '2') == '4'">
+                                                            <span style="background:#dc2626; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Critical</span>
+                                                        </t>
+                                                        <t t-elif="(wo.priority or '2') == '3'">
+                                                            <span style="background:#ea580c; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">High</span>
+                                                        </t>
+                                                        <t t-elif="(wo.priority or '2') == '2'">
+                                                            <span style="background:#ca8a04; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Normal</span>
+                                                        </t>
+                                                        <t t-elif="(wo.priority or '2') == '1'">
+                                                            <span style="background:#16a34a; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Low</span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span style="background:#6b7280; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Very Low</span>
+                                                        </t>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                        <t t-if="(wo.state or 'draft') == 'completed'">
+                                                            <span style="background:#16a34a; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Completed</span>
+                                                        </t>
+                                                        <t t-elif="(wo.state or 'draft') == 'in_progress'">
+                                                            <span style="background:#ca8a04; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">In Progress</span>
+                                                        </t>
+                                                        <t t-elif="(wo.state or 'draft') == 'draft'">
+                                                            <span style="background:#6b7280; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Draft</span>
+                                                        </t>
+                                                        <t t-elif="(wo.state or 'draft') == 'cancelled'">
+                                                            <span style="background:#dc2626; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Cancelled</span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span style="background:#6b7280; color:white; padding:2px 6px; border-radius:3px; font-size:10px;"><span t-esc="wo.state or 'Unknown'"/></span>
+                                                        </t>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                        <t t-if="(wo.sla_status or 'unknown') == 'on_time'">
+                                                            <span style="background:#16a34a; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">On Time</span>
+                                                        </t>
+                                                        <t t-elif="(wo.sla_status or 'unknown') == 'at_risk'">
+                                                            <span style="background:#ca8a04; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">At Risk</span>
+                                                        </t>
+                                                        <t t-elif="(wo.sla_status or 'unknown') == 'breached'">
+                                                            <span style="background:#dc2626; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Breached</span>
+                                                        </t>
+                                                        <t t-elif="(wo.sla_status or 'unknown') == 'completed'">
+                                                            <span style="background:#0891b2; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Completed</span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span style="background:#6b7280; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">N/A</span>
+                                                        </t>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                        <span t-esc="wo.start_date or 'N/A'"/>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                        <span t-esc="wo.end_date or 'N/A'"/>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                        <span t-esc="wo.actual_duration or 'N/A'"/>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb; font-weight:600;">
+                                                        <span t-esc="wo.total_cost or 0"/>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                        <span t-esc="wo.technician_id.name if wo.technician_id else 'N/A'"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div style="text-align:center; padding:40px; color:#6b7280; font-style:italic;">
+                                    <div style="font-size:48px; margin-bottom:10px;">🔧</div>
+                                    <div style="font-size:18px;">No work orders found for this facility</div>
+                                    <div style="font-size:14px; margin-top:5px;">Work orders will appear here once they are created</div>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- SLA Details Section -->
+                        <div style="background:#fff; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 2px 8px #e2e8f0;">
+                            <h2 style="margin:0 0 15px 0; color:#1e40af; font-size:1.5rem; border-bottom:2px solid #e5e7eb; padding-bottom:10px;">
+                                ⏱️ SLA Performance Details
+                            </h2>
+                            
+                            <t t-if="display_workorders and len(display_workorders.filtered(lambda w: w.sla_id)) > 0">
+                                <div style="overflow-x:auto;">
+                                    <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                                        <thead>
+                                            <tr style="background:#dc2626; color:white;">
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Work Order</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">SLA Name</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Response Deadline</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Resolution Deadline</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Response Status</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Resolution Status</th>
+                                                <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Escalation Level</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="display_workorders.filtered(lambda w: w.sla_id)" t-as="wo">
+                                                <tr style="border-bottom:1px solid #e5e7eb;">
+                                                    <td style="padding:8px; border:1px solid #e5e7eb; font-weight:600; color:#1e40af;">
+                                                        <span t-esc="wo.name or 'N/A'"/>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                        <span t-esc="wo.sla_id.name if wo.sla_id else 'N/A'"/>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                        <span t-esc="wo.sla_response_deadline or 'N/A'"/>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                        <span t-esc="wo.sla_resolution_deadline or 'N/A'"/>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                        <t t-if="(wo.sla_response_status or 'unknown') == 'on_time'">
+                                                            <span style="background:#16a34a; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">On Time</span>
+                                                        </t>
+                                                        <t t-elif="(wo.sla_response_status or 'unknown') == 'at_risk'">
+                                                            <span style="background:#ca8a04; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">At Risk</span>
+                                                        </t>
+                                                        <t t-elif="(wo.sla_response_status or 'unknown') == 'breached'">
+                                                            <span style="background:#dc2626; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Breached</span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span style="background:#6b7280; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">N/A</span>
+                                                        </t>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                        <t t-if="(wo.sla_resolution_status or 'unknown') == 'on_time'">
+                                                            <span style="background:#16a34a; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">On Time</span>
+                                                        </t>
+                                                        <t t-elif="(wo.sla_resolution_status or 'unknown') == 'at_risk'">
+                                                            <span style="background:#ca8a04; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">At Risk</span>
+                                                        </t>
+                                                        <t t-elif="(wo.sla_resolution_status or 'unknown') == 'breached'">
+                                                            <span style="background:#dc2626; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Breached</span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span style="background:#6b7280; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">N/A</span>
+                                                        </t>
+                                                    </td>
+                                                    <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                        <span t-esc="wo.sla_escalation_level or 'N/A'"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div style="text-align:center; padding:40px; color:#6b7280; font-style:italic;">
+                                    <div style="font-size:48px; margin-bottom:10px;">⏱️</div>
+                                    <div style="font-size:18px;">No SLA information available</div>
+                                    <div style="font-size:14px; margin-top:5px;">SLA details will appear here once SLAs are assigned to work orders</div>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- Summary Section -->
+                        <div style="background:#f8fafc; padding:20px; border-radius:8px; border:2px solid #e5e7eb;">
+                            <h2 style="margin:0 0 15px 0; color:#1e40af; font-size:1.5rem; border-bottom:2px solid #e5e7eb; padding-bottom:10px;">
+                                📋 Executive Summary
+                            </h2>
+                            
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
+                                <div>
+                                    <h3 style="margin:0 0 10px 0; color:#374151; font-size:1.2rem;">Key Performance Indicators</h3>
+                                    <ul style="margin:0; padding-left:20px; color:#374151; line-height:1.6;">
+                                        <li><strong>Total Work Orders:</strong> <span t-esc="facility.workorder_count or 0"/></li>
+                                        <li><strong>Completion Rate:</strong> 
+                                            <t t-if="(facility.workorder_count or 0) &gt; 0">
+                                                <t t-set="completion_rate" t-value="(facility.workorder_completed_count or 0) / (facility.workorder_count or 1) * 100"/>
+                                                <span t-esc="'%.1f' % completion_rate"/>%
+                                            </t>
+                                            <t t-else="">0%</t>
+                                        </li>
+                                        <li><strong>SLA Compliance Rate:</strong> <span t-esc="facility.sla_compliance_rate or 0"/>%</li>
+                                        <li><strong>Average Work Order Cost:</strong> <span t-esc="facility.avg_workorder_cost or 0"/></li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <h3 style="margin:0 0 10px 0; color:#374151; font-size:1.2rem;">Recommendations</h3>
+                                    <ul style="margin:0; padding-left:20px; color:#374151; line-height:1.6;">
+                                        <t t-if="(facility.sla_compliance_rate or 0) &lt; 90">
+                                            <li style="color:#dc2626;">⚠️ SLA compliance rate is below target (90%). Review work order processes.</li>
+                                        </t>
+                                        <t t-if="(facility.workorder_in_progress_count or 0) &gt; (facility.workorder_completed_count or 0)">
+                                            <li style="color:#ca8a04;">⚠️ High number of work orders in progress. Consider resource allocation.</li>
+                                        </t>
+                                        <t t-if="(facility.avg_workorder_cost or 0) &gt; 1000">
+                                            <li style="color:#dc2626;">⚠️ Average work order cost is high. Review cost optimization strategies.</li>
+                                        </t>
+                                        <t t-if="(facility.sla_compliance_rate or 0) &gt;= 90 and (facility.workorder_in_progress_count or 0) &lt;= (facility.workorder_completed_count or 0)">
+                                            <li style="color:#16a34a;">✅ Facility performance is meeting targets.</li>
+                                        </t>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_safety_incident" model="ir.actions.report">
+        <field name="name">Safety Incident Report</field>
+        <field name="model">facilities.safety.incident</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">facilities_management.safety_incident_report</field>
+        <field name="report_file">facilities_management.safety_incident_report</field>
+        <field name="print_report_name">'Safety Incident Report - %s' % (object.incident_number if object.incident_number else object.name)</field>
+        <field name="binding_model_id" ref="facilities_management.model_facilities_safety_incident"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="safety_incident_report">
+        <t t-call="web.html_container">
+            <style>
+                /* Page break controls for better PDF layout */
+                .page-break-avoid {
+                    page-break-inside: avoid;
+                }
+                .page-break-before {
+                    page-break-before: always;
+                }
+                .page-break-after {
+                    page-break-after: always;
+                }
+                /* Ensure headers don't break away from content */
+                h1, h2, h3 {
+                    page-break-after: avoid;
+                }
+                /* Keep table headers with content */
+                thead {
+                    display: table-header-group;
+                }
+                /* Prevent orphaned content */
+                .section-content {
+                    page-break-inside: avoid;
+                }
+            </style>
+            <!-- Error handling for missing data -->
+            <t t-if="not docs">
+                <div style="background:red; color:white; padding:20px; margin:20px;">
+                    <h2>ERROR: No safety incident data received</h2>
+                    <p>Please check the report configuration and try again.</p>
+                </div>
+            </t>
+            
+            <t t-foreach="docs" t-as="incident">
+                <t t-set="o" t-value="incident"/>
+                <t t-call="web.external_layout">
+                    <div class="page" style="padding:10px;">
+                        
+                        <!-- Header Section -->
+                        <div style="background:#fff; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 2px 8px #e2e8f0; page-break-inside:avoid;">
+                            <div style="display:flex; align-items:center; gap:20px; border-bottom:3px solid #e2e8f0; padding-bottom:15px;">
+                                <div style="flex:1;">
+                                    <h1 style="margin:0; color:#dc2626; font-size:2.2rem; font-weight:700;">🚨 Safety Incident Report</h1>
+                                    <div style="font-size:16px; color:#374151; margin-top:5px;">
+                                        <span style="background:#fef2f2; color:#dc2626; padding:4px 10px; border-radius:6px; margin-right:10px;">
+                                            <b>Incident #:</b> <span t-esc="incident.incident_number or 'N/A'"/>
+                                        </span>
+                                        <span style="background:#fef3c7; color:#92400e; padding:4px 10px; border-radius:6px; margin-right:10px;">
+                                            <b>Date:</b> <span t-esc="incident.incident_date.strftime('%Y-%m-%d %H:%M') if incident.incident_date else 'N/A'"/>
+                                        </span>
+                                        <span style="background:#dbeafe; color:#1e40af; padding:4px 10px; border-radius:6px;">
+                                            <b>Facility:</b> <span t-esc="incident.facility_id.name if incident.facility_id else 'N/A'"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div style="text-align:right;">
+                                    <div style="font-size:14px; color:#6b7280; margin-bottom:5px;">Generated on</div>
+                                    <div style="font-size:16px; color:#374151; font-weight:600;">
+                                        <span t-esc="current_date.strftime('%Y-%m-%d %H:%M') if current_date else 'Date not available'"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Incident Overview Section -->
+                        <div style="background:#fff; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 2px 8px #e2e8f0; page-break-inside:avoid;">
+                            <h2 style="margin:0 0 15px 0; color:#dc2626; font-size:1.5rem; border-bottom:2px solid #e5e7eb; padding-bottom:10px;">
+                                📋 Incident Overview
+                            </h2>
+                            
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:15px;">
+                                <!-- Basic Information -->
+                                <div style="background:#f8fafc; padding:15px; border-radius:6px; border-left:4px solid #3b82f6;">
+                                    <h3 style="margin:0 0 10px 0; color:#1e40af; font-size:1.1rem;">Basic Information</h3>
+                                    <table style="width:100%; font-size:13px;">
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Title:</td><td style="padding:3px 0;"><span t-esc="incident.name or 'N/A'"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Type:</td><td style="padding:3px 0;"><span t-esc="incident.incident_type.replace('_', ' ').title() if incident.incident_type else 'N/A'"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Severity:</td><td style="padding:3px 0;">
+                                            <span t-if="incident.severity == 'critical'" style="background:#dc2626; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Critical</span>
+                                            <span t-elif="incident.severity == 'high'" style="background:#ea580c; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">High</span>
+                                            <span t-elif="incident.severity == 'medium'" style="background:#ca8a04; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Medium</span>
+                                            <span t-elif="incident.severity == 'low'" style="background:#16a34a; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Low</span>
+                                            <span t-else="" style="background:#6b7280; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Unknown</span>
+                                        </td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Status:</td><td style="padding:3px 0;">
+                                            <span t-if="incident.state == 'closed'" style="background:#16a34a; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Closed</span>
+                                            <span t-elif="incident.state == 'under_investigation'" style="background:#ca8a04; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Under Investigation</span>
+                                            <span t-elif="incident.state == 'pending_actions'" style="background:#ea580c; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Pending Actions</span>
+                                            <span t-elif="incident.state == 'reported'" style="background:#6b7280; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Reported</span>
+                                            <span t-else="" style="background:#6b7280; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Unknown</span>
+                                        </td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Reported By:</td><td style="padding:3px 0;"><span t-esc="incident.reporter_id.name if incident.reporter_id else 'N/A'"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Reported Date:</td><td style="padding:3px 0;"><span t-esc="incident.reported_date.strftime('%Y-%m-%d %H:%M') if incident.reported_date else 'N/A'"/></td></tr>
+                                    </table>
+                                </div>
+
+                                <!-- Location Information -->
+                                <div style="background:#f0fdf4; padding:15px; border-radius:6px; border-left:4px solid #22c55e;">
+                                    <h3 style="margin:0 0 10px 0; color:#166534; font-size:1.1rem;">Location Details</h3>
+                                    <table style="width:100%; font-size:13px;">
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Facility:</td><td style="padding:3px 0;"><span t-esc="incident.facility_id.name if incident.facility_id else 'N/A'"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Building:</td><td style="padding:3px 0;"><span t-esc="incident.building_id.name if incident.building_id else 'N/A'"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Floor:</td><td style="padding:3px 0;"><span t-esc="incident.floor_id.name if incident.floor_id else 'N/A'"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Room:</td><td style="padding:3px 0;"><span t-esc="incident.room_id.name if incident.room_id else 'N/A'"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Description:</td><td style="padding:3px 0;"><span t-esc="incident.location_description or 'N/A'"/></td></tr>
+                                    </table>
+                                </div>
+
+                                <!-- People Involved -->
+                                <div style="background:#fef2f2; padding:15px; border-radius:6px; border-left:4px solid #ef4444;">
+                                    <h3 style="margin:0 0 10px 0; color:#991b1b; font-size:1.1rem;">People Involved</h3>
+                                    <table style="width:100%; font-size:13px;">
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Injured Persons:</td><td style="padding:3px 0;">
+                                            <t t-if="incident.injured_person_ids">
+                                                <span t-foreach="incident.injured_person_ids" t-as="person" t-sep=", ">
+                                                    <span t-esc="person.name"/>
+                                                </span>
+                                            </t>
+                                            <t t-else="">None</t>
+                                        </td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Witnesses:</td><td style="padding:3px 0;">
+                                            <t t-if="incident.witness_ids">
+                                                <span t-foreach="incident.witness_ids" t-as="witness" t-sep=", ">
+                                                    <span t-esc="witness.name"/>
+                                                </span>
+                                            </t>
+                                            <t t-else="">None</t>
+                                        </td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Contractor Involved:</td><td style="padding:3px 0;">
+                                            <span t-if="incident.contractor_involved">Yes - <span t-esc="incident.contractor_name or 'Name not specified'"/></span>
+                                            <span t-else="">No</span>
+                                        </td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Injury Type:</td><td style="padding:3px 0;"><span t-esc="incident.injury_type.replace('_', ' ').title() if incident.injury_type else 'N/A'"/></td></tr>
+                                    </table>
+                                </div>
+
+                                <!-- Cost Information -->
+                                <div style="background:#fef7ff; padding:15px; border-radius:6px; border-left:4px solid #a855f7;">
+                                    <h3 style="margin:0 0 10px 0; color:#7c3aed; font-size:1.1rem;">Cost Analysis</h3>
+                                    <table style="width:100%; font-size:13px;">
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Medical Costs:</td><td style="padding:3px 0; font-weight:700; color:#7c3aed;"><span t-esc="incident.medical_costs or 0"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Lost Time Cost:</td><td style="padding:3px 0; font-weight:700; color:#7c3aed;"><span t-esc="incident.lost_time_cost or 0"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Repair Costs:</td><td style="padding:3px 0; font-weight:700; color:#7c3aed;"><span t-esc="incident.repair_costs or 0"/></td></tr>
+                                        <tr><td style="font-weight:600; color:#374151; padding:3px 0;">Damage Cost:</td><td style="padding:3px 0; font-weight:700; color:#7c3aed;"><span t-esc="incident.estimated_damage_cost or 0"/></td></tr>
+                                        <tr style="border-top:2px solid #e5e7eb;"><td style="font-weight:700; color:#374151; padding:5px 0;">Total Cost:</td><td style="padding:5px 0; font-weight:700; color:#7c3aed; font-size:14px;"><span t-esc="incident.total_cost or 0"/></td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Incident Description Section -->
+                        <div style="background:#fff; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 2px 8px #e2e8f0; page-break-inside:avoid;">
+                            <h2 style="margin:0 0 15px 0; color:#dc2626; font-size:1.5rem; border-bottom:2px solid #e5e7eb; padding-bottom:10px;">
+                                📝 Incident Details
+                            </h2>
+                            
+                            <div style="margin-bottom:20px; page-break-inside:avoid;">
+                                <h3 style="margin:0 0 10px 0; color:#374151; font-size:1.2rem;">Description</h3>
+                                <div style="background:#f8fafc; padding:15px; border-radius:6px; border:1px solid #e5e7eb;">
+                                    <div t-raw="incident.description or 'No description provided'"/>
+                                </div>
+                            </div>
+                            
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px; page-break-inside:avoid;">
+                                <div t-if="incident.immediate_cause" style="page-break-inside:avoid;">
+                                    <h3 style="margin:0 0 10px 0; color:#374151; font-size:1.2rem;">Immediate Cause</h3>
+                                    <div style="background:#fef2f2; padding:15px; border-radius:6px; border:1px solid #fecaca;">
+                                        <div t-raw="incident.immediate_cause"/>
+                                    </div>
+                                </div>
+                                
+                                <div t-if="incident.contributing_factors" style="page-break-inside:avoid;">
+                                    <h3 style="margin:0 0 10px 0; color:#374151; font-size:1.2rem;">Contributing Factors</h3>
+                                    <div style="background:#fef3c7; padding:15px; border-radius:6px; border:1px solid #fed7aa;">
+                                        <div t-raw="incident.contributing_factors"/>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top:20px; page-break-inside:avoid;">
+                                <h3 style="margin:0 0 10px 0; color:#374151; font-size:1.2rem;">Environmental Conditions</h3>
+                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:15px;">
+                                    <div style="background:#f0fdf4; padding:10px; border-radius:6px;">
+                                        <strong>Weather:</strong> <span t-esc="incident.weather_conditions or 'Not specified'"/>
+                                    </div>
+                                    <div style="background:#f0fdf4; padding:10px; border-radius:6px;">
+                                        <strong>Lighting:</strong> <span t-esc="incident.lighting_conditions.replace('_', ' ').title() if incident.lighting_conditions else 'Not specified'"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Immediate Actions Section -->
+                        <div style="background:#fff; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 2px 8px #e2e8f0; page-break-inside:avoid; page-break-before:auto;">
+                            <h2 style="margin:0 0 15px 0; color:#dc2626; font-size:1.5rem; border-bottom:2px solid #e5e7eb; padding-bottom:10px;">
+                                ⚡ Immediate Actions Taken
+                            </h2>
+                            
+                            <div t-if="incident.immediate_actions">
+                                <div style="background:#f8fafc; padding:15px; border-radius:6px; border:1px solid #e5e7eb;">
+                                    <div t-raw="incident.immediate_actions"/>
+                                </div>
+                            </div>
+                            <div t-else="">
+                                <div style="text-align:center; padding:20px; color:#6b7280; font-style:italic;">
+                                    No immediate actions recorded
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top:20px; page-break-inside:avoid;">
+                                <h3 style="margin:0 0 10px 0; color:#374151; font-size:1.2rem;">Emergency Response</h3>
+                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:15px;">
+                                    <div style="background:#fef2f2; padding:10px; border-radius:6px; text-align:center;">
+                                        <strong>Emergency Services Called:</strong><br/>
+                                        <span t-if="incident.emergency_services_called" style="color:#dc2626;">✓ Yes</span>
+                                        <span t-else="" style="color:#6b7280;">✗ No</span>
+                                    </div>
+                                    <div style="background:#fef2f2; padding:10px; border-radius:6px; text-align:center;">
+                                        <strong>Medical Attention Given:</strong><br/>
+                                        <span t-if="incident.medical_attention_given" style="color:#dc2626;">✓ Yes</span>
+                                        <span t-else="" style="color:#6b7280;">✗ No</span>
+                                    </div>
+                                    <div style="background:#fef2f2; padding:10px; border-radius:6px; text-align:center;">
+                                        <strong>Area Secured:</strong><br/>
+                                        <span t-if="incident.area_secured" style="color:#16a34a;">✓ Yes</span>
+                                        <span t-else="" style="color:#6b7280;">✗ No</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Investigation Section -->
+                        <div t-if="incident.investigation_required" style="background:#fff; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 2px 8px #e2e8f0; page-break-inside:avoid;">
+                            <h2 style="margin:0 0 15px 0; color:#dc2626; font-size:1.5rem; border-bottom:2px solid #e5e7eb; padding-bottom:10px;">
+                                🔍 Investigation Details
+                            </h2>
+                            
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:15px; margin-bottom:20px;">
+                                <div style="background:#f8fafc; padding:15px; border-radius:6px;">
+                                    <h3 style="margin:0 0 10px 0; color:#1e40af; font-size:1.1rem;">Investigation Team</h3>
+                                    <p><strong>Lead Investigator:</strong> <span t-esc="incident.investigator_id.name if incident.investigator_id else 'Not assigned'"/></p>
+                                    <p><strong>Team Members:</strong>
+                                        <t t-if="incident.investigation_team_ids">
+                                            <span t-foreach="incident.investigation_team_ids" t-as="member" t-sep=", ">
+                                                <span t-esc="member.name"/>
+                                            </span>
+                                        </t>
+                                        <t t-else="">None assigned</t>
+                                    </p>
+                                </div>
+                                
+                                <div style="background:#f0fdf4; padding:15px; border-radius:6px;">
+                                    <h3 style="margin:0 0 10px 0; color:#166534; font-size:1.1rem;">Timeline</h3>
+                                    <p><strong>Start Date:</strong> <span t-esc="incident.investigation_start_date.strftime('%Y-%m-%d') if incident.investigation_start_date else 'Not started'"/></p>
+                                    <p><strong>Completion Date:</strong> <span t-esc="incident.investigation_completion_date.strftime('%Y-%m-%d') if incident.investigation_completion_date else 'Not completed'"/></p>
+                                </div>
+                            </div>
+                            
+                            <div t-if="incident.root_cause_analysis">
+                                <h3 style="margin:0 0 10px 0; color:#374151; font-size:1.2rem;">Root Cause Analysis</h3>
+                                <div style="background:#fef2f2; padding:15px; border-radius:6px; border:1px solid #fecaca;">
+                                    <div t-raw="incident.root_cause_analysis"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Corrective Actions Section -->
+                        <div t-if="actions_by_incident.get(incident.id)" style="background:#fff; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 2px 8px #e2e8f0; page-break-inside:avoid;">
+                            <h2 style="margin:0 0 15px 0; color:#dc2626; font-size:1.5rem; border-bottom:2px solid #e5e7eb; padding-bottom:10px;">
+                                ✅ Corrective Actions
+                            </h2>
+                            
+                            <div style="overflow-x:auto;">
+                                <table style="width:100%; border-collapse:collapse; font-size:12px; page-break-inside:avoid;">
+                                    <thead>
+                                        <tr style="background:#dc2626; color:white; page-break-inside:avoid;">
+                                            <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Action</th>
+                                            <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Type</th>
+                                            <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Priority</th>
+                                            <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Responsible</th>
+                                            <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Target Date</th>
+                                            <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Status</th>
+                                            <th style="padding:10px; text-align:left; border:1px solid #e5e7eb;">Cost</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="actions_by_incident[incident.id]" t-as="action">
+                                            <tr style="border-bottom:1px solid #e5e7eb; page-break-inside:avoid;">
+                                                <td style="padding:8px; border:1px solid #e5e7eb; font-weight:600; color:#1e40af;">
+                                                    <span t-esc="action.name or 'N/A'"/>
+                                                </td>
+                                                <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                    <span t-esc="action.action_type.replace('_', ' ').title() if action.action_type else 'N/A'"/>
+                                                </td>
+                                                <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                    <span t-if="action.priority == 'critical'" style="background:#dc2626; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Critical</span>
+                                                    <span t-elif="action.priority == 'high'" style="background:#ea580c; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">High</span>
+                                                    <span t-elif="action.priority == 'medium'" style="background:#ca8a04; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Medium</span>
+                                                    <span t-elif="action.priority == 'low'" style="background:#16a34a; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Low</span>
+                                                    <span t-else="" style="background:#6b7280; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Unknown</span>
+                                                </td>
+                                                <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                    <span t-esc="action.responsible_id.name if action.responsible_id else 'N/A'"/>
+                                                </td>
+                                                <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                    <span t-esc="action.target_date.strftime('%Y-%m-%d') if action.target_date else 'N/A'"/>
+                                                </td>
+                                                <td style="padding:8px; border:1px solid #e5e7eb;">
+                                                    <span t-if="action.state == 'completed'" style="background:#16a34a; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Completed</span>
+                                                    <span t-elif="action.state == 'in_progress'" style="background:#ca8a04; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">In Progress</span>
+                                                    <span t-elif="action.state == 'overdue'" style="background:#dc2626; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Overdue</span>
+                                                    <span t-elif="action.state == 'open'" style="background:#6b7280; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Open</span>
+                                                    <span t-else="" style="background:#6b7280; color:white; padding:2px 6px; border-radius:3px; font-size:10px;">Unknown</span>
+                                                </td>
+                                                <td style="padding:8px; border:1px solid #e5e7eb; font-weight:600;">
+                                                    <span t-esc="action.actual_cost or action.cost or 0"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Lessons Learned Section -->
+                        <div t-if="incident.lessons_learned or incident.preventive_measures" style="background:#fff; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 2px 8px #e2e8f0; page-break-inside:avoid;">
+                            <h2 style="margin:0 0 15px 0; color:#dc2626; font-size:1.5rem; border-bottom:2px solid #e5e7eb; padding-bottom:10px;">
+                                📚 Lessons Learned &amp; Prevention
+                            </h2>
+                            
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
+                                <div t-if="incident.lessons_learned">
+                                    <h3 style="margin:0 0 10px 0; color:#374151; font-size:1.2rem;">Lessons Learned</h3>
+                                    <div style="background:#f0fdf4; padding:15px; border-radius:6px; border:1px solid #bbf7d0;">
+                                        <div t-raw="incident.lessons_learned"/>
+                                    </div>
+                                </div>
+                                
+                                <div t-if="incident.preventive_measures">
+                                    <h3 style="margin:0 0 10px 0; color:#374151; font-size:1.2rem;">Preventive Measures</h3>
+                                    <div style="background:#fef3c7; padding:15px; border-radius:6px; border:1px solid #fed7aa;">
+                                        <div t-raw="incident.preventive_measures"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Regulatory Reporting Section -->
+                        <div t-if="incident.regulatory_reporting_required" style="background:#fff; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 2px 8px #e2e8f0; page-break-inside:avoid;">
+                            <h2 style="margin:0 0 15px 0; color:#dc2626; font-size:1.5rem; border-bottom:2px solid #e5e7eb; padding-bottom:10px;">
+                                📋 Regulatory Reporting
+                            </h2>
+                            
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:15px;">
+                                <div style="background:#f8fafc; padding:15px; border-radius:6px;">
+                                    <h3 style="margin:0 0 10px 0; color:#1e40af; font-size:1.1rem;">Regulatory Information</h3>
+                                    <p><strong>Regulatory Body:</strong> <span t-esc="incident.regulatory_body or 'Not specified'"/></p>
+                                    <p><strong>Report Date:</strong> <span t-esc="incident.regulatory_report_date.strftime('%Y-%m-%d') if incident.regulatory_report_date else 'Not reported'"/></p>
+                                    <p><strong>Reference:</strong> <span t-esc="incident.regulatory_reference or 'Not assigned'"/></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Summary Section -->
+                        <div style="background:#f8fafc; padding:20px; border-radius:8px; border:2px solid #e5e7eb; page-break-inside:avoid;">
+                            <h2 style="margin:0 0 15px 0; color:#dc2626; font-size:1.5rem; border-bottom:2px solid #e5e7eb; padding-bottom:10px;">
+                                📊 Incident Summary
+                            </h2>
+                            
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
+                                <div>
+                                    <h3 style="margin:0 0 10px 0; color:#374151; font-size:1.2rem;">Key Information</h3>
+                                    <ul style="margin:0; padding-left:20px; color:#374151; line-height:1.6;">
+                                        <li><strong>Incident Number:</strong> <span t-esc="incident.incident_number or 'N/A'"/></li>
+                                        <li><strong>Incident Type:</strong> <span t-esc="incident.incident_type.replace('_', ' ').title() if incident.incident_type else 'N/A'"/></li>
+                                        <li><strong>Severity Level:</strong> <span t-esc="incident.severity.replace('_', ' ').title() if incident.severity else 'N/A'"/></li>
+                                        <li><strong>Current Status:</strong> <span t-esc="incident.state.replace('_', ' ').title() if incident.state else 'N/A'"/></li>
+                                        <li><strong>Total Cost:</strong> <span t-esc="incident.total_cost or 0"/></li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <h3 style="margin:0 0 10px 0; color:#374151; font-size:1.2rem;">Next Steps</h3>
+                                    <ul style="margin:0; padding-left:20px; color:#374151; line-height:1.6;">
+                                        <t t-if="incident.state == 'reported'">
+                                            <li style="color:#ca8a04;">⚠️ Investigation should be initiated</li>
+                                        </t>
+                                        <t t-if="incident.state == 'under_investigation'">
+                                            <li style="color:#ca8a04;">⚠️ Complete root cause analysis</li>
+                                        </t>
+                                        <t t-if="incident.state == 'pending_actions'">
+                                            <li style="color:#ea580c;">⚠️ Implement corrective actions</li>
+                                        </t>
+                                        <t t-if="incident.state == 'closed'">
+                                            <li style="color:#16a34a;">✅ Incident closed - monitor for similar issues</li>
+                                        </t>
+                                        <t t-if="incident.regulatory_reporting_required and not incident.regulatory_report_date">
+                                            <li style="color:#dc2626;">⚠️ Regulatory reporting required</li>
+                                        </t>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

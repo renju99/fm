@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Financial Dashboard Tree View -->
+    <record id="view_financial_dashboard_tree" model="ir.ui.view">
+        <field name="name">financial.dashboard.tree</field>
+        <field name="model">facilities.financial.dashboard</field>
+        <field name="arch" type="xml">
+            <list string="Financial Dashboards">
+                <field name="name"/>
+                <field name="period_type"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="total_budget" widget="monetary"/>
+                <field name="total_spent" widget="monetary"/>
+                <field name="budget_utilization" widget="percentage"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="currency_id" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Financial Dashboard Form View -->
+    <record id="view_financial_dashboard_form" model="ir.ui.view">
+        <field name="name">financial.dashboard.form</field>
+        <field name="model">facilities.financial.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Financial Dashboard">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_refresh_dashboard" 
+                                class="oe_stat_button" icon="fa-refresh">
+                            <span>Refresh</span>
+                        </button>
+                        <button type="object" name="action_view_expenses" 
+                                class="oe_stat_button" icon="fa-money">
+                            <field name="total_spent" widget="statinfo" string="Total Spent"/>
+                        </button>
+                        <button type="object" name="action_view_budgets" 
+                                class="oe_stat_button" icon="fa-pie-chart">
+                            <field name="total_budget" widget="statinfo" string="Total Budget"/>
+                        </button>
+                    </div>
+                    
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" 
+                            invisible="active == True"/>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Dashboard Name"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="period_type"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                    </group>
+                    
+                    <field name="description" placeholder="Dashboard description..."/>
+                    
+                    <notebook>
+                        <page string="Configuration">
+                            <group>
+                                <group string="Cost Centers">
+                                    <field name="cost_center_ids" widget="many2many_tags" nolabel="1"/>
+                                </group>
+                                <group string="Expense Categories">
+                                    <field name="category_ids" widget="many2many_tags" nolabel="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="KPIs">
+                            <group string="Budget Summary" col="4">
+                                <field name="total_budget" widget="monetary"/>
+                                <field name="total_spent" widget="monetary"/>
+                                <field name="total_remaining" widget="monetary"/>
+                                <field name="budget_utilization" widget="percentage"/>
+                                <field name="variance_amount" widget="monetary"/>
+                                <field name="variance_percentage" widget="percentage"/>
+                            </group>
+                        </page>
+                        
+                        <page string="Charts">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Budget vs Actual</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="budget_vs_actual_chart" widget="chartjs" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Cost Center Breakdown</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="cost_center_breakdown_chart" widget="chartjs" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Category Breakdown</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="category_breakdown_chart" widget="chartjs" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Trend Analysis</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="trend_analysis_chart" widget="chartjs" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Financial Dashboard Search View -->
+    <record id="view_financial_dashboard_search" model="ir.ui.view">
+        <field name="name">financial.dashboard.search</field>
+        <field name="model">facilities.financial.dashboard</field>
+        <field name="arch" type="xml">
+            <search string="Financial Dashboards">
+                <field name="name"/>
+                <field name="period_type"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <separator/>
+                <filter name="active_dashboards" string="Active" 
+                        domain="[('active', '=', True)]"/>
+                <filter name="archived_dashboards" string="Archived" 
+                        domain="[('active', '=', False)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_period_type" string="Period Type" context="{'group_by': 'period_type'}"/>
+                    <filter name="group_by_company" string="Company" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Financial Dashboard Action -->
+    <record id="action_financial_dashboard" model="ir.actions.act_window">
+        <field name="name">Financial Dashboards</field>
+        <field name="res_model">facilities.financial.dashboard</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_financial_dashboard_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first financial dashboard!
+            </p>
+            <p>
+                Financial dashboards provide comprehensive insights into budget performance,
+                spending patterns, and financial KPIs across different cost centers and categories.
+            </p>
+        </field>
+    </record>
+
+</odoo>

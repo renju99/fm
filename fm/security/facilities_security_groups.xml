@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Facilities Management Category -->
+        <record id="module_category_facilities" model="ir.module.category">
+            <field name="name">Facilities Management</field>
+            <field name="description">Helps you manage facilities, assets, and maintenance operations.</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- ======================================== -->
+        <!-- FACILITIES MANAGEMENT SECURITY GROUPS -->
+        <!-- ======================================== -->
+        
+        <!-- Maintenance Technician Group (Base Internal User) -->
+        <record id="group_maintenance_technician" model="res.groups">
+            <field name="name">Maintenance Technician</field>
+            <field name="category_id" ref="module_category_facilities"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Technicians who can view and update work orders assigned to them</field>
+        </record>
+
+        <!-- Facilities Management User Group -->
+        <record id="group_facilities_user" model="res.groups">
+            <field name="name">Facilities Management User</field>
+            <field name="category_id" ref="module_category_facilities"/>
+            <field name="implied_ids" eval="[(4, ref('group_maintenance_technician'))]"/>
+            <field name="comment">Users in this group will have access to facilities management features</field>
+        </record>
+
+        <!-- Facilities Management Manager Group -->
+        <record id="group_facilities_manager" model="res.groups">
+            <field name="name">Facilities Management Manager</field>
+            <field name="category_id" ref="module_category_facilities"/>
+            <field name="implied_ids" eval="[(4, ref('group_facilities_user'))]"/>
+            <field name="comment">Facilities managers with full access to all features including configuration and reports</field>
+        </record>
+
+        <!-- SLA Escalation Manager Group -->
+        <record id="group_sla_escalation_manager" model="res.groups">
+            <field name="name">SLA Escalation Manager</field>
+            <field name="category_id" ref="module_category_facilities"/>
+            <field name="implied_ids" eval="[(4, ref('group_facilities_manager'))]"/>
+            <field name="comment">Users who can manage SLA escalation settings and controls</field>
+        </record>
+
+        <!-- Portal User Groups (separate from internal users) -->
+        <!-- Tenant User Group for Portal Access -->
+        <record id="group_tenant_user" model="res.groups">
+            <field name="name">Tenant Portal User</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="comment">External portal users who can submit service requests and access basic facilities features</field>
+        </record>
+
+        <!-- ======================================== -->
+        <!-- RECORD RULES FOR FACILITIES MODELS -->
+        <!-- ======================================== -->
+        
+        <!-- Facilities Access Rules for Portal Users -->
+        <record id="facilities_facility_rule_portal" model="ir.rule">
+            <field name="name">Facilities: Portal Access</field>
+            <field name="model_id" ref="model_facilities_facility"/>
+            <field name="domain_force">[('tenant_partner_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('group_tenant_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Facilities Access Rules for Internal Users -->
+        <record id="facilities_facility_rule_user" model="ir.rule">
+            <field name="name">Facilities: User Access</field>
+            <field name="model_id" ref="model_facilities_facility"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_facilities_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="facilities_facility_rule_manager" model="ir.rule">
+            <field name="name">Facilities: Manager Full Access</field>
+            <field name="model_id" ref="model_facilities_facility"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_facilities_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Work Orders Access Rules for Portal Users -->
+        <record id="facilities_workorder_rule_portal" model="ir.rule">
+            <field name="name">Work Orders: Portal Access</field>
+            <field name="model_id" ref="model_facilities_workorder"/>
+            <field name="domain_force">[('submitted_by_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_tenant_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Work Orders Access Rules for Internal Users -->
+        <record id="facilities_workorder_rule_technician" model="ir.rule">
+            <field name="name">Work Orders: Technician Access</field>
+            <field name="model_id" ref="model_facilities_workorder"/>
+            <field name="domain_force">['|', ('assigned_technician_ids', 'in', [user.id]), ('technician_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_maintenance_technician'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="facilities_workorder_rule_user" model="ir.rule">
+            <field name="name">Work Orders: User Full Access</field>
+            <field name="model_id" ref="model_facilities_workorder"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_facilities_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="facilities_workorder_rule_manager" model="ir.rule">
+            <field name="name">Work Orders: Manager Full Access</field>
+            <field name="model_id" ref="model_facilities_workorder"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_facilities_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Service Requests Access Rules for Portal Users -->
+        <record id="facilities_service_request_rule_portal" model="ir.rule">
+            <field name="name">Service Requests: Portal Access</field>
+            <field name="model_id" ref="model_facilities_service_request"/>
+            <field name="domain_force">[('requester_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_tenant_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Service Requests Access Rules for Internal Users -->
+        <record id="facilities_service_request_rule_technician" model="ir.rule">
+            <field name="name">Service Requests: Technician Access</field>
+            <field name="model_id" ref="model_facilities_service_request"/>
+            <field name="domain_force">[('assigned_to_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_maintenance_technician'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="facilities_service_request_rule_user" model="ir.rule">
+            <field name="name">Service Requests: User Full Access</field>
+            <field name="model_id" ref="model_facilities_service_request"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_facilities_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="facilities_service_request_rule_manager" model="ir.rule">
+            <field name="name">Service Requests: Manager Full Access</field>
+            <field name="model_id" ref="model_facilities_service_request"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_facilities_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

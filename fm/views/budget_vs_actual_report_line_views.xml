@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Budget vs Actual Report Line List View -->
+    <record id="budget_vs_actual_report_line_list" model="ir.ui.view">
+        <field name="name">budget.vs.actual.report.line.list</field>
+        <field name="model">facilities.budget.vs.actual.report.line</field>
+        <field name="arch" type="xml">
+            <list string="Budget vs Actual Lines" decoration-danger="status_indicator=='over_budget'" 
+                  decoration-success="status_indicator=='under_budget'" 
+                  decoration-muted="status_indicator=='no_spending'">
+                <field name="analytic_account_id"/>
+                <field name="cost_center_id"/>
+                <field name="category_id"/>
+                <field name="budget_allocated" sum="Total Budget"/>
+                <field name="actual_spent" sum="Total Spent"/>
+                <field name="variance" sum="Total Variance"/>
+                <field name="variance_percentage" widget="percentage"/>
+                <field name="utilization_percentage" widget="percentage"/>
+                <field name="status_indicator" widget="badge" 
+                       decoration-success="status_indicator=='under_budget'" 
+                       decoration-info="status_indicator=='on_budget'"
+                       decoration-warning="status_indicator=='over_budget'"
+                       decoration-muted="status_indicator=='no_spending'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Budget vs Actual Report Line Form View -->
+    <record id="budget_vs_actual_report_line_form" model="ir.ui.view">
+        <field name="name">budget.vs.actual.report.line.form</field>
+        <field name="model">facilities.budget.vs.actual.report.line</field>
+        <field name="arch" type="xml">
+            <form string="Budget vs Actual Report Line">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="analytic_account_id" readonly="1"/>
+                            <field name="cost_center_id" readonly="1"/>
+                            <field name="category_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="status_indicator" widget="badge" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Budget Information">
+                            <field name="budget_allocated" widget="monetary" readonly="1"/>
+                        </group>
+                        <group string="Actual Information">
+                            <field name="actual_spent" widget="monetary" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Analysis">
+                            <field name="variance" widget="monetary" readonly="1"/>
+                            <field name="variance_percentage" widget="percentage" readonly="1"/>
+                            <field name="utilization_percentage" widget="percentage" readonly="1"/>
+                        </group>
+                    </group>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_budget_lines" type="object" 
+                                class="oe_stat_button" icon="fa-list">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Budget Lines</span>
+                            </div>
+                        </button>
+                        <button name="action_view_expenses" type="object" 
+                                class="oe_stat_button" icon="fa-money">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Expenses</span>
+                            </div>
+                        </button>
+                        <button name="action_view_workorders" type="object" 
+                                class="oe_stat_button" icon="fa-wrench">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Work Orders</span>
+                            </div>
+                        </button>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

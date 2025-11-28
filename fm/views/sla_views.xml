@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- SLA Form View -->
+        <record id="view_facilities_sla_form" model="ir.ui.view">
+            <field name="name">facilities.sla.form</field>
+            <field name="model">facilities.sla</field>
+            <field name="arch" type="xml">
+                <form string="SLA">
+                    <header>
+                        <button name="action_view_workorders" type="object" string="View Work Orders" class="btn-primary"/>
+                        <button name="action_activate_sla" type="object" string="Activate" 
+                                class="btn-success" invisible="active" confirm="Are you sure you want to activate this SLA?"/>
+                        <button name="action_deactivate_sla" type="object" string="Deactivate" 
+                                class="btn-danger" invisible="not active" confirm="Are you sure you want to deactivate this SLA?"/>
+                        <field name="active" widget="boolean_toggle" invisible="1"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="SLA Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Basic Information">
+                                <field name="active" widget="boolean_toggle"/>
+                                <field name="priority"/>
+                                <field name="description"/>
+                            </group>
+                            <group string="Timeframes">
+                                <field name="response_time_hours"/>
+                                <field name="resolution_time_hours"/>
+                                <field name="warning_threshold_hours"/>
+                                <field name="escalation_delay_hours"/>
+                            </group>
+                            <group string="Status Thresholds (%)">
+                                <field name="warning_threshold"/>
+                                <field name="critical_threshold"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Assignment Rules" name="assignment_rules">
+                                <group>
+                                    <group string="Asset Criteria">
+                                        <field name="asset_criticality"/>
+                                        <field name="maintenance_type"/>
+                                        <field name="priority_level"/>
+                                    </group>
+                                    <group string="Location">
+                                        <field name="facility_ids" widget="many2many_tags"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Escalation Settings" name="escalation">
+                                <group>
+                                    <group string="Escalation Configuration">
+                                        <field name="escalation_enabled"/>
+                                        <field name="max_escalation_level"/>
+                                        <field name="escalation_recipients" widget="many2many_tags"/>
+                                    </group>
+                                    <group string="Notifications">
+                                        <field name="email_notifications"/>
+                                        <field name="sms_notifications"/>
+                                        <field name="notification_template_id"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="KPI Targets" name="kpi_targets">
+                                <group>
+                                    <group string="Performance Targets">
+                                        <field name="target_mttr_hours"/>
+                                        <field name="target_first_time_fix_rate"/>
+                                        <field name="target_sla_compliance_rate"/>
+                                    </group>
+                                    <group string="Business Hours">
+                                        <field name="business_hours_only"/>
+                                        <field name="business_hours_start"/>
+                                        <field name="business_hours_end"/>
+                                        <field name="business_days"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Performance Metrics" name="performance">
+                                <group>
+                                    <group string="Work Order Statistics">
+                                        <field name="total_workorders" readonly="1"/>
+                                        <field name="compliant_workorders" readonly="1"/>
+                                        <field name="breached_workorders" readonly="1"/>
+                                    </group>
+                                    <group string="Performance Rates">
+                                        <field name="compliance_rate" readonly="1" widget="percentage"/>
+                                        <field name="avg_mttr" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Activation History" name="activation_history">
+                                <group>
+                                    <group string="Current Status">
+                                        <field name="active" readonly="1"/>
+                                        <field name="activated_by_id" readonly="1"/>
+                                        <field name="activated_date" readonly="1"/>
+                                    </group>
+                                    <group string="Deactivation Info" invisible="not active">
+                                        <field name="deactivated_by_id" readonly="1"/>
+                                        <field name="deactivated_date" readonly="1"/>
+                                        <field name="deactivation_reason" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- SLA Tree View -->
+        <record id="view_facilities_sla_tree" model="ir.ui.view">
+            <field name="name">facilities.sla.tree</field>
+            <field name="model">facilities.sla</field>
+            <field name="arch" type="xml">
+                <list string="SLAs" decoration-muted="not active" decoration-danger="compliance_rate &lt; 80">
+                    <field name="name"/>
+                    <field name="active" widget="boolean_toggle"/>
+                    <field name="priority"/>
+                    <field name="response_time_hours"/>
+                    <field name="resolution_time_hours"/>
+                    <field name="warning_threshold" widget="percentage"/>
+                    <field name="critical_threshold" widget="percentage"/>
+                    <field name="asset_criticality"/>
+                    <field name="maintenance_type"/>
+                    <field name="compliance_rate" widget="percentage"/>
+                    <field name="total_workorders"/>
+                    <field name="activated_by_id" invisible="1"/>
+                    <field name="activated_date" invisible="1"/>
+                    <field name="deactivated_by_id" invisible="1"/>
+                    <field name="deactivated_date" invisible="1"/>
+                    <field name="deactivation_reason" invisible="1"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- SLA Search View -->
+        <record id="view_facilities_sla_search" model="ir.ui.view">
+            <field name="name">facilities.sla.search</field>
+            <field name="model">facilities.sla</field>
+            <field name="arch" type="xml">
+                <search string="SLA Search">
+                    <field name="name"/>
+                    <field name="asset_criticality"/>
+                    <field name="maintenance_type"/>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                    <filter string="High Priority" name="high_priority" domain="[('priority', '&gt;=', 8)]"/>
+                    <filter string="Critical Assets" name="critical_assets" domain="[('asset_criticality', '=', 'critical')]"/>
+                    <filter string="Low Compliance" name="low_compliance" domain="[('compliance_rate', '&lt;', 80)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Status" name="group_active" context="{'group_by': 'active'}"/>
+                        <filter string="Asset Criticality" name="group_criticality" context="{'group_by': 'asset_criticality'}"/>
+                        <filter string="Maintenance Type" name="group_type" context="{'group_by': 'maintenance_type'}"/>
+                        <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
+                        <filter string="Compliance Rate" name="group_compliance" context="{'group_by': 'compliance_rate'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- SLA Action -->
+        <record id="action_facilities_sla" model="ir.actions.act_window">
+            <field name="name">Service Level Agreements</field>
+            <field name="res_model">facilities.sla</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first SLA!
+                </p>
+                <p>
+                    Define service level agreements for different asset types, criticality levels, and maintenance types.
+                </p>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_advanced_maintenance" model="ir.cron">
+            <field name="name">Generate Preventive Maintenance Work Orders</field> <!-- More descriptive name -->
+            <field name="model_id" ref="model_asset_maintenance_schedule"/>
+            <field name="state">code</field>
+            <field name="code">model._generate_preventive_workorders()</field> <!-- Calls the new method -->
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field> <!-- Changed to days for daily check -->
+            <field name="active">True</field>
+        </record>
+
+        <record id="ir_cron_auto_escalate_workorders" model="ir.cron">
+            <field name="name">Auto Escalate Maintenance Work Orders</field>
+            <field name="model_id" ref="model_facilities_workorder"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_auto_escalate_workorders()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field> <!-- Check every hour -->
+            <field name="active">False</field> <!-- Default to False to prevent auto-activation -->
+        </record>
+
+        <record id="ir_cron_permit_expiry_reminder" model="ir.cron">
+            <field name="name">Permit Expiry Reminder</field>
+            <field name="model_id" ref="facilities_management.model_facilities_workorder_permit"/>
+            <field name="state">code</field>
+            <field name="code">
+                model.cron_remind_expiring_permits()
+            </field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+
+        <!-- Periodic Facility Reports (Email) -->
+        <record id="ir_cron_send_monthly_facility_report" model="ir.cron">
+            <field name="name">Send Monthly Facility Report</field>
+            <field name="model_id" ref="facilities_management.model_facilities_facility"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_send_periodic_facility_report(period='monthly')</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="ir_cron_send_weekly_facility_report" model="ir.cron">
+            <field name="name">Send Weekly Facility Report</field>
+            <field name="model_id" ref="facilities_management.model_facilities_facility"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_send_periodic_facility_report(period='weekly')</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="active">False</field>
+        </record>
+
+        <record id="ir_cron_send_daily_facility_report" model="ir.cron">
+            <field name="name">Send Daily Facility Report</field>
+            <field name="model_id" ref="facilities_management.model_facilities_facility"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_send_periodic_facility_report(period='daily')</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">False</field>
+        </record>
+
+    </data>
+</odoo>

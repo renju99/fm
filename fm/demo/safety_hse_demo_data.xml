@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Safety & HSE Demo Data -->
+        
+        <!-- Create additional facilities for safety demo -->
+        <record id="demo_facility_safety_1" model="facilities.facility">
+            <field name="name">Industrial Manufacturing Complex</field>
+            <field name="area_sqm">200000</field>
+            <field name="address">789 Industrial Park Road, Manufacturing City, MC 54321</field>
+            <field name="notes">Large-scale manufacturing facility with heavy machinery and chemical processing</field>
+        </record>
+
+        <record id="demo_facility_safety_2" model="facilities.facility">
+            <field name="name">Office Complex Alpha</field>
+            <field name="area_sqm">75000</field>
+            <field name="address">456 Business District, Corporate City, CC 98765</field>
+            <field name="notes">Modern office complex with multiple floors and various departments</field>
+        </record>
+
+        <record id="demo_facility_safety_3" model="facilities.facility">
+            <field name="name">Research &amp; Development Center</field>
+            <field name="area_sqm">120000</field>
+            <field name="address">321 Science Boulevard, Innovation Valley, IV 13579</field>
+            <field name="notes">High-tech R&amp;D facility with laboratories and testing areas</field>
+        </record>
+
+        <!-- Create buildings for safety demo -->
+        <record id="demo_building_safety_1" model="facilities.building">
+            <field name="name">Production Hall A</field>
+            <field name="facility_id" ref="demo_facility_safety_1"/>
+            <field name="building_type">warehouse</field>
+            <field name="total_area_sqm">80000</field>
+            <field name="number_of_floors">2</field>
+            <field name="year_constructed">2015</field>
+        </record>
+
+        <record id="demo_building_safety_2" model="facilities.building">
+            <field name="name">Chemical Processing Unit</field>
+            <field name="facility_id" ref="demo_facility_safety_1"/>
+            <field name="building_type">warehouse</field>
+            <field name="total_area_sqm">40000</field>
+            <field name="number_of_floors">1</field>
+            <field name="year_constructed">2018</field>
+        </record>
+
+        <record id="demo_building_safety_3" model="facilities.building">
+            <field name="name">Main Office Tower</field>
+            <field name="facility_id" ref="demo_facility_safety_2"/>
+            <field name="building_type">office</field>
+            <field name="total_area_sqm">50000</field>
+            <field name="number_of_floors">20</field>
+            <field name="year_constructed">2020</field>
+        </record>
+
+        <record id="demo_building_safety_4" model="facilities.building">
+            <field name="name">Parking Garage</field>
+            <field name="facility_id" ref="demo_facility_safety_2"/>
+            <field name="building_type">other</field>
+            <field name="total_area_sqm">25000</field>
+            <field name="number_of_floors">4</field>
+            <field name="year_constructed">2020</field>
+        </record>
+
+        <record id="demo_building_safety_5" model="facilities.building">
+            <field name="name">Laboratory Complex</field>
+            <field name="facility_id" ref="demo_facility_safety_3"/>
+            <field name="building_type">educational</field>
+            <field name="total_area_sqm">60000</field>
+            <field name="number_of_floors">6</field>
+            <field name="year_constructed">2019</field>
+        </record>
+
+        <record id="demo_building_safety_6" model="facilities.building">
+            <field name="name">Testing Facility</field>
+            <field name="facility_id" ref="demo_facility_safety_3"/>
+            <field name="building_type">educational</field>
+            <field name="total_area_sqm">60000</field>
+            <field name="number_of_floors">4</field>
+            <field name="year_constructed">2021</field>
+        </record>
+
+        <!-- Create floors for safety demo -->
+        <record id="demo_floor_safety_1" model="facilities.floor">
+            <field name="name">Ground Floor</field>
+            <field name="building_id" ref="demo_building_safety_1"/>
+            <field name="level">0</field>
+            <field name="area_sqm">40000</field>
+        </record>
+
+        <record id="demo_floor_safety_2" model="facilities.floor">
+            <field name="name">First Floor</field>
+            <field name="building_id" ref="demo_building_safety_1"/>
+            <field name="level">1</field>
+            <field name="area_sqm">40000</field>
+        </record>
+
+        <record id="demo_floor_safety_3" model="facilities.floor">
+            <field name="name">Ground Floor</field>
+            <field name="building_id" ref="demo_building_safety_3"/>
+            <field name="level">0</field>
+            <field name="area_sqm">2500</field>
+        </record>
+
+        <record id="demo_floor_safety_4" model="facilities.floor">
+            <field name="name">10th Floor</field>
+            <field name="building_id" ref="demo_building_safety_3"/>
+            <field name="level">10</field>
+            <field name="area_sqm">2500</field>
+        </record>
+
+        <record id="demo_floor_safety_5" model="facilities.floor">
+            <field name="name">Laboratory Floor 1</field>
+            <field name="building_id" ref="demo_building_safety_5"/>
+            <field name="level">1</field>
+            <field name="area_sqm">10000</field>
+        </record>
+
+        <record id="demo_floor_safety_6" model="facilities.floor">
+            <field name="name">Laboratory Floor 2</field>
+            <field name="building_id" ref="demo_building_safety_5"/>
+            <field name="level">2</field>
+            <field name="area_sqm">10000</field>
+        </record>
+
+        <!-- Create rooms for safety demo -->
+        <record id="demo_room_safety_1" model="facilities.room">
+            <field name="name">Assembly Line Station 1</field>
+            <field name="floor_id" ref="demo_floor_safety_1"/>
+            <field name="room_type">other</field>
+            <field name="area_sqm">500</field>
+        </record>
+
+        <record id="demo_room_safety_2" model="facilities.room">
+            <field name="name">Chemical Storage Room</field>
+            <field name="floor_id" ref="demo_floor_safety_1"/>
+            <field name="room_type">storage</field>
+            <field name="area_sqm">200</field>
+        </record>
+
+        <record id="demo_room_safety_3" model="facilities.room">
+            <field name="name">Main Lobby</field>
+            <field name="floor_id" ref="demo_floor_safety_3"/>
+            <field name="room_type">other</field>
+            <field name="area_sqm">300</field>
+        </record>
+
+        <record id="demo_room_safety_4" model="facilities.room">
+            <field name="name">Conference Room 10A</field>
+            <field name="floor_id" ref="demo_floor_safety_4"/>
+            <field name="room_type">meeting_room</field>
+            <field name="area_sqm">50</field>
+        </record>
+
+        <record id="demo_room_safety_5" model="facilities.room">
+            <field name="name">Chemistry Laboratory</field>
+            <field name="floor_id" ref="demo_floor_safety_5"/>
+            <field name="room_type">laboratory</field>
+            <field name="area_sqm">150</field>
+        </record>
+
+        <record id="demo_room_safety_6" model="facilities.room">
+            <field name="name">Equipment Testing Room</field>
+            <field name="floor_id" ref="demo_floor_safety_6"/>
+            <field name="room_type">laboratory</field>
+            <field name="area_sqm">200</field>
+        </record>
+
+        <!-- Create demo safety incidents -->
+        <record id="demo_safety_incident_1" model="facilities.safety.incident">
+            <field name="name">Chemical Spill in Storage Room</field>
+            <field name="incident_number">SI-2024-001</field>
+            <field name="incident_date">2024-08-15 14:30:00</field>
+            <field name="reported_date">2024-08-15 14:45:00</field>
+            <field name="incident_type">chemical_spill</field>
+            <field name="severity">high</field>
+            <field name="injury_type">none</field>
+            <field name="facility_id" ref="demo_facility_safety_1"/>
+            <field name="building_id" ref="demo_building_safety_2"/>
+            <field name="room_id" ref="demo_room_safety_2"/>
+            <field name="location_description">Chemical storage room on ground floor, near the main entrance</field>
+            <field name="reporter_id" ref="base.user_admin"/>
+            <field name="description">&lt;p&gt;A 50-gallon drum of industrial solvent leaked due to a damaged valve. The spill covered approximately 20 square meters of the storage room floor.&lt;/p&gt;</field>
+            <field name="immediate_cause">&lt;p&gt;Corroded valve on the drum failed during routine handling, causing the solvent to leak.&lt;/p&gt;</field>
+            <field name="contributing_factors">&lt;p&gt;Inadequate inspection schedule for chemical storage containers. Poor lighting in storage area.&lt;/p&gt;</field>
+            <field name="weather_conditions">Clear, 25°C</field>
+            <field name="lighting_conditions">artificial</field>
+            <field name="equipment_damage">True</field>
+            <field name="damage_description">One chemical drum damaged, floor tiles stained</field>
+            <field name="estimated_damage_cost">2500.00</field>
+            <field name="immediate_actions">&lt;p&gt;Area immediately evacuated and cordoned off. Spill containment materials deployed. Emergency response team notified.&lt;/p&gt;</field>
+            <field name="emergency_services_called">True</field>
+            <field name="area_secured">True</field>
+            <field name="investigation_required">True</field>
+            <field name="investigator_id" ref="base.user_admin"/>
+            <field name="investigation_start_date">2024-08-16</field>
+            <field name="root_cause_analysis">&lt;p&gt;Root cause: Inadequate maintenance schedule for chemical storage equipment. Contributing factors: Poor lighting, lack of regular inspections.&lt;/p&gt;</field>
+            <field name="state">under_investigation</field>
+            <field name="regulatory_reporting_required">True</field>
+            <field name="regulatory_body">Environmental Protection Agency</field>
+            <field name="medical_costs">0.00</field>
+            <field name="lost_time_cost">0.00</field>
+            <field name="repair_costs">2500.00</field>
+            <field name="lessons_learned">&lt;p&gt;Need to implement monthly inspection schedule for all chemical storage containers. Improve lighting in storage areas.&lt;/p&gt;</field>
+            <field name="preventive_measures">&lt;p&gt;Install automatic leak detection systems. Implement weekly visual inspections. Upgrade lighting system.&lt;/p&gt;</field>
+        </record>
+
+        <record id="demo_safety_incident_2" model="facilities.safety.incident">
+            <field name="name">Slip and Fall in Office Lobby</field>
+            <field name="incident_number">SI-2024-002</field>
+            <field name="incident_date">2024-08-20 09:15:00</field>
+            <field name="reported_date">2024-08-20 09:20:00</field>
+            <field name="incident_type">injury</field>
+            <field name="severity">medium</field>
+            <field name="injury_type">medical_treatment</field>
+            <field name="facility_id" ref="demo_facility_safety_2"/>
+            <field name="building_id" ref="demo_building_safety_3"/>
+            <field name="room_id" ref="demo_room_safety_3"/>
+            <field name="location_description">Main lobby near the reception desk</field>
+            <field name="reporter_id" ref="base.user_admin"/>
+            <field name="description">&lt;p&gt;Employee slipped on wet floor in the main lobby after cleaning staff mopped the area. Employee fell and injured their wrist.&lt;/p&gt;</field>
+            <field name="immediate_cause">&lt;p&gt;Wet floor without proper warning signs. Employee was walking quickly and didn't notice the wet surface.&lt;/p&gt;</field>
+            <field name="contributing_factors">&lt;p&gt;Insufficient warning signs. Cleaning during peak hours. Poor communication between cleaning staff and building occupants.&lt;/p&gt;</field>
+            <field name="weather_conditions">Rainy, 18°C</field>
+            <field name="lighting_conditions">artificial</field>
+            <field name="equipment_damage">False</field>
+            <field name="immediate_actions">&lt;p&gt;Employee assisted to first aid station. Wet floor signs immediately placed. Area cordoned off until dry.&lt;/p&gt;</field>
+            <field name="medical_attention_given">True</field>
+            <field name="area_secured">True</field>
+            <field name="investigation_required">True</field>
+            <field name="investigator_id" ref="base.user_admin"/>
+            <field name="investigation_start_date">2024-08-20</field>
+            <field name="investigation_completion_date">2024-08-22</field>
+            <field name="root_cause_analysis">&lt;p&gt;Root cause: Inadequate safety procedures for wet floor management. Contributing factors: Poor timing of cleaning activities, insufficient warning systems.&lt;/p&gt;</field>
+            <field name="state">pending_actions</field>
+            <field name="medical_costs">500.00</field>
+            <field name="lost_time_cost">200.00</field>
+            <field name="repair_costs">0.00</field>
+            <field name="lessons_learned">&lt;p&gt;Need better coordination between cleaning staff and building management. Implement proper wet floor warning systems.&lt;/p&gt;</field>
+            <field name="preventive_measures">&lt;p&gt;Schedule cleaning during off-peak hours. Install automatic wet floor warning systems. Train cleaning staff on proper procedures.&lt;/p&gt;</field>
+        </record>
+
+        <record id="demo_safety_incident_3" model="facilities.safety.incident">
+            <field name="name">Near Miss - Equipment Malfunction</field>
+            <field name="incident_number">SI-2024-003</field>
+            <field name="incident_date">2024-08-25 11:45:00</field>
+            <field name="reported_date">2024-08-25 11:50:00</field>
+            <field name="incident_type">near_miss</field>
+            <field name="severity">medium</field>
+            <field name="injury_type">none</field>
+            <field name="facility_id" ref="demo_facility_safety_3"/>
+            <field name="building_id" ref="demo_building_safety_5"/>
+            <field name="room_id" ref="demo_room_safety_5"/>
+            <field name="location_description">Chemistry laboratory, near the fume hood</field>
+            <field name="reporter_id" ref="base.user_admin"/>
+            <field name="description">&lt;p&gt;Laboratory equipment malfunctioned during a chemical reaction, causing a small explosion. No injuries occurred, but potential for serious harm was present.&lt;/p&gt;</field>
+            <field name="immediate_cause">&lt;p&gt;Equipment failure due to overheating. Temperature control system malfunctioned.&lt;/p&gt;</field>
+            <field name="contributing_factors">&lt;p&gt;Inadequate equipment maintenance. Lack of regular safety inspections. Outdated equipment.&lt;/p&gt;</field>
+            <field name="weather_conditions">Clear, 22°C</field>
+            <field name="lighting_conditions">artificial</field>
+            <field name="equipment_damage">True</field>
+            <field name="damage_description">Laboratory equipment damaged, fume hood glass cracked</field>
+            <field name="estimated_damage_cost">5000.00</field>
+            <field name="immediate_actions">&lt;p&gt;Laboratory evacuated immediately. Emergency shutdown procedures activated. Safety team notified.&lt;/p&gt;</field>
+            <field name="area_secured">True</field>
+            <field name="investigation_required">True</field>
+            <field name="investigator_id" ref="base.user_admin"/>
+            <field name="investigation_start_date">2024-08-25</field>
+            <field name="root_cause_analysis">&lt;p&gt;Root cause: Equipment maintenance schedule not followed. Contributing factors: Outdated equipment, insufficient safety protocols.&lt;/p&gt;</field>
+            <field name="state">under_investigation</field>
+            <field name="medical_costs">0.00</field>
+            <field name="lost_time_cost">0.00</field>
+            <field name="repair_costs">5000.00</field>
+            <field name="lessons_learned">&lt;p&gt;Critical need for regular equipment maintenance. Importance of proper safety protocols in laboratory settings.&lt;/p&gt;</field>
+            <field name="preventive_measures">&lt;p&gt;Implement monthly equipment inspections. Upgrade outdated equipment. Enhance safety training for laboratory staff.&lt;/p&gt;</field>
+        </record>
+
+        <record id="demo_safety_incident_4" model="facilities.safety.incident">
+            <field name="name">Fire Incident in Production Hall</field>
+            <field name="incident_number">SI-2024-004</field>
+            <field name="incident_date">2024-09-01 16:20:00</field>
+            <field name="reported_date">2024-09-01 16:25:00</field>
+            <field name="incident_type">fire</field>
+            <field name="severity">critical</field>
+            <field name="injury_type">none</field>
+            <field name="facility_id" ref="demo_facility_safety_1"/>
+            <field name="building_id" ref="demo_building_safety_1"/>
+            <field name="room_id" ref="demo_room_safety_1"/>
+            <field name="location_description">Assembly line station 1, near electrical panel</field>
+            <field name="reporter_id" ref="base.user_admin"/>
+            <field name="description">&lt;p&gt;Electrical fire started in the main electrical panel due to overload. Fire spread quickly but was contained by sprinkler system.&lt;/p&gt;</field>
+            <field name="immediate_cause">&lt;p&gt;Electrical overload in main panel. Circuit breaker failed to trip properly.&lt;/p&gt;</field>
+            <field name="contributing_factors">&lt;p&gt;Inadequate electrical maintenance. Overloaded circuits. Outdated electrical system.&lt;/p&gt;</field>
+            <field name="weather_conditions">Hot, 32°C</field>
+            <field name="lighting_conditions">artificial</field>
+            <field name="equipment_damage">True</field>
+            <field name="damage_description">Electrical panel destroyed, assembly line equipment damaged</field>
+            <field name="estimated_damage_cost">50000.00</field>
+            <field name="immediate_actions">&lt;p&gt;Emergency evacuation activated. Fire department called immediately. Sprinkler system activated. Power shut off to entire building.&lt;/p&gt;</field>
+            <field name="emergency_services_called">True</field>
+            <field name="area_secured">True</field>
+            <field name="investigation_required">True</field>
+            <field name="investigator_id" ref="base.user_admin"/>
+            <field name="investigation_start_date">2024-09-02</field>
+            <field name="root_cause_analysis">&lt;p&gt;Root cause: Electrical system overload due to inadequate capacity planning. Contributing factors: Poor maintenance, outdated equipment.&lt;/p&gt;</field>
+            <field name="state">under_investigation</field>
+            <field name="regulatory_reporting_required">True</field>
+            <field name="regulatory_body">Fire Department</field>
+            <field name="medical_costs">0.00</field>
+            <field name="lost_time_cost">10000.00</field>
+            <field name="repair_costs">50000.00</field>
+            <field name="lessons_learned">&lt;p&gt;Critical importance of electrical system maintenance. Need for regular capacity assessments.&lt;/p&gt;</field>
+            <field name="preventive_measures">&lt;p&gt;Upgrade electrical system. Implement monthly electrical inspections. Install better circuit protection.&lt;/p&gt;</field>
+        </record>
+
+        <record id="demo_safety_incident_5" model="facilities.safety.incident">
+            <field name="name">Minor Injury - Cut Hand</field>
+            <field name="incident_number">SI-2024-005</field>
+            <field name="incident_date">2024-09-05 13:30:00</field>
+            <field name="reported_date">2024-09-05 13:35:00</field>
+            <field name="incident_type">injury</field>
+            <field name="severity">low</field>
+            <field name="injury_type">first_aid</field>
+            <field name="facility_id" ref="demo_facility_safety_2"/>
+            <field name="building_id" ref="demo_building_safety_3"/>
+            <field name="room_id" ref="demo_room_safety_4"/>
+            <field name="location_description">Conference room 10A, near the presentation area</field>
+            <field name="reporter_id" ref="base.user_admin"/>
+            <field name="description">&lt;p&gt;Employee cut their hand on a sharp edge of a presentation board while setting up for a meeting. Minor cut requiring first aid only.&lt;/p&gt;</field>
+            <field name="immediate_cause">&lt;p&gt;Sharp edge on presentation board not properly finished. Employee handling equipment without gloves.&lt;/p&gt;</field>
+            <field name="contributing_factors">&lt;p&gt;Inadequate equipment inspection. Lack of personal protective equipment.&lt;/p&gt;</field>
+            <field name="weather_conditions">Clear, 24°C</field>
+            <field name="lighting_conditions">artificial</field>
+            <field name="equipment_damage">False</field>
+            <field name="immediate_actions">&lt;p&gt;First aid applied immediately. Cut cleaned and bandaged. Equipment inspected for other sharp edges.&lt;/p&gt;</field>
+            <field name="medical_attention_given">True</field>
+            <field name="area_secured">False</field>
+            <field name="investigation_required">False</field>
+            <field name="state">closed</field>
+            <field name="medical_costs">50.00</field>
+            <field name="lost_time_cost">0.00</field>
+            <field name="repair_costs">0.00</field>
+            <field name="lessons_learned">&lt;p&gt;Need to inspect all equipment for sharp edges before use. Provide appropriate PPE for equipment handling.&lt;/p&gt;</field>
+            <field name="preventive_measures">&lt;p&gt;Implement equipment inspection checklist. Provide cut-resistant gloves for equipment handling.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Create demo corrective actions -->
+        <record id="demo_corrective_action_1" model="facilities.incident.corrective.action">
+            <field name="incident_id" ref="demo_safety_incident_1"/>
+            <field name="name">Implement Monthly Chemical Storage Inspections</field>
+            <field name="action_type">procedure_update</field>
+            <field name="priority">high</field>
+            <field name="responsible_id" ref="base.user_admin"/>
+            <field name="target_date">2024-09-15</field>
+            <field name="state">open</field>
+            <field name="description">&lt;p&gt;Develop and implement a comprehensive monthly inspection schedule for all chemical storage containers and equipment.&lt;/p&gt;</field>
+            <field name="cost">500.00</field>
+            <field name="verification_required">True</field>
+        </record>
+
+        <record id="demo_corrective_action_2" model="facilities.incident.corrective.action">
+            <field name="incident_id" ref="demo_safety_incident_1"/>
+            <field name="name">Upgrade Storage Area Lighting</field>
+            <field name="action_type">engineering_control</field>
+            <field name="priority">medium</field>
+            <field name="responsible_id" ref="base.user_admin"/>
+            <field name="target_date">2024-09-30</field>
+            <field name="state">open</field>
+            <field name="description">&lt;p&gt;Install improved LED lighting system in chemical storage area to ensure adequate visibility for inspections.&lt;/p&gt;</field>
+            <field name="cost">2000.00</field>
+            <field name="verification_required">True</field>
+        </record>
+
+        <record id="demo_corrective_action_3" model="facilities.incident.corrective.action">
+            <field name="incident_id" ref="demo_safety_incident_2"/>
+            <field name="name">Implement Wet Floor Warning System</field>
+            <field name="action_type">engineering_control</field>
+            <field name="priority">high</field>
+            <field name="responsible_id" ref="base.user_admin"/>
+            <field name="target_date">2024-09-10</field>
+            <field name="state">completed</field>
+            <field name="completion_date">2024-09-08</field>
+            <field name="description">&lt;p&gt;Install automatic wet floor detection and warning system in main lobby area.&lt;/p&gt;</field>
+            <field name="implementation_notes">&lt;p&gt;System installed successfully. Testing completed and operational.&lt;/p&gt;</field>
+            <field name="cost">1500.00</field>
+            <field name="actual_cost">1450.00</field>
+            <field name="verification_required">True</field>
+            <field name="verified_by" ref="base.user_admin"/>
+            <field name="verification_date">2024-09-09</field>
+        </record>
+
+        <record id="demo_corrective_action_4" model="facilities.incident.corrective.action">
+            <field name="incident_id" ref="demo_safety_incident_2"/>
+            <field name="name">Update Cleaning Schedule</field>
+            <field name="action_type">administrative_control</field>
+            <field name="priority">medium</field>
+            <field name="responsible_id" ref="base.user_admin"/>
+            <field name="target_date">2024-09-05</field>
+            <field name="state">completed</field>
+            <field name="completion_date">2024-09-03</field>
+            <field name="description">&lt;p&gt;Reschedule cleaning activities to off-peak hours to minimize risk to building occupants.&lt;/p&gt;</field>
+            <field name="implementation_notes">&lt;p&gt;New schedule implemented. Cleaning now occurs after 6 PM and before 7 AM.&lt;/p&gt;</field>
+            <field name="cost">0.00</field>
+            <field name="verification_required">True</field>
+            <field name="verified_by" ref="base.user_admin"/>
+            <field name="verification_date">2024-09-04</field>
+        </record>
+
+        <record id="demo_corrective_action_5" model="facilities.incident.corrective.action">
+            <field name="incident_id" ref="demo_safety_incident_3"/>
+            <field name="name">Implement Equipment Maintenance Schedule</field>
+            <field name="action_type">procedure_update</field>
+            <field name="priority">critical</field>
+            <field name="responsible_id" ref="base.user_admin"/>
+            <field name="target_date">2024-09-20</field>
+            <field name="state">in_progress</field>
+            <field name="description">&lt;p&gt;Develop and implement comprehensive monthly maintenance schedule for all laboratory equipment.&lt;/p&gt;</field>
+            <field name="cost">1000.00</field>
+            <field name="verification_required">True</field>
+        </record>
+
+        <record id="demo_corrective_action_6" model="facilities.incident.corrective.action">
+            <field name="incident_id" ref="demo_safety_incident_4"/>
+            <field name="name">Upgrade Electrical System</field>
+            <field name="action_type">equipment_repair</field>
+            <field name="priority">critical</field>
+            <field name="responsible_id" ref="base.user_admin"/>
+            <field name="target_date">2024-10-15</field>
+            <field name="state">open</field>
+            <field name="description">&lt;p&gt;Complete electrical system upgrade to prevent future overloads and improve safety.&lt;/p&gt;</field>
+            <field name="cost">25000.00</field>
+            <field name="verification_required">True</field>
+        </record>
+
+        <record id="demo_corrective_action_7" model="facilities.incident.corrective.action">
+            <field name="incident_id" ref="demo_safety_incident_5"/>
+            <field name="name">Equipment Inspection Checklist</field>
+            <field name="action_type">procedure_update</field>
+            <field name="priority">low</field>
+            <field name="responsible_id" ref="base.user_admin"/>
+            <field name="target_date">2024-09-12</field>
+            <field name="state">completed</field>
+            <field name="completion_date">2024-09-10</field>
+            <field name="description">&lt;p&gt;Create and implement equipment inspection checklist for all presentation and meeting equipment.&lt;/p&gt;</field>
+            <field name="implementation_notes">&lt;p&gt;Checklist created and distributed to all departments. Training completed.&lt;/p&gt;</field>
+            <field name="cost">100.00</field>
+            <field name="actual_cost">95.00</field>
+            <field name="verification_required">True</field>
+            <field name="verified_by" ref="base.user_admin"/>
+            <field name="verification_date">2024-09-11</field>
+        </record>
+
+        <!-- Create demo safety statistics -->
+        <record id="demo_safety_stats_1" model="facilities.safety.statistics">
+            <field name="period_start">2024-08-01</field>
+            <field name="period_end">2024-08-31</field>
+            <field name="period_type">monthly</field>
+            <field name="total_work_hours">40000.0</field>
+        </record>
+
+        <record id="demo_safety_stats_2" model="facilities.safety.statistics">
+            <field name="period_start">2024-09-01</field>
+            <field name="period_end">2024-09-30</field>
+            <field name="period_type">monthly</field>
+            <field name="total_work_hours">42000.0</field>
+        </record>
+
+        <record id="demo_safety_stats_3" model="facilities.safety.statistics">
+            <field name="period_start">2024-07-01</field>
+            <field name="period_end">2024-09-30</field>
+            <field name="period_type">quarterly</field>
+            <field name="total_work_hours">125000.0</field>
+        </record>
+
+        <record id="demo_safety_stats_4" model="facilities.safety.statistics">
+            <field name="period_start">2024-01-01</field>
+            <field name="period_end">2024-12-31</field>
+            <field name="period_type">yearly</field>
+            <field name="total_work_hours">500000.0</field>
+        </record>
+
+    </data>
+</odoo>

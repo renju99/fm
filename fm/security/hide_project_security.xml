@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Hide Project Elements from Facilities Management Users -->
+        
+        <!-- Create a group for users who should NOT see project elements -->
+        <record id="group_hide_project_elements" model="res.groups">
+            <field name="name">Hide Project Elements</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+            <field name="comment">Users in this group will not see project-related menu items and actions</field>
+        </record>
+        
+        <!-- Add all facilities management users to this group by default -->
+        <record id="base.group_user" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('group_hide_project_elements'))]"/>
+        </record>
+        
+        <!-- Record rules to hide project records (optional - only if you want to completely block access) -->
+        <!-- Uncomment these if you want to completely prevent access to project data
+        
+        <record id="project_project_hide_rule" model="ir.rule">
+            <field name="name">Hide Project Projects</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="domain_force">[('id', '=', False)]</field>
+            <field name="groups" eval="[(4, ref('group_hide_project_elements'))]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        
+        <record id="project_task_hide_rule" model="ir.rule">
+            <field name="name">Hide Project Tasks</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="domain_force">[('id', '=', False)]</field>
+            <field name="groups" eval="[(4, ref('group_hide_project_elements'))]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        
+        -->
+        
+    </data>
+</odoo>

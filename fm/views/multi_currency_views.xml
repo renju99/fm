@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Multi-Currency Views - Placeholder -->
+    <!-- TODO: Implement complete multi-currency views -->
+    
+    <record id="view_currency_exchange_rate_form" model="ir.ui.view">
+        <field name="name">currency.exchange.rate.form</field>
+        <field name="model">facilities.currency.exchange.rate</field>
+        <field name="arch" type="xml">
+            <form string="Currency Exchange Rate">
+                <sheet>
+                    <group>
+                        <field name="currency_id"/>
+                        <field name="base_currency_id"/>
+                        <field name="rate"/>
+                        <field name="date"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+</odoo>

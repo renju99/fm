@@ -1,0 +1,319 @@
+/* Auto-fill Enhancements CSS */
+
+/* Auto-fill field indicators */
+.o_field_autofill {
+    position: relative;
+}
+
+.o_field_autofill::after {
+    content: "🔄";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Auto-fill success animation */
+.o_field_autofilled {
+    background-color: #d4edda !important;
+    border-color: #c3e6cb !important;
+    transition: all 0.3s ease;
+}
+
+.o_field_autofilled::after {
+    content: "✅";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    opacity: 1;
+    pointer-events: none;
+}
+
+/* Auto-fill loading state */
+.o_field_autofilling {
+    background-color: #fff3cd !important;
+    border-color: #ffeaa7 !important;
+    position: relative;
+}
+
+.o_field_autofilling::after {
+    content: "⏳";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    opacity: 1;
+    pointer-events: none;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Auto-fill tooltip */
+.o_autofill_tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.o_autofill_tooltip .o_tooltip_text {
+    visibility: hidden;
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+.o_autofill_tooltip .o_tooltip_text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+.o_autofill_tooltip:hover .o_tooltip_text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Auto-fill notification styles */
+.o_autofill_notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+}
+
+.o_autofill_notification.error {
+    background-color: #dc3545;
+}
+
+.o_autofill_notification.warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Auto-fill field grouping */
+.o_autofill_group {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px 0;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.o_autofill_group:hover {
+    border-color: #007bff;
+    background-color: #e3f2fd;
+}
+
+.o_autofill_group .o_group_title {
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.o_autofill_group .o_group_title::before {
+    content: "🔗";
+    margin-right: 8px;
+}
+
+/* Auto-fill progress indicator */
+.o_autofill_progress {
+    width: 100%;
+    height: 4px;
+    background-color: #e9ecef;
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.o_autofill_progress .o_progress_bar {
+    height: 100%;
+    background-color: #007bff;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+    animation: progressPulse 1s infinite;
+}
+
+@keyframes progressPulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* Auto-fill field highlighting */
+.o_field_highlight {
+    animation: highlight 2s ease;
+}
+
+@keyframes highlight {
+    0% { background-color: #fff3cd; }
+    50% { background-color: #d4edda; }
+    100% { background-color: transparent; }
+}
+
+/* Auto-fill success checkmark */
+.o_autofill_success {
+    position: relative;
+}
+
+.o_autofill_success::before {
+    content: "✓";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #28a745;
+    font-weight: bold;
+    font-size: 16px;
+    animation: checkmark 0.5s ease;
+}
+
+@keyframes checkmark {
+    0% { transform: translateY(-50%) scale(0); }
+    50% { transform: translateY(-50%) scale(1.2); }
+    100% { transform: translateY(-50%) scale(1); }
+}
+
+/* Auto-fill error indicator */
+.o_autofill_error {
+    position: relative;
+}
+
+.o_autofill_error::before {
+    content: "⚠";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #dc3545;
+    font-size: 16px;
+    animation: errorShake 0.5s ease;
+}
+
+@keyframes errorShake {
+    0%, 100% { transform: translateY(-50%) translateX(0); }
+    25% { transform: translateY(-50%) translateX(-5px); }
+    75% { transform: translateY(-50%) translateX(5px); }
+}
+
+/* Mobile-specific auto-fill styles */
+@media (max-width: 767.98px) {
+    .o_autofill_notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        width: auto;
+    }
+    
+    .o_autofill_tooltip .o_tooltip_text {
+        width: 150px;
+        margin-left: -75px;
+        font-size: 11px;
+    }
+    
+    .o_autofill_group {
+        padding: 10px;
+        margin: 5px 0;
+    }
+}
+
+/* Dark mode support for auto-fill */
+@media (prefers-color-scheme: dark) {
+    .o_autofill_group {
+        background-color: #2d3748;
+        border-color: #4a5568;
+    }
+    
+    .o_autofill_group:hover {
+        background-color: #1a202c;
+        border-color: #3182ce;
+    }
+    
+    .o_autofill_notification {
+        background-color: #2d3748;
+        color: #e2e8f0;
+    }
+    
+    .o_autofill_notification.error {
+        background-color: #e53e3e;
+    }
+    
+    .o_autofill_notification.warning {
+        background-color: #d69e2e;
+        color: #1a202c;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .o_field_autofilled {
+        background-color: #000 !important;
+        color: #fff !important;
+        border: 2px solid #fff !important;
+    }
+    
+    .o_autofill_group {
+        border: 3px solid #000;
+        background-color: #fff;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .o_field_autofilled,
+    .o_autofill_group,
+    .o_autofill_progress .o_progress_bar {
+        transition: none;
+    }
+    
+    .o_field_autofilling::after,
+    .o_autofill_success::before,
+    .o_autofill_error::before {
+        animation: none;
+    }
+}

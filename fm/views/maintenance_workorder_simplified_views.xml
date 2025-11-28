@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Simplified Work Order Form View -->
+    <record id="view_workorder_simplified_form" model="ir.ui.view">
+        <field name="name">facilities.workorder.simplified.form</field>
+        <field name="model">facilities.workorder</field>
+        <field name="priority" eval="5"/>
+        <field name="arch" type="xml">
+            <form string="Work Order">
+                <header>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="draft,assigned,in_progress,on_hold,completed,cancelled"/>
+                    
+                    <button name="action_start_progress" string="Start Work" class="oe_highlight"
+                            invisible="state not in ('draft', 'assigned')"
+                            confirm="Are you sure you want to start this work order?"/>
+                    <button name="action_complete" string="Complete" class="oe_highlight"
+                            invisible="state != 'in_progress'"
+                            confirm="Mark this Work Order as completed?"/>
+                    <button name="action_put_on_hold" string="Put on Hold" class="btn-warning"
+                            invisible="state != 'in_progress'"/>
+                    <button name="action_resume_work" string="Resume" class="btn-info"
+                            invisible="state != 'on_hold'"/>
+                    <button name="action_reopen_workorder" string="Reopen" class="btn-secondary"
+                            invisible="not can_reopen_workorder"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_view_service_request" type="object"
+                                invisible="not service_request_id" icon="fa-ticket">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Service Request</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" name="action_view_picking" type="object"
+                                invisible="picking_count == 0" icon="fa-truck">
+                            <field name="picking_count" widget="statinfo" string="Parts"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_view_invoices" type="object"
+                                invisible="invoice_count == 0" icon="fa-file-text-o">
+                            <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Work Order Reference"/></h1>
+                        <h2><field name="title" placeholder="Work Order Title"/></h2>
+                    </div>
+
+                    <!-- Essential Information -->
+                    <group>
+                        <group string="Work Order Details">
+                            <field name="work_order_type" options="{'no_create': True}"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="asset_id" options="{'no_create': True}"/>
+                            <field name="technician_id" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Location">
+                            <field name="facility_id" readonly="1"/>
+                            <field name="building_id" readonly="1" invisible="not building_id"/>
+                            <field name="floor_id" readonly="1" invisible="not floor_id"/>
+                            <field name="room_id" readonly="1" invisible="not room_id"/>
+                        </group>
+                    </group>
+
+                    <!-- Description -->
+                    <group string="Description">
+                        <field name="description" widget="html" placeholder="Describe the work to be performed..."/>
+                    </group>
+
+                    <!-- Simplified Notebook -->
+                    <notebook>
+                        <page string="Tasks" name="tasks">
+                            <field name="task_ids" widget="one2many" context="{'default_workorder_id': active_id}">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="is_done" widget="boolean_toggle"/>
+                                    <field name="responsible_id"/>
+                                    <field name="duration"/>
+                                </list>
+                            </field>
+                        </page>
+                        
+                        <page string="Assignments" name="assignments">
+                            <field name="assignment_ids" widget="one2many" context="{'default_workorder_id': active_id}">
+                                <list editable="bottom">
+                                    <field name="technician_id"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="work_hours"/>
+                                    <field name="status" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        
+                        <page string="Parts" name="parts">
+                            <field name="parts_used_ids" widget="one2many" context="{'default_workorder_id': active_id}">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        
+                        <page string="Costs" name="costs">
+                            <group>
+                                <group string="Cost Summary">
+                                    <field name="labor_cost" readonly="1"/>
+                                    <field name="parts_cost" readonly="1"/>
+                                    <field name="total_cost" readonly="1"/>
+                                </group>
+                                <group string="Time Tracking">
+                                    <field name="estimated_duration"/>
+                                    <field name="actual_duration" readonly="1"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Simplified Work Order Tree View -->
+    <record id="view_workorder_simplified_tree" model="ir.ui.view">
+        <field name="name">facilities.workorder.simplified.tree</field>
+        <field name="model">facilities.workorder</field>
+        <field name="priority" eval="5"/>
+        <field name="arch" type="xml">
+            <list decoration-success="state=='completed'"
+                  decoration-danger="state=='cancelled'"
+                  decoration-info="state=='in_progress'"
+                  decoration-warning="state=='on_hold'">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="work_order_type"/>
+                <field name="priority" widget="priority"/>
+                <field name="state" widget="badge"/>
+                <field name="technician_id"/>
+                <field name="facility_id"/>
+                <field name="start_date"/>
+                <field name="estimated_duration"/>
+                <field name="total_cost" sum="Total Cost"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Simplified Work Order Kanban View -->
+    <record id="view_workorder_simplified_kanban" model="ir.ui.view">
+        <field name="name">facilities.workorder.simplified.kanban</field>
+        <field name="model">facilities.workorder</field>
+        <field name="priority" eval="5"/>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="work_order_type"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="technician_id"/>
+                <field name="facility_id"/>
+                <field name="start_date"/>
+                <field name="estimated_duration"/>
+                <field name="total_cost"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong><field name="name"/></strong>
+                                <div class="mt-2">
+                                    <span class="badge badge-primary">
+                                        <field name="work_order_type"/>
+                                    </span>
+                                    <span class="badge badge-info">
+                                        <field name="priority"/>
+                                    </span>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="title"/>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <field name="technician_id"/>
+                                    </small>
+                                </div>
+                                <div class="mt-1">
+                                    <small class="text-muted">
+                                        <field name="facility_id"/>
+                                    </small>
+                                </div>
+                                <div class="mt-2">
+                                    <span class="badge badge-success" invisible="not total_cost">
+                                        $<field name="total_cost"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Mobile-Friendly Work Order Form -->
+    <record id="view_workorder_mobile_form" model="ir.ui.view">
+        <field name="name">facilities.workorder.mobile.form</field>
+        <field name="model">facilities.workorder</field>
+        <field name="priority" eval="10"/>
+        <field name="arch" type="xml">
+            <form string="Work Order">
+                <header>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="draft,assigned,in_progress,completed"/>
+                    
+                    <button name="action_start_progress" string="Start" class="oe_highlight"
+                            invisible="state not in ('draft', 'assigned')"
+                            icon="fa-play"/>
+                    <button name="action_complete" string="Complete" class="oe_highlight"
+                            invisible="state != 'in_progress'"
+                            icon="fa-check"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                        <h2><field name="title"/></h2>
+                    </div>
+
+                    <!-- Mobile-optimized layout -->
+                    <group>
+                        <group string="Details">
+                            <field name="work_order_type"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="asset_id"/>
+                            <field name="technician_id"/>
+                        </group>
+                        <group string="Location">
+                            <field name="facility_id"/>
+                            <field name="building_id" invisible="not building_id"/>
+                            <field name="floor_id" invisible="not floor_id"/>
+                            <field name="room_id" invisible="not room_id"/>
+                        </group>
+                    </group>
+
+                    <group string="Description">
+                        <field name="description" widget="html"/>
+                    </group>
+
+                    <!-- Mobile-friendly tasks -->
+                    <group string="Tasks">
+                        <field name="task_ids" widget="one2many" context="{'default_workorder_id': active_id}">
+                            <list editable="bottom">
+                                <field name="name"/>
+                                <field name="is_done" widget="boolean_toggle"/>
+                            </list>
+                        </field>
+                    </group>
+
+                    <!-- Mobile-friendly assignments -->
+                    <group string="Time Tracking">
+                        <field name="assignment_ids" widget="one2many" context="{'default_workorder_id': active_id}">
+                            <list editable="bottom">
+                                <field name="technician_id"/>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                                <field name="work_hours"/>
+                            </list>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Quick Create Work Order Wizard -->
+    <record id="view_workorder_quick_create_wizard" model="ir.ui.view">
+        <field name="name">facilities.workorder.quick.create.wizard</field>
+        <field name="model">facilities.workorder.quick.create.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Quick Create Work Order">
+                <group>
+                    <field name="title" required="1"/>
+                    <field name="work_order_type" required="1"/>
+                    <field name="priority"/>
+                    <field name="asset_id"/>
+                    <field name="technician_id"/>
+                    <field name="facility_id"/>
+                    <field name="description"/>
+                </group>
+                <footer>
+                    <button string="Create" class="oe_highlight" type="object" name="action_create_workorder"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Work Order Dashboard View -->
+    <record id="view_workorder_dashboard" model="ir.ui.view">
+        <field name="name">facilities.workorder.dashboard</field>
+        <field name="model">facilities.workorder</field>
+        <field name="priority" eval="5"/>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_dashboard">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="work_order_type"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="technician_id"/>
+                <field name="facility_id"/>
+                <field name="start_date"/>
+                <field name="estimated_duration"/>
+                <field name="total_cost"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong><field name="name"/></strong>
+                                <div class="mt-2">
+                                    <span class="badge badge-primary">
+                                        <field name="work_order_type"/>
+                                    </span>
+                                    <span class="badge badge-info">
+                                        <field name="priority"/>
+                                    </span>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="title"/>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <field name="technician_id"/>
+                                    </small>
+                                </div>
+                                <div class="mt-1">
+                                    <small class="text-muted">
+                                        <field name="facility_id"/>
+                                    </small>
+                                </div>
+                                <div class="mt-2">
+                                    <span class="badge badge-success" invisible="not total_cost">
+                                        $<field name="total_cost"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Simplified Search View -->
+    <record id="view_workorder_simplified_search" model="ir.ui.view">
+        <field name="name">facilities.workorder.simplified.search</field>
+        <field name="model">facilities.workorder</field>
+        <field name="priority" eval="5"/>
+        <field name="arch" type="xml">
+            <search string="Search Work Orders">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="work_order_type"/>
+                <field name="technician_id"/>
+                <field name="facility_id"/>
+                <field name="asset_id"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Assigned" name="assigned" domain="[('state', '=', 'assigned')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="On Hold" name="on_hold" domain="[('state', '=', 'on_hold')]"/>
+                <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                <filter string="Preventive" name="preventive" domain="[('work_order_type', '=', 'preventive')]"/>
+                <filter string="Corrective" name="corrective" domain="[('work_order_type', '=', 'corrective')]"/>
+                <filter string="High Priority" name="high_priority" domain="[('priority', 'in', ['3', '4'])]"/>
+                <filter string="My Work Orders" name="my_workorders" domain="[('technician_id.user_id', '=', uid)]"/>
+                <filter string="Overdue" name="overdue" domain="[('start_date', '&lt;', context_today())]"/>
+                <group expand="0" string="Group By">
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Work Order Type" name="group_type" context="{'group_by': 'work_order_type'}"/>
+                    <filter string="Technician" name="group_technician" context="{'group_by': 'technician_id'}"/>
+                    <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+                    <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Quick Create Action -->
+    <record id="action_workorder_quick_create" model="ir.actions.act_window">
+        <field name="name">Quick Create Work Order</field>
+        <field name="res_model">facilities.workorder.quick.create.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_workorder_quick_create_wizard"/>
+    </record>
+
+    <!-- Simplified Work Order Action -->
+    <record id="action_workorder_simplified" model="ir.actions.act_window">
+        <field name="name">Work Orders (Simplified)</field>
+        <field name="res_model">facilities.workorder</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('facilities_management.view_workorder_simplified_kanban')}),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('facilities_management.view_workorder_simplified_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('facilities_management.view_workorder_simplified_form')})]"/>
+        <field name="context">{'search_default_my_workorders': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first work order!
+            </p>
+            <p>
+                Work orders help you track and manage maintenance tasks efficiently.
+                Use the simplified view for a cleaner, more focused experience.
+            </p>
+        </field>
+    </record>
+
+    <!-- Mobile Work Order Action -->
+    <record id="action_workorder_mobile" model="ir.actions.act_window">
+        <field name="name">Work Orders (Mobile)</field>
+        <field name="res_model">facilities.workorder</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('facilities_management.view_workorder_simplified_kanban')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('facilities_management.view_workorder_mobile_form')})]"/>
+        <field name="context">{'search_default_my_workorders': 1}</field>
+    </record>
+
+    <!-- Dashboard Action -->
+    <record id="action_workorder_dashboard" model="ir.actions.act_window">
+        <field name="name">Work Order Dashboard</field>
+        <field name="res_model">facilities.workorder</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_workorder_dashboard"/>
+        <field name="context">{'search_default_my_workorders': 1}</field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_work_orders_simplified"
+              name="Work Orders (Simplified)"
+              parent="facilities_management.menu_work_orders"
+              action="action_workorder_simplified"
+              sequence="5"/>
+
+    <menuitem id="menu_work_orders_mobile"
+              name="Work Orders (Mobile)"
+              parent="facilities_management.menu_work_orders"
+              action="action_workorder_mobile"
+              sequence="10"/>
+
+    <menuitem id="menu_work_orders_dashboard"
+              name="Work Order Dashboard"
+              parent="facilities_management.menu_work_orders"
+              action="action_workorder_dashboard"
+              sequence="15"/>
+
+    <menuitem id="menu_work_orders_quick_create"
+              name="Quick Create"
+              parent="facilities_management.menu_work_orders"
+              action="action_workorder_quick_create"
+              sequence="20"/>
+</odoo>

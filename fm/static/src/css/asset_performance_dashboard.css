@@ -1,0 +1,581 @@
+/* Asset Performance Dashboard Styles */
+
+.o_asset_performance_dashboard {
+    padding: 20px;
+    background-color: #f8f9fa;
+    /* Remove min-height: 100vh to allow proper scrolling */
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Optimize scrolling performance */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    /* Ensure proper rendering */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Override any Odoo layout constraints that might prevent scrolling */
+.o_main_content .o_asset_performance_dashboard,
+.o_content .o_asset_performance_dashboard,
+.o_web_client .o_asset_performance_dashboard,
+.o_action_manager .o_asset_performance_dashboard,
+.o_view_manager_content .o_asset_performance_dashboard,
+.o_kanban_view .o_asset_performance_dashboard,
+.o_form_view_container .o_asset_performance_dashboard {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* Also ensure parent containers don't constrain the dashboard */
+.o_main_content:has(.o_asset_performance_dashboard),
+.o_content:has(.o_asset_performance_dashboard),
+.o_action_manager:has(.o_asset_performance_dashboard),
+.o_view_manager_content:has(.o_asset_performance_dashboard) {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* Ensure the dashboard container can scroll properly */
+.o_asset_performance_dashboard .dashboard-content {
+    height: auto;
+    overflow: visible;
+}
+
+/* Fix any potential height constraints from parent containers */
+.o_asset_performance_dashboard {
+    max-height: none;
+    min-height: auto;
+}
+
+/* Ensure proper behavior within Odoo's layout system */
+.o_asset_performance_dashboard {
+    position: relative;
+    z-index: 1;
+}
+
+/* Fix for Odoo's main content area */
+.o_main_content .o_asset_performance_dashboard {
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Ensure proper scrolling in modal dialogs if needed */
+.modal-body .o_asset_performance_dashboard {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+/* Additional fixes for Odoo's form view container */
+.o_form_view .o_asset_performance_dashboard,
+.o_form_sheet .o_asset_performance_dashboard {
+    height: auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* Fix for potential flex and grid container issues */
+.o_asset_performance_dashboard {
+    flex: none !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+}
+
+/* Ensure proper scrolling behavior for the entire dashboard container */
+.o_asset_performance_dashboard * {
+    box-sizing: border-box;
+}
+
+/* Force override for any height constraints from Odoo's default styles */
+body .o_asset_performance_dashboard {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+}
+
+/* Header Section */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.dashboard-header h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.dashboard-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.dashboard-controls select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    min-width: 150px;
+}
+
+.dashboard-controls button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.dashboard-controls .btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.dashboard-controls .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.dashboard-controls .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.dashboard-controls .btn-secondary:hover {
+    background-color: #545b62;
+}
+
+/* Loading State */
+.dashboard-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.dashboard-loading .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 20px;
+}
+
+.dashboard-loading p {
+    color: #6c757d;
+    font-size: 16px;
+    margin: 0;
+}
+
+/* Error State */
+.dashboard-error {
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.dashboard-error h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.dashboard-error button {
+    margin-top: 15px;
+}
+
+/* Dashboard Content */
+.dashboard-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Summary Cards */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.summary-cards .card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summary-cards .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.summary-cards .card-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.summary-cards .card-title {
+    color: #6c757d;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
+
+.summary-cards .card-text {
+    color: #2c3e50;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Metrics Sections */
+.metrics-section {
+    background: white;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.metrics-section h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-weight: 600;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.metric-item label {
+    color: #6c757d;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-item span {
+    color: #2c3e50;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Charts Section */
+.charts-section {
+    background: white;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.charts-section h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-weight: 600;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.chart-container {
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 20px;
+}
+
+.chart-container h4 {
+    color: #495057;
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.chart {
+    height: 200px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Summary Section */
+.summary-section {
+    background: white;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.summary-section h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-weight: 600;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+.summary-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.summary-info p {
+    margin: 0;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.summary-info p:last-child {
+    border-bottom: none;
+}
+
+.summary-info strong {
+    color: #495057;
+    font-weight: 600;
+}
+
+.summary-info span {
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .dashboard-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .summary-info {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Ensure proper scrolling on mobile devices */
+    .o_asset_performance_dashboard {
+        padding: 10px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Additional scrolling fixes for different screen sizes */
+@media (max-height: 600px) {
+    .o_asset_performance_dashboard {
+        padding: 10px;
+    }
+    
+    .dashboard-header {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .summary-cards .card-body {
+        padding: 15px;
+    }
+    
+    .metrics-section,
+    .charts-section,
+    .summary-section {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+}
+
+/* Animation for loading states */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dashboard-content > * {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Color coding for different metric values */
+.metric-item.positive span {
+    color: #28a745;
+}
+
+.metric-item.warning span {
+    color: #ffc107;
+}
+
+.metric-item.danger span {
+    color: #dc3545;
+}
+
+/* Hover effects for interactive elements */
+.metric-item:hover {
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    padding: 5px;
+    transition: background-color 0.2s ease;
+}
+
+/* KPI Card Drilldown Styles */
+.kpi-card-clickable {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-card-clickable::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0,123,255,0.05) 0%, rgba(0,123,255,0) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.kpi-card-clickable:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15) !important;
+}
+
+.kpi-card-clickable:hover::before {
+    opacity: 1;
+}
+
+.kpi-card-clickable:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+}
+
+/* Chart clickable cursor */
+canvas {
+    cursor: pointer;
+}
+
+canvas:hover {
+    opacity: 0.95;
+}
+
+/* Drilldown icon animation */
+.kpi-card-clickable:hover .fa-external-link-square {
+    transform: translate(2px, -2px);
+    transition: transform 0.2s ease;
+    opacity: 1 !important;
+}
+
+/* Tooltip styling for KPI cards */
+.kpi-card-clickable[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0,0,0,0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+/* Loading cursor during actions */
+.kpi-card-clickable.loading {
+    cursor: wait;
+    opacity: 0.7;
+}
+
+/* Chart container hover effect */
+.card-body:has(canvas):hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease;
+}
+
+/* Print styles */
+@media print {
+    .dashboard-controls,
+    .dashboard-loading,
+    .dashboard-error {
+        display: none !important;
+    }
+    
+    .o_asset_performance_dashboard {
+        background: white !important;
+        padding: 0 !important;
+    }
+    
+    .card,
+    .metrics-section,
+    .charts-section,
+    .summary-section {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        break-inside: avoid;
+    }
+}

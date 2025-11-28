@@ -1,0 +1,278 @@
+/* Responsive Workorders CSS - Works on both Web and Mobile */
+
+/* Base responsive form styles */
+.o_responsive_form {
+    /* Mobile-first approach */
+    padding: 0.5rem;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 767.98px) {
+    .o_responsive_form {
+        padding: 0.25rem;
+    }
+    
+    /* Make cards more compact on mobile */
+    .o_responsive_form .card {
+        margin-bottom: 0.75rem;
+    }
+    
+    .o_responsive_form .card-header {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .o_responsive_form .card-body {
+        padding: 0.75rem;
+    }
+    
+    /* Make buttons smaller and stack better on mobile */
+    .o_responsive_form .btn {
+        font-size: 0.8rem;
+        padding: 0.375rem 0.75rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    /* Improve form field spacing on mobile */
+    .o_responsive_form .form-group {
+        margin-bottom: 0.75rem;
+    }
+    
+    /* Make progress bars more visible on mobile */
+    .o_responsive_form .progress {
+        height: 1.5rem;
+    }
+    
+    /* Improve badge visibility on mobile */
+    .o_responsive_form .badge {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    /* Make alerts more compact on mobile */
+    .o_responsive_form .alert {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    /* Improve list view on mobile */
+    .o_responsive_list .o_list_view {
+        font-size: 0.85rem;
+    }
+    
+    /* Make table headers more readable on mobile */
+    .o_responsive_list .o_list_view th {
+        font-size: 0.8rem;
+        padding: 0.25rem;
+    }
+    
+    /* Make table cells more compact on mobile */
+    .o_responsive_list .o_list_view td {
+        padding: 0.25rem;
+        font-size: 0.8rem;
+    }
+    
+    /* Hide less important columns on mobile */
+    .o_responsive_list .o_list_view .o_optional_columns_dropdown_toggle {
+        display: none;
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .o_responsive_form {
+        padding: 0.75rem;
+    }
+    
+    .o_responsive_form .card {
+        margin-bottom: 1rem;
+    }
+    
+    .o_responsive_form .btn {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* Desktop styles */
+@media (min-width: 992px) {
+    .o_responsive_form {
+        padding: 1rem;
+    }
+    
+    .o_responsive_form .card {
+        margin-bottom: 1.5rem;
+    }
+    
+    .o_responsive_form .btn {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    /* Show status bar on desktop */
+    .o_responsive_form .d-none.d-md-block {
+        display: block !important;
+    }
+    
+    /* Hide mobile status overview on desktop */
+    .o_responsive_form .d-block.d-md-none {
+        display: none !important;
+    }
+}
+
+/* Touch-friendly improvements for mobile */
+@media (max-width: 767.98px) {
+    /* Make buttons more touch-friendly */
+    .o_responsive_form .btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Improve form field touch targets */
+    .o_responsive_form .form-control,
+    .o_responsive_form .form-select {
+        min-height: 44px;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    /* Make checkboxes and radio buttons more touch-friendly */
+    .o_responsive_form .form-check-input {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+    
+    /* Improve list item touch targets */
+    .o_responsive_list .o_list_view tbody tr {
+        min-height: 44px;
+    }
+    
+    /* Make badges more touch-friendly */
+    .o_responsive_form .badge {
+        min-height: 24px;
+        display: inline-flex;
+        align-items: center;
+    }
+}
+
+/* Loading states for better UX */
+.o_responsive_form .btn-loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.o_responsive_form .btn-loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid transparent;
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Hover effects for desktop */
+@media (min-width: 992px) {
+    .o_responsive_form .card:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        transition: box-shadow 0.15s ease-in-out;
+    }
+    
+    .o_responsive_form .btn:hover {
+        transform: translateY(-1px);
+        transition: transform 0.15s ease-in-out;
+    }
+}
+
+/* Focus states for accessibility */
+.o_responsive_form .btn:focus,
+.o_responsive_form .form-control:focus,
+.o_responsive_form .form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Print styles */
+@media print {
+    .o_responsive_form .btn,
+    .o_responsive_form .card-header {
+        display: none !important;
+    }
+    
+    .o_responsive_form .card {
+        border: 1px solid #000;
+        margin-bottom: 1rem;
+        break-inside: avoid;
+    }
+    
+    .o_responsive_form .card-body {
+        padding: 0.5rem;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .o_responsive_form .card {
+        background-color: #2d3748;
+        border-color: #4a5568;
+    }
+    
+    .o_responsive_form .card-header {
+        background-color: #1a202c;
+        border-bottom-color: #4a5568;
+    }
+    
+    .o_responsive_form .alert-info {
+        background-color: #2b6cb0;
+        border-color: #3182ce;
+        color: #e2e8f0;
+    }
+    
+    .o_responsive_form .alert-warning {
+        background-color: #c05621;
+        border-color: #dd6b20;
+        color: #f7fafc;
+    }
+    
+    .o_responsive_form .alert-success {
+        background-color: #276749;
+        border-color: #38a169;
+        color: #f0fff4;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .o_responsive_form .card {
+        border: 2px solid #000;
+    }
+    
+    .o_responsive_form .btn {
+        border: 2px solid #000;
+    }
+    
+    .o_responsive_form .badge {
+        border: 1px solid #000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .o_responsive_form .btn-loading::after {
+        animation: none;
+    }
+    
+    .o_responsive_form .card,
+    .o_responsive_form .btn {
+        transition: none;
+    }
+}

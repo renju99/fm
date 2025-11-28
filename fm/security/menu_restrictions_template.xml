@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- MENU RESTRICTIONS TEMPLATE -->
+        <!-- This file contains templates for hiding various application menus from facilities users -->
+        <!-- Copy the relevant sections to hide_unrelated_menus_security.xml and uncomment as needed -->
+        
+        <!-- INSTRUCTIONS: -->
+        <!-- 1. Check which modules are installed in your system -->
+        <!-- 2. Copy the relevant menu restriction records below -->
+        <!-- 3. Paste them in hide_unrelated_menus_security.xml (uncommented) -->
+        <!-- 4. Upgrade the facilities_management module -->
+        
+        <!-- CORE BUSINESS MODULES -->
+        <!--
+        <record id="account.menu_finance" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="sale.sale_menu_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="purchase.menu_purchase_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="stock.menu_stock_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="crm.crm_menu_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        -->
+        
+        <!-- MANUFACTURING MODULES -->
+        <!--
+        <record id="mrp.menu_mrp_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        -->
+        
+        <!-- HR MODULES -->
+        <!--
+        <record id="hr.menu_hr_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="hr_attendance.menu_hr_attendance_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="hr_expense.menu_hr_expense_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="hr_holidays.menu_hr_holidays_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="hr_recruitment.menu_hr_recruitment_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        -->
+        
+        <!-- OTHER MODULES -->
+        <!--
+        <record id="fleet.menu_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="point_of_sale.menu_point_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="event.event_main_menu" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="project.menu_main_pm" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="survey.menu_surveys" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="maintenance.menu_maintenance_title" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        -->
+        
+        <!-- MARKETING MODULES -->
+        <!--
+        <record id="mass_mailing.mass_mailing_menu_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="mass_mailing_sms.menu_mass_mailing_sms_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="utm.menu_link_tracker_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        
+        <record id="link_tracker.link_tracker_menu_main" model="ir.ui.menu">
+            <field name="groups_id" eval="[(3, ref('group_facilities_focused_user'))]"/>
+        </record>
+        -->
+        
+    </data>
+</odoo>

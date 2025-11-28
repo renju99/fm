@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+	<t t-name="facilities_space_booking_dashboard_template">
+		<div class="o_space_booking_dashboard">
+			<div class="dashboard-header">
+				<h2>Space Booking Dashboard</h2>
+				<div class="dashboard-controls">
+					<select t-on-change="onPeriodChange">
+						<option value="current_month" t-att-selected="state.selectedPeriod === 'current_month'">Current Month</option>
+						<option value="last_30_days" t-att-selected="state.selectedPeriod === 'last_30_days'">Last 30 Days</option>
+						<option value="current_year" t-att-selected="state.selectedPeriod === 'current_year'">Current Year</option>
+						<option value="custom_range" t-att-selected="state.selectedPeriod === 'custom_range'">Custom Range</option>
+					</select>
+					<select t-on-change="onTypeChange">
+						<option value="all" t-att-selected="state.selectedType === 'all'">All Types</option>
+						<option value="meeting" t-att-selected="state.selectedType === 'meeting'">Meeting</option>
+						<option value="event" t-att-selected="state.selectedType === 'event'">Event</option>
+						<option value="training" t-att-selected="state.selectedType === 'training'">Training</option>
+						<option value="workshop" t-att-selected="state.selectedType === 'workshop'">Workshop</option>
+						<option value="conference" t-att-selected="state.selectedType === 'conference'">Conference</option>
+						<option value="maintenance" t-att-selected="state.selectedType === 'maintenance'">Maintenance</option>
+					</select>
+					<div class="custom-date-controls" t-if="state.showCustomDates">
+						<label>From</label>
+						<input type="date" class="date-input" t-model="state.customDateFrom"/>
+						<label>To</label>
+						<input type="date" class="date-input" t-model="state.customDateTo"/>
+						<button class="btn btn-primary" t-on-click="loadDashboardData">Apply</button>
+					</div>
+					<button class="btn btn-secondary" t-on-click="onClearFiltersClick">Clear</button>
+					<button class="btn btn-primary" t-on-click="onRefreshClick">Refresh</button>
+				</div>
+				<div class="dashboard-meta" t-if="state.lastUpdated">
+					<small>Last updated: <t t-esc="state.lastUpdated.toLocaleString()"/></small>
+				</div>
+			</div>
+
+			<div class="dashboard-loading" t-if="state.loading">
+				<div class="spinner-border text-primary" role="status"></div>
+				<p>Loading space booking metrics...</p>
+			</div>
+			<div class="dashboard-error" t-if="state.error and !state.loading">
+				<h4>Unable to load dashboard</h4>
+				<p t-esc="state.error"/>
+				<button class="btn btn-primary" t-on-click="onRetryClick">Retry</button>
+			</div>
+
+			<div class="dashboard-content" t-if="state.dashboardData and !state.loading">
+				<div class="summary-cards">
+					<div class="card">
+						<div class="card-body">
+							<div class="card-title">Total Bookings</div>
+							<div class="card-text" t-esc="formatNumber(state.dashboardData.summary.total_bookings)"/>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<div class="card-title">Confirmed</div>
+							<div class="card-text" t-esc="formatNumber(state.dashboardData.summary.confirmed_bookings)"/>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<div class="card-title">Pending Approvals</div>
+							<div class="card-text" t-esc="formatNumber(state.dashboardData.summary.pending_approvals)"/>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<div class="card-title">Avg Capacity Utilization</div>
+							<div class="card-text" t-att-class="'utilization ' + getUtilizationClass()"><t t-esc="formatPercent(state.dashboardData.summary.avg_capacity_utilization)"/></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="metrics-section">
+					<h3>Key Metrics</h3>
+					<div class="metrics-grid">
+						<div class="metric-item">
+							<label>Upcoming (7 days)</label>
+							<span t-esc="formatNumber(state.dashboardData.summary.upcoming_week)"/>
+						</div>
+						<div class="metric-item">
+							<label>Total Cost</label>
+							<span><t t-esc="formatDecimal(state.dashboardData.summary.total_cost, 2)"/></span>
+						</div>
+					</div>
+				</div>
+
+				<div class="charts-section">
+					<h3>Trends</h3>
+					<div class="charts-grid">
+						<div class="chart-container">
+							<h4>Bookings per Day</h4>
+							<div class="chart">Chart Placeholder</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="summary-section">
+					<h3>Distribution</h3>
+					<div class="summary-info">
+						<p><strong>By Type:</strong> <t t-esc="JSON.stringify(state.dashboardData.distribution.by_type || {})"/></p>
+						<p><strong>By Room:</strong> <t t-esc="JSON.stringify(state.dashboardData.distribution.by_room || {})"/></p>
+					</div>
+				</div>
+
+				<div class="table-section" t-if="state.dashboardData.upcoming_bookings &amp;&amp; state.dashboardData.upcoming_bookings.length">
+					<h3>Upcoming Bookings</h3>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>When</th>
+								<th>Room</th>
+								<th>Type</th>
+								<th>Booked By</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr t-foreach="state.dashboardData.upcoming_bookings" t-as="b" t-key="b.id">
+								<td><t t-esc="b.start"/> - <t t-esc="b.end"/></td>
+								<td><t t-esc="b.room"/></td>
+								<td><t t-esc="b.type"/></td>
+								<td><t t-esc="b.requester"/></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</t>
+</templates>

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Budget vs Actual Report Form View - Simple Version -->
+    <record id="budget_vs_actual_report_simple_form" model="ir.ui.view">
+        <field name="name">budget.vs.actual.report.simple.form</field>
+        <field name="model">facilities.budget.vs.actual.report</field>
+        <field name="arch" type="xml">
+            <form string="Budget vs Actual Report">
+                <header>
+                    <button name="action_generate_report" type="object" string="Generate Report" 
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_view_workorders" type="object" string="View Related Work Orders" 
+                            class="btn-secondary" invisible="state != 'generated'"/>
+                    <button name="action_export_excel" type="object" string="Export to Excel" 
+                            class="btn-secondary" invisible="state != 'generated'"/>
+                    <button name="action_send_email" type="object" string="Send Email" 
+                            class="btn-secondary" invisible="state != 'generated'"/>
+                    <button name="action_duplicate_report" type="object" string="Duplicate Report" 
+                            class="btn-secondary"/>
+                    <button name="action_compare_with_previous_period" type="object" string="Compare with Previous Period" 
+                            class="btn-secondary" invisible="state != 'generated'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Budget vs Actual Report"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_from" required="1"/>
+                            <field name="date_to" required="1"/>
+                            <field name="company_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="analytic_account_id" options="{'no_create': True}"/>
+                            <field name="cost_center_id" options="{'no_create': True}"/>
+                            <field name="budget_id" options="{'no_create': True}"/>
+                            <field name="category_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    
+                    <notebook invisible="state != 'generated'">
+                        <page string="Summary" name="summary">
+                            <group>
+                                <group string="Financial Summary">
+                                    <field name="total_budget_allocated" widget="monetary"/>
+                                    <field name="total_actual_spent" widget="monetary"/>
+                                    <field name="total_variance" widget="monetary"/>
+                                </group>
+                                <group string="Performance Indicators">
+                                    <field name="utilization_percentage" widget="percentage"/>
+                                    <field name="variance_percentage" widget="percentage"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Detailed Report" name="details">
+                            <field name="report_line_ids" nolabel="1">
+                                <list string="Budget vs Actual Lines" decoration-danger="status_indicator=='over_budget'" 
+                                      decoration-success="status_indicator=='under_budget'" 
+                                      decoration-muted="status_indicator=='no_spending'">
+                                    <field name="analytic_account_id"/>
+                                    <field name="cost_center_id"/>
+                                    <field name="category_id"/>
+                                    <field name="budget_allocated" sum="Total Budget"/>
+                                    <field name="actual_spent" sum="Total Spent"/>
+                                    <field name="variance" sum="Total Variance"/>
+                                    <field name="variance_percentage" widget="percentage"/>
+                                    <field name="utilization_percentage" widget="percentage"/>
+                                    <field name="status_indicator" widget="badge" 
+                                           decoration-success="status_indicator=='under_budget'" 
+                                           decoration-info="status_indicator=='on_budget'"
+                                           decoration-warning="status_indicator=='over_budget'"
+                                           decoration-muted="status_indicator=='no_spending'"/>
+                                    <button name="action_view_budget_lines" type="object" 
+                                            icon="fa-list" title="View Budget Lines"/>
+                                    <button name="action_view_expenses" type="object" 
+                                            icon="fa-money" title="View Expenses"/>
+                                    <button name="action_view_workorders" type="object" 
+                                            icon="fa-wrench" title="View Work Orders"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter>
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+
+    <!-- Budget vs Actual Report List View - Simple Version -->
+    <record id="budget_vs_actual_report_simple_list" model="ir.ui.view">
+        <field name="name">budget.vs.actual.report.simple.list</field>
+        <field name="model">facilities.budget.vs.actual.report</field>
+        <field name="arch" type="xml">
+            <list string="Budget vs Actual Reports" decoration-danger="variance_percentage &lt; -10" 
+                  decoration-success="variance_percentage &gt; 0" 
+                  decoration-warning="variance_percentage &lt; 0 and variance_percentage &gt;= -10">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="analytic_account_id"/>
+                <field name="cost_center_id"/>
+                <field name="total_budget_allocated" sum="Total Budget"/>
+                <field name="total_actual_spent" sum="Total Spent"/>
+                <field name="total_variance" sum="Total Variance"/>
+                <field name="variance_percentage" widget="percentage"/>
+                <field name="utilization_percentage" widget="percentage"/>
+                <field name="state" widget="badge" decoration-info="state=='draft'" decoration-success="state=='generated'"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Budget vs Actual Report Kanban View -->
+    <record id="budget_vs_actual_report_simple_kanban" model="ir.ui.view">
+        <field name="name">budget.vs.actual.report.simple.kanban</field>
+        <field name="model">facilities.budget.vs.actual.report</field>
+        <field name="arch" type="xml">
+            <kanban string="Budget vs Actual Reports" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="analytic_account_id"/>
+                <field name="cost_center_id"/>
+                <field name="total_budget_allocated"/>
+                <field name="total_actual_spent"/>
+                <field name="total_variance"/>
+                <field name="variance_percentage"/>
+                <field name="utilization_percentage"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                        <div class="o_kanban_record_subtitle">
+                                            <field name="analytic_account_id"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_top_right">
+                                        <field name="state" widget="badge" 
+                                               decoration-info="state=='draft'" 
+                                               decoration-success="state=='generated'"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div class="o_kanban_record_details">
+                                        <div class="o_kanban_record_details_row">
+                                            <span class="o_kanban_record_details_label">Period:</span>
+                                            <span><field name="date_from"/> - <field name="date_to"/></span>
+                                        </div>
+                                        <div class="o_kanban_record_details_row">
+                                            <span class="o_kanban_record_details_label">Cost Center:</span>
+                                            <span><field name="cost_center_id"/></span>
+                                        </div>
+                                        <div class="o_kanban_record_details_row">
+                                            <span class="o_kanban_record_details_label">Budget:</span>
+                                            <span><field name="total_budget_allocated" widget="monetary"/></span>
+                                        </div>
+                                        <div class="o_kanban_record_details_row">
+                                            <span class="o_kanban_record_details_label">Actual:</span>
+                                            <span><field name="total_actual_spent" widget="monetary"/></span>
+                                        </div>
+                                        <div class="o_kanban_record_details_row">
+                                            <span class="o_kanban_record_details_label">Variance:</span>
+                                            <span t-attf-class="text-#{record.variance_percentage.raw_value &lt; 0 ? 'danger' : 'success'}">
+                                                <field name="total_variance" widget="monetary"/>
+                                                (<field name="variance_percentage" widget="percentage"/>)
+                                            </span>
+                                        </div>
+                                        <div class="o_kanban_record_details_row">
+                                            <span class="o_kanban_record_details_label">Utilization:</span>
+                                            <span><field name="utilization_percentage" widget="percentage"/></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Budget vs Actual Report Search View -->
+    <record id="budget_vs_actual_report_simple_search" model="ir.ui.view">
+        <field name="name">budget.vs.actual.report.simple.search</field>
+        <field name="model">facilities.budget.vs.actual.report</field>
+        <field name="arch" type="xml">
+            <search string="Budget vs Actual Reports">
+                <field name="name"/>
+                <field name="analytic_account_id"/>
+                <field name="cost_center_id"/>
+                <field name="budget_id"/>
+                <field name="category_id"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="generated" string="Generated" domain="[('state', '=', 'generated')]"/>
+                <separator/>
+                <filter name="this_month" string="This Month" 
+                        domain="[('date_from', '&gt;=', context_today().replace(day=1)), 
+                                ('date_to', '&lt;=', (context_today().replace(day=1) + relativedelta(months=1) - relativedelta(days=1)))]"/>
+                <filter name="this_quarter" string="This Quarter" 
+                        domain="[('date_from', '&gt;=', (context_today() - relativedelta(months=3)).replace(day=1)), 
+                                ('date_to', '&lt;=', context_today())]"/>
+                <separator/>
+                <filter name="over_budget" string="Over Budget" 
+                        domain="[('variance_percentage', '&lt;', -5)]"/>
+                <filter name="under_budget" string="Under Budget" 
+                        domain="[('variance_percentage', '&gt;', 5)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_analytic_account" string="Analytic Account" 
+                            context="{'group_by': 'analytic_account_id'}"/>
+                    <filter name="group_by_cost_center" string="Cost Center" 
+                            context="{'group_by': 'cost_center_id'}"/>
+                    <filter name="group_by_budget" string="Budget" 
+                            context="{'group_by': 'budget_id'}"/>
+                    <filter name="group_by_state" string="Status" 
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_by_date" string="Date" 
+                            context="{'group_by': 'date_from'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="budget_vs_actual_report_simple_action" model="ir.actions.act_window">
+        <field name="name">Budget vs Actual Reports</field>
+        <field name="res_model">facilities.budget.vs.actual.report</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_generated': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Budget vs Actual Report
+            </p>
+            <p>
+                Generate comprehensive reports comparing budgeted amounts with actual spending 
+                based on analytical accounts (cost centers). This helps you track budget 
+                performance and identify areas of over or under spending.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+    <!-- Commented out - replaced by Budget vs Actual Dashboard -->
+    <!--
+    <menuitem id="menu_budget_vs_actual_reports"
+              name="Budget vs Actual Reports"
+              parent="menu_financial_management"
+              action="budget_vs_actual_report_simple_action"
+              sequence="50"/>
+    -->
+
+</odoo>

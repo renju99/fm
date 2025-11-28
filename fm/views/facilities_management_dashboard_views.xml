@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ==================== FORM VIEW ==================== -->
+    <record id="view_facilities_management_dashboard_form" model="ir.ui.view">
+        <field name="name">facilities.management.dashboard.form</field>
+        <field name="model">facilities.management.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Facilities Management Dashboard">
+                <header>
+                    <button name="action_refresh_dashboard" 
+                            type="object" 
+                            string="Refresh Dashboard" 
+                            class="btn-primary"
+                            icon="fa-refresh"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Dashboard Name"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group name="basic_info" string="Basic Information">
+                            <field name="user_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                        
+                        <group name="period_config" string="Period Configuration">
+                            <field name="period_type"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+                    
+                    <group name="filters" string="Filters">
+                        <field name="facility_ids" widget="many2many_tags" 
+                               options="{'no_create': True}"/>
+                    </group>
+                    
+                    <notebook>
+                        <!-- Facility & Asset KPIs -->
+                        <page string="Facility &amp; Assets" name="facilities_assets">
+                            <group>
+                                <group string="Facilities">
+                                    <field name="total_facilities"/>
+                                    <field name="total_buildings"/>
+                                    <field name="total_rooms"/>
+                                </group>
+                                <group string="Assets">
+                                    <field name="total_assets"/>
+                                    <field name="total_asset_value" widget="monetary"/>
+                                    <field name="active_assets"/>
+                                    <field name="assets_under_maintenance"/>
+                                </group>
+                            </group>
+                            <div class="row mt-3">
+                                <div class="col-6">
+                                    <button name="action_view_facilities" 
+                                            type="object" 
+                                            string="View Facilities" 
+                                            class="btn-secondary oe_link"
+                                            icon="fa-building"/>
+                                </div>
+                                <div class="col-6">
+                                    <button name="action_view_assets" 
+                                            type="object" 
+                                            string="View Assets" 
+                                            class="btn-secondary oe_link"
+                                            icon="fa-cube"/>
+                                </div>
+                            </div>
+                        </page>
+                        
+                        <!-- Work Orders & Maintenance -->
+                        <page string="Work Orders &amp; Maintenance" name="workorders">
+                            <group>
+                                <group string="Work Orders">
+                                    <field name="total_workorders"/>
+                                    <field name="open_workorders"/>
+                                    <field name="in_progress_workorders"/>
+                                    <field name="completed_workorders"/>
+                                    <field name="overdue_workorders"/>
+                                    <field name="workorder_completion_rate" 
+                                           widget="progressbar"/>
+                                    <field name="avg_workorder_duration" 
+                                           widget="float_time"/>
+                                </group>
+                                <group string="Maintenance">
+                                    <field name="preventive_maintenance_count"/>
+                                    <field name="corrective_maintenance_count"/>
+                                    <field name="total_maintenance_cost" widget="monetary"/>
+                                </group>
+                            </group>
+                            <div class="row mt-3">
+                                <div class="col-4">
+                                    <button name="action_view_active_workorders" 
+                                            type="object" 
+                                            string="Active Work Orders" 
+                                            class="btn-warning oe_link"
+                                            icon="fa-wrench"/>
+                                </div>
+                                <div class="col-4">
+                                    <button name="action_view_completed_workorders" 
+                                            type="object" 
+                                            string="Completed Work Orders" 
+                                            class="btn-success oe_link"
+                                            icon="fa-check"/>
+                                </div>
+                                <div class="col-4">
+                                    <button name="action_view_overdue_workorders" 
+                                            type="object" 
+                                            string="Overdue Work Orders" 
+                                            class="btn-danger oe_link"
+                                            icon="fa-exclamation-triangle"/>
+                                </div>
+                            </div>
+                        </page>
+                        
+                        <!-- Financial -->
+                        <page string="Financial" name="financial">
+                            <group>
+                                <group string="Budget">
+                                    <field name="total_budget" widget="monetary"/>
+                                    <field name="total_expenses" widget="monetary"/>
+                                    <field name="budget_utilization" widget="progressbar"/>
+                                </group>
+                                <group string="Maintenance Costs">
+                                    <field name="total_maintenance_cost" widget="monetary"/>
+                                    <button name="action_view_maintenance_costs" 
+                                            type="object" 
+                                            string="View Cost Breakdown" 
+                                            class="btn-info oe_link"
+                                            icon="fa-dollar"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Space Booking & Services -->
+                        <page string="Space &amp; Services" name="space_services">
+                            <group>
+                                <group string="Space Booking">
+                                    <field name="total_bookings"/>
+                                    <field name="active_bookings"/>
+                                    <field name="space_utilization" widget="progressbar"/>
+                                    <button name="action_view_bookings" 
+                                            type="object" 
+                                            string="View Bookings" 
+                                            class="btn-primary oe_link mt-2"
+                                            icon="fa-calendar"/>
+                                </group>
+                                <group string="Service Requests">
+                                    <field name="total_service_requests"/>
+                                    <field name="pending_service_requests"/>
+                                    <field name="resolved_service_requests"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Safety & Energy -->
+                        <page string="Safety &amp; Energy" name="safety_energy">
+                            <group>
+                                <group string="Safety">
+                                    <field name="safety_incidents"/>
+                                </group>
+                                <group string="Energy">
+                                    <field name="total_energy_consumption"/>
+                                    <field name="energy_cost" widget="monetary"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== LIST VIEW ==================== -->
+    <record id="view_facilities_management_dashboard_tree" model="ir.ui.view">
+        <field name="name">facilities.management.dashboard.tree</field>
+        <field name="model">facilities.management.dashboard</field>
+        <field name="arch" type="xml">
+            <list string="Facilities Management Dashboards" default_order="create_date desc">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="period_type"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="total_workorders"/>
+                <field name="completed_workorders"/>
+                <field name="workorder_completion_rate" widget="progressbar"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== SEARCH VIEW ==================== -->
+    <record id="view_facilities_management_dashboard_search" model="ir.ui.view">
+        <field name="name">facilities.management.dashboard.search</field>
+        <field name="model">facilities.management.dashboard</field>
+        <field name="arch" type="xml">
+            <search string="Search Dashboards">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="facility_ids"/>
+                
+                <filter string="My Dashboards" name="my_dashboards" 
+                        domain="[('user_id', '=', uid)]"/>
+                <filter string="Active" name="active" 
+                        domain="[('active', '=', True)]"/>
+                
+                <separator/>
+                <filter string="Today" name="today" 
+                        domain="[('period_type', '=', 'today')]"/>
+                <filter string="This Week" name="this_week" 
+                        domain="[('period_type', '=', 'week')]"/>
+                <filter string="This Month" name="this_month" 
+                        domain="[('period_type', '=', 'month')]"/>
+                <filter string="This Year" name="this_year" 
+                        domain="[('period_type', '=', 'year')]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Owner" name="group_by_user" 
+                            context="{'group_by': 'user_id'}"/>
+                    <filter string="Period Type" name="group_by_period" 
+                            context="{'group_by': 'period_type'}"/>
+                    <filter string="Company" name="group_by_company" 
+                            context="{'group_by': 'company_id'}" 
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ==================== ACTIONS ==================== -->
+    
+    <!-- Dashboard Form/List Action -->
+    <record id="action_facilities_management_dashboard" model="ir.actions.act_window">
+        <field name="name">Facilities Management Dashboard</field>
+        <field name="res_model">facilities.management.dashboard</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{
+            'search_default_my_dashboards': 1,
+            'search_default_active': 1,
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Facilities Management Dashboard!
+            </p>
+            <p>
+                Configure dashboards to monitor your facilities operations, 
+                work orders, assets, maintenance activities, and more.
+            </p>
+        </field>
+    </record>
+
+    <!-- Client Action for Analytics Dashboard with KPI Cards -->
+    <record id="action_facilities_analytics_dashboard_client" model="ir.actions.client">
+        <field name="name">Facilities Analytics Dashboard</field>
+        <field name="tag">facilities_analytics_dashboard</field>
+        <field name="target">main</field>
+    </record>
+
+    <!-- ==================== MENU ITEMS ==================== -->
+    
+    <!-- Main Dashboard Menu (under Analytics) - Opens KPI card dashboard -->
+    <menuitem id="menu_facilities_management_dashboard"
+              name="Facilities Dashboard"
+              parent="menu_facilities_analytics"
+              action="action_facilities_analytics_dashboard_client"
+              sequence="1"/>
+
+</odoo>
+

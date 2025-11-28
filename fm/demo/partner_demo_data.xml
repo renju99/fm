@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Demo Partners for Asset Management -->
+        
+        <!-- Create our own vendor category for facilities management -->
+        <record id="demo_vendor_category" model="res.partner.category">
+            <field name="name">Facilities Vendors</field>
+            <field name="color" eval="2"/>
+        </record>
+        
+        <!-- Suppliers -->
+        <record id="demo_supplier_hvac_tech" model="res.partner">
+            <field name="name">HVAC Tech Solutions Inc.</field>
+            <field name="is_company">True</field>
+            <field name="supplier_rank">1</field>
+            <field name="customer_rank">0</field>
+            <field name="street">123 Industrial Blvd</field>
+            <field name="city">Manufacturing City</field>
+            <field name="zip">12345</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="state_id" ref="base.state_us_1"/>
+            <field name="phone">+1-555-HVAC-TECH</field>
+            <field name="email">sales@hvactech.com</field>
+            <field name="website">https://www.hvactech.com</field>
+            <field name="category_id" eval="[(4, ref('demo_vendor_category'))]"/>
+        </record>
+
+        <record id="demo_supplier_electrical_pro" model="res.partner">
+            <field name="name">Electrical Pro Systems</field>
+            <field name="is_company">True</field>
+            <field name="supplier_rank">1</field>
+            <field name="customer_rank">0</field>
+            <field name="street">456 Power Lane</field>
+            <field name="city">Electric City</field>
+            <field name="zip">54321</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="state_id" ref="base.state_us_2"/>
+            <field name="phone">+1-555-ELEC-PRO</field>
+            <field name="email">info@electricalpro.com</field>
+            <field name="website">https://www.electricalpro.com</field>
+            <field name="category_id" eval="[(4, ref('demo_vendor_category'))]"/>
+        </record>
+
+        <record id="demo_supplier_it_equipment" model="res.partner">
+            <field name="name">IT Equipment Solutions LLC</field>
+            <field name="is_company">True</field>
+            <field name="supplier_rank">1</field>
+            <field name="customer_rank">0</field>
+            <field name="street">789 Tech Drive</field>
+            <field name="city">Silicon Valley</field>
+            <field name="zip">94000</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="state_id" ref="base.state_us_5"/>
+            <field name="phone">+1-555-IT-SOLVE</field>
+            <field name="email">sales@itequipment.com</field>
+            <field name="website">https://www.itequipment.com</field>
+            <field name="category_id" eval="[(4, ref('demo_vendor_category'))]"/>
+        </record>
+
+        <record id="demo_supplier_security_sys" model="res.partner">
+            <field name="name">Security Systems International</field>
+            <field name="is_company">True</field>
+            <field name="supplier_rank">1</field>
+            <field name="customer_rank">0</field>
+            <field name="street">321 Security Ave</field>
+            <field name="city">Safety City</field>
+            <field name="zip">67890</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="state_id" ref="base.state_us_3"/>
+            <field name="phone">+1-555-SECURE-1</field>
+            <field name="email">support@securitysys.com</field>
+            <field name="website">https://www.securitysys.com</field>
+            <field name="category_id" eval="[(4, ref('demo_vendor_category'))]"/>
+        </record>
+
+        <record id="demo_supplier_furniture_co" model="res.partner">
+            <field name="name">Modern Furniture Company</field>
+            <field name="is_company">True</field>
+            <field name="supplier_rank">1</field>
+            <field name="customer_rank">0</field>
+            <field name="street">654 Design Street</field>
+            <field name="city">Furniture City</field>
+            <field name="zip">98765</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="state_id" ref="base.state_us_4"/>
+            <field name="phone">+1-555-FURN-IT</field>
+            <field name="email">orders@modernfurniture.com</field>
+            <field name="website">https://www.modernfurniture.com</field>
+            <field name="category_id" eval="[(4, ref('demo_vendor_category'))]"/>
+        </record>
+
+        <!-- Manufacturers -->
+        <record id="demo_manufacturer_carrier" model="res.partner">
+            <field name="name">Carrier Corporation</field>
+            <field name="is_company">True</field>
+            <field name="supplier_rank">1</field>
+            <field name="customer_rank">0</field>
+            <field name="street">1399 State Fair Blvd</field>
+            <field name="city">Syracuse</field>
+            <field name="zip">13204</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="state_id" ref="base.state_us_33"/>
+            <field name="phone">+1-315-432-6000</field>
+            <field name="email">info@carrier.com</field>
+            <field name="website">https://www.carrier.com</field>
+            <field name="category_id" eval="[(4, ref('demo_vendor_category'))]"/>
+        </record>
+
+        <record id="demo_manufacturer_schneider" model="res.partner">
+            <field name="name">Schneider Electric</field>
+            <field name="is_company">True</field>
+            <field name="supplier_rank">1</field>
+            <field name="customer_rank">0</field>
+            <field name="street">800 Federal Street</field>
+            <field name="city">Andover</field>
+            <field name="zip">01810</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="state_id" ref="base.state_us_22"/>
+            <field name="phone">+1-978-794-0800</field>
+            <field name="email">contact@schneider-electric.com</field>
+            <field name="website">https://www.se.com</field>
+            <field name="category_id" eval="[(4, ref('demo_vendor_category'))]"/>
+        </record>
+
+        <record id="demo_manufacturer_dell" model="res.partner">
+            <field name="name">Dell Technologies</field>
+            <field name="is_company">True</field>
+            <field name="supplier_rank">1</field>
+            <field name="customer_rank">0</field>
+            <field name="street">One Dell Way</field>
+            <field name="city">Round Rock</field>
+            <field name="zip">78682</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="state_id" ref="base.state_us_44"/>
+            <field name="phone">+1-512-728-7800</field>
+            <field name="email">support@dell.com</field>
+            <field name="website">https://www.dell.com</field>
+            <field name="category_id" eval="[(4, ref('demo_vendor_category'))]"/>
+        </record>
+
+        <record id="demo_manufacturer_honeywell" model="res.partner">
+            <field name="name">Honeywell International</field>
+            <field name="is_company">True</field>
+            <field name="supplier_rank">1</field>
+            <field name="customer_rank">0</field>
+            <field name="street">855 S Mint St</field>
+            <field name="city">Charlotte</field>
+            <field name="zip">28202</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="state_id" ref="base.state_us_34"/>
+            <field name="phone">+1-704-627-4000</field>
+            <field name="email">info@honeywell.com</field>
+            <field name="website">https://www.honeywell.com</field>
+            <field name="category_id" eval="[(4, ref('demo_vendor_category'))]"/>
+        </record>
+
+        <record id="demo_manufacturer_zeiss" model="res.partner">
+            <field name="name">Carl Zeiss AG</field>
+            <field name="is_company">True</field>
+            <field name="supplier_rank">1</field>
+            <field name="customer_rank">0</field>
+            <field name="street">Carl-Zeiss-Straße 22</field>
+            <field name="city">Oberkochen</field>
+            <field name="zip">73447</field>
+            <field name="country_id" ref="base.de"/>
+            <field name="phone">+49-7364-20-0</field>
+            <field name="email">info@zeiss.com</field>
+            <field name="website">https://www.zeiss.com</field>
+            <field name="category_id" eval="[(4, ref('demo_vendor_category'))]"/>
+        </record>
+
+    </data>
+</odoo>

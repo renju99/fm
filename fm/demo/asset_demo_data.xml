@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Asset Categories Demo Data -->
+        
+        <!-- Equipment Categories -->
+        <record id="demo_category_hvac" model="facilities.asset.category">
+            <field name="name">HVAC Equipment</field>
+            <field name="category_type">equipment</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_category_electrical" model="facilities.asset.category">
+            <field name="name">Electrical Equipment</field>
+            <field name="category_type">equipment</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_category_plumbing" model="facilities.asset.category">
+            <field name="name">Plumbing Equipment</field>
+            <field name="category_type">equipment</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_category_security" model="facilities.asset.category">
+            <field name="name">Security Systems</field>
+            <field name="category_type">equipment</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_category_fire_safety" model="facilities.asset.category">
+            <field name="name">Fire Safety Equipment</field>
+            <field name="category_type">equipment</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- IT Hardware Categories -->
+        <record id="demo_category_servers" model="facilities.asset.category">
+            <field name="name">Servers &amp; Network Equipment</field>
+            <field name="category_type">it</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_category_workstations" model="facilities.asset.category">
+            <field name="name">Workstations &amp; Computers</field>
+            <field name="category_type">it</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Furniture Categories -->
+        <record id="demo_category_office_furniture" model="facilities.asset.category">
+            <field name="name">Office Furniture</field>
+            <field name="category_type">furniture</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_category_conference_room" model="facilities.asset.category">
+            <field name="name">Conference Room Equipment</field>
+            <field name="category_type">furniture</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Vehicle Categories -->
+        <record id="demo_category_vehicles" model="facilities.asset.category">
+            <field name="name">Fleet Vehicles</field>
+            <field name="category_type">vehicle</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Building Component Categories -->
+        <record id="demo_category_elevators" model="facilities.asset.category">
+            <field name="name">Elevators &amp; Lifts</field>
+            <field name="category_type">building</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_category_doors_windows" model="facilities.asset.category">
+            <field name="name">Doors &amp; Windows</field>
+            <field name="category_type">building</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Infrastructure Categories -->
+        <record id="demo_category_power" model="facilities.asset.category">
+            <field name="name">Power Infrastructure</field>
+            <field name="category_type">infrastructure</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_category_water" model="facilities.asset.category">
+            <field name="name">Water Infrastructure</field>
+            <field name="category_type">infrastructure</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Tool Categories -->
+        <record id="demo_category_maintenance_tools" model="facilities.asset.category">
+            <field name="name">Maintenance Tools</field>
+            <field name="category_type">tool</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Asset Tags Demo Data -->
+        
+        <!-- Priority Tags -->
+        <record id="demo_tag_critical" model="facilities.asset.tag">
+            <field name="name">Critical</field>
+            <field name="description">Critical assets requiring immediate attention</field>
+            <field name="tag_type">priority</field>
+            <field name="color">1</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_tag_high_priority" model="facilities.asset.tag">
+            <field name="name">High Priority</field>
+            <field name="description">High priority assets</field>
+            <field name="tag_type">priority</field>
+            <field name="color">2</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_tag_medium_priority" model="facilities.asset.tag">
+            <field name="name">Medium Priority</field>
+            <field name="description">Medium priority assets</field>
+            <field name="tag_type">priority</field>
+            <field name="color">3</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_tag_low_priority" model="facilities.asset.tag">
+            <field name="name">Low Priority</field>
+            <field name="description">Low priority assets</field>
+            <field name="tag_type">priority</field>
+            <field name="color">4</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Location Tags -->
+        <record id="demo_tag_ground_floor" model="facilities.asset.tag">
+            <field name="name">Ground Floor</field>
+            <field name="description">Assets located on ground floor</field>
+            <field name="tag_type">location</field>
+            <field name="color">5</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_tag_first_floor" model="facilities.asset.tag">
+            <field name="name">First Floor</field>
+            <field name="description">Assets located on first floor</field>
+            <field name="tag_type">location</field>
+            <field name="color">6</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_tag_basement" model="facilities.asset.tag">
+            <field name="name">Basement</field>
+            <field name="description">Assets located in basement</field>
+            <field name="tag_type">location</field>
+            <field name="color">7</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_tag_rooftop" model="facilities.asset.tag">
+            <field name="name">Rooftop</field>
+            <field name="description">Assets located on rooftop</field>
+            <field name="tag_type">location</field>
+            <field name="color">8</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Status Tags -->
+        <record id="demo_tag_operational" model="facilities.asset.tag">
+            <field name="name">Operational</field>
+            <field name="description">Assets currently operational</field>
+            <field name="tag_type">status</field>
+            <field name="color">9</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_tag_maintenance" model="facilities.asset.tag">
+            <field name="name">Under Maintenance</field>
+            <field name="description">Assets currently under maintenance</field>
+            <field name="tag_type">status</field>
+            <field name="color">10</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_tag_out_of_service" model="facilities.asset.tag">
+            <field name="name">Out of Service</field>
+            <field name="description">Assets out of service</field>
+            <field name="tag_type">status</field>
+            <field name="color">11</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Functional Tags -->
+        <record id="demo_tag_energy_efficient" model="facilities.asset.tag">
+            <field name="name">Energy Efficient</field>
+            <field name="description">Energy efficient assets</field>
+            <field name="tag_type">functional</field>
+            <field name="color">12</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_tag_automated" model="facilities.asset.tag">
+            <field name="name">Automated</field>
+            <field name="description">Automated assets</field>
+            <field name="tag_type">functional</field>
+            <field name="color">14</field>
+            <field name="active">True</field>
+        </record>
+
+    </data>
+</odoo>

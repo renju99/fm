@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View for Technician Assignment -->
+    <record id="view_maintenance_workorder_assignment_form" model="ir.ui.view">
+        <field name="name">facilities.workorder.assignment.form</field>
+        <field name="model">facilities.workorder.assignment</field>
+        <field name="arch" type="xml">
+            <form string="Technician Assignment">
+                <sheet>
+                    <group>
+                        <group string="Assignment Details">
+                            <field name="workorder_id" readonly="1"/>
+                            <field name="technician_id" required="1"/>
+                            <field name="status" widget="selection"/>
+                        </group>
+                        <group string="Time Tracking">
+                            <field name="start_date" required="1"/>
+                            <field name="end_date"/>
+                            <field name="work_hours" readonly="1"/>
+                            <field name="work_minutes" readonly="1"/>
+                        </group>
+                        <group string="Cost Information">
+                            <field name="hourly_rate" readonly="1"/>
+                            <field name="labor_cost" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Work Details">
+                        <field name="notes" placeholder="Add notes about the work performed..."/>
+                        <field name="work_description" placeholder="Describe the work performed by this technician..."/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_start_work" type="object" string="Start Work" class="btn-primary"
+                            invisible="status in ('in_progress', 'completed')" icon="fa-play"/>
+                    <button name="action_pause_work" type="object" string="Pause Work" class="btn-warning"
+                            invisible="status != 'in_progress'" icon="fa-pause"/>
+                    <button name="action_resume_work" type="object" string="Resume Work" class="btn-info"
+                            invisible="status != 'paused'" icon="fa-refresh"/>
+                    <button name="action_complete_work" type="object" string="Complete Work" class="btn-success"
+                            invisible="status in ('completed', 'not_started')" icon="fa-check"/>
+                    <button string="Save" class="btn-primary" type="object" name="write" special="save"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View for Technician Assignment -->
+    <record id="view_maintenance_workorder_assignment_tree" model="ir.ui.view">
+        <field name="name">facilities.workorder.assignment.tree</field>
+        <field name="model">facilities.workorder.assignment</field>
+        <field name="arch" type="xml">
+            <list string="Technician Assignments">
+                <field name="technician_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="work_hours"/>
+                <field name="work_minutes"/>
+                <field name="status" widget="badge" 
+                       decoration-info="status == 'not_started'"
+                       decoration-warning="status == 'in_progress'"
+                       decoration-success="status == 'completed'"
+                       decoration-muted="status == 'paused'"/>
+                <field name="hourly_rate"/>
+                <field name="labor_cost"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View for Technician Assignment -->
+    <record id="view_maintenance_workorder_assignment_search" model="ir.ui.view">
+        <field name="name">facilities.workorder.assignment.search</field>
+        <field name="model">facilities.workorder.assignment</field>
+        <field name="arch" type="xml">
+            <search string="Search Technician Assignments">
+                <field name="technician_id"/>
+                <field name="workorder_id"/>
+                <field name="status"/>
+                <filter string="In Progress" name="in_progress" domain="[('status', '=', 'in_progress')]"/>
+                <filter string="Completed" name="completed" domain="[('status', '=', 'completed')]"/>
+                <filter string="Paused" name="paused" domain="[('status', '=', 'paused')]"/>
+                <filter string="Not Started" name="not_started" domain="[('status', '=', 'not_started')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Technician" name="group_technician" context="{'group_by': 'technician_id'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                    <filter string="Work Order" name="group_workorder" context="{'group_by': 'workorder_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Technician Assignment -->
+    <record id="action_maintenance_workorder_assignment" model="ir.actions.act_window">
+        <field name="name">Technician Assignments</field>
+        <field name="res_model">facilities.workorder.assignment</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('facilities_management.view_maintenance_workorder_assignment_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('facilities_management.view_maintenance_workorder_assignment_form')})]"/>
+        <field name="search_view_id" ref="facilities_management.view_maintenance_workorder_assignment_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first technician assignment!
+            </p>
+            <p>
+                Track technician work time and labor costs for maintenance work orders.
+            </p>
+        </field>
+    </record>
+
+</odoo>

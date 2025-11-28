@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Utility Meter List View - Minimal -->
+    <record id="view_utility_meter_list" model="ir.ui.view">
+        <field name="name">facilities.utility.meter.list</field>
+        <field name="model">facilities.utility.meter</field>
+        <field name="arch" type="xml">
+            <list string="Utility Meters" decoration-info="state == 'active'" 
+                  decoration-muted="state == 'inactive'" 
+                  decoration-warning="state in ['maintenance', 'calibration']"
+                  decoration-danger="state == 'faulty'"
+                  create="true" edit="true" delete="true">
+                <field name="name"/>
+                <field name="meter_type"/>
+                <field name="facility_id"/>
+                <field name="current_reading"/>
+                <field name="total_consumption"/>
+                <field name="state" widget="badge"/>
+                <field name="meter_code" optional="hide"/>
+                <field name="building_id" optional="hide"/>
+                <field name="floor_id" optional="hide"/>
+                <field name="room_id" optional="hide"/>
+                <field name="unit_of_measure" optional="hide"/>
+                <field name="last_reading_date" optional="hide"/>
+                <field name="is_automatic" optional="hide"/>
+                <field name="estimated_monthly_cost" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Utility Meter Form View -->
+    <record id="view_utility_meter_form" model="ir.ui.view">
+        <field name="name">facilities.utility.meter.form</field>
+        <field name="model">facilities.utility.meter</field>
+        <field name="arch" type="xml">
+            <form string="Utility Meter">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" 
+                            invisible="state != 'inactive'" class="btn-primary"/>
+                    <button name="action_deactivate" type="object" string="Deactivate" 
+                            invisible="state != 'active'" class="btn-secondary"/>
+                    <button name="action_maintenance" type="object" string="Maintenance" 
+                            invisible="state != 'active'" class="btn-warning"/>
+                    <button name="action_calibration_required" type="object" string="Calibration Required" 
+                            invisible="state != 'active'" class="btn-info"/>
+                    <button name="action_faulty" type="object" string="Faulty" 
+                            invisible="state != 'active'" class="btn-danger"/>
+                    <field name="state" widget="statusbar" statusbar_visible="active,inactive"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_consumption_readings" type="object" 
+                                class="oe_stat_button" icon="fa-bar-chart">
+                            <field name="consumption_reading_ids" widget="statinfo" 
+                                   string="Readings"/>
+                        </button>
+                        <button name="action_view_asset" type="object" 
+                                class="oe_stat_button" icon="fa-cog" 
+                                invisible="not asset_id">
+                            <field name="asset_id" widget="statinfo" string="Asset"/>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Meter Name"/>
+                        </h1>
+                        <h3>
+                            <field name="meter_code" readonly="1"/>
+                        </h3>
+                    </div>
+                    
+                    <group>
+                        <group name="basic_info" string="Basic Information">
+                            <field name="meter_type"/>
+                            <field name="unit_of_measure"/>
+                            <field name="custom_unit" invisible="unit_of_measure != 'other'"/>
+                            <field name="reading_precision"/>
+                            <field name="is_automatic"/>
+                            <field name="reading_frequency"/>
+                        </group>
+                        <group name="location_info" string="Location">
+                            <field name="facility_id" options="{'no_create': True}"/>
+                            <field name="building_id" options="{'no_create': True}"/>
+                            <field name="floor_id" options="{'no_create': True}"/>
+                            <field name="room_id" options="{'no_create': True}"/>
+                            <field name="asset_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="technical_specs" string="Technical Specifications">
+                            <field name="manufacturer"/>
+                            <field name="model"/>
+                            <field name="serial_number"/>
+                            <field name="installation_date"/>
+                            <field name="calibration_date"/>
+                            <field name="next_calibration_date"/>
+                        </group>
+                        <group name="reading_info" string="Current Reading">
+                            <field name="current_reading"/>
+                            <field name="last_reading_date"/>
+                            <field name="last_reading_user_id"/>
+                            <field name="total_consumption" readonly="1"/>
+                            <field name="cost_per_unit"/>
+                            <field name="currency_id"/>
+                            <field name="estimated_monthly_cost" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="thresholds" string="Alert Thresholds">
+                            <field name="high_consumption_threshold"/>
+                            <field name="low_consumption_threshold"/>
+                            <field name="alert_active"/>
+                        </group>
+                        <group name="notes" string="Notes">
+                            <field name="notes" nolabel="1"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Consumption Readings" name="readings">
+                            <field name="consumption_reading_ids" readonly="1">
+                                <list string="Consumption Readings">
+                                    <field name="name"/>
+                                    <field name="reading_date"/>
+                                    <field name="reading_value"/>
+                                    <field name="consumption"/>
+                                    <field name="reading_type"/>
+                                    <field name="is_validated"/>
+                                    <field name="total_cost"/>
+                                    <field name="is_anomaly" widget="boolean_toggle"/>
+                                    <field name="anomaly_severity"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Attachments" name="attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Utility Meter Search View -->
+    <record id="view_utility_meter_search" model="ir.ui.view">
+        <field name="name">facilities.utility.meter.search</field>
+        <field name="model">facilities.utility.meter</field>
+        <field name="arch" type="xml">
+            <search string="Utility Meters">
+                <field name="name"/>
+                <field name="meter_code"/>
+                <field name="meter_type"/>
+                <field name="facility_id"/>
+                <field name="building_id"/>
+                <field name="asset_id"/>
+                <field name="manufacturer"/>
+                <field name="model"/>
+                <field name="serial_number"/>
+                
+                <separator/>
+                <filter string="Active" name="active" domain="[('state', '=', 'active')]"/>
+                <filter string="Inactive" name="inactive" domain="[('state', '=', 'inactive')]"/>
+                <filter string="Maintenance" name="maintenance" domain="[('state', '=', 'maintenance')]"/>
+                <filter string="Calibration Required" name="calibration" domain="[('state', '=', 'calibration')]"/>
+                <filter string="Faulty" name="faulty" domain="[('state', '=', 'faulty')]"/>
+                
+                <separator/>
+                <filter string="Electricity" name="electricity" domain="[('meter_type', '=', 'electricity')]"/>
+                <filter string="Water" name="water" domain="[('meter_type', '=', 'water')]"/>
+                <filter string="Gas" name="gas" domain="[('meter_type', '=', 'gas')]"/>
+                <filter string="Steam" name="steam" domain="[('meter_type', '=', 'steam')]"/>
+                
+                <separator/>
+                <filter string="Automatic Reading" name="automatic" domain="[('is_automatic', '=', True)]"/>
+                <filter string="Manual Reading" name="manual" domain="[('is_automatic', '=', False)]"/>
+                
+                <separator/>
+                <filter string="High Consumption" name="high_consumption" 
+                        domain="[('current_reading', '&gt;', 'high_consumption_threshold')]"/>
+                <filter string="Low Consumption" name="low_consumption" 
+                        domain="[('current_reading', '&lt;', 'low_consumption_threshold')]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+                    <filter string="Building" name="group_building" context="{'group_by': 'building_id'}"/>
+                    <filter string="Meter Type" name="group_type" context="{'group_by': 'meter_type'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
+                    <filter string="Unit of Measure" name="group_unit" context="{'group_by': 'unit_of_measure'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Utility Meter Kanban View -->
+    <record id="view_utility_meter_kanban" model="ir.ui.view">
+        <field name="name">facilities.utility.meter.kanban</field>
+        <field name="model">facilities.utility.meter</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="meter_type" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="meter_type"/>
+                <field name="facility_id"/>
+                <field name="state"/>
+                <field name="current_reading"/>
+                <field name="total_consumption"/>
+                <field name="estimated_monthly_cost"/>
+                <field name="is_automatic"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                        <div class="o_kanban_record_subtitle">
+                                            <field name="meter_code"/> - <field name="facility_id"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_top_right">
+                                        <field name="state" widget="label_selection" 
+                                               options="{'classes': {'active': 'success', 'inactive': 'secondary', 'maintenance': 'warning', 'calibration': 'info', 'faulty': 'danger'}}"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="text-muted">Current Reading</div>
+                                            <div><field name="current_reading"/> <field name="unit_of_measure"/></div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-muted">Total Consumption</div>
+                                            <div><field name="total_consumption"/></div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt8">
+                                        <div class="col-6">
+                                            <div class="text-muted">Monthly Cost</div>
+                                            <div><field name="estimated_monthly_cost"/> <field name="currency_id"/></div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-muted">Reading Type</div>
+                                            <div>
+                                                <span t-if="record.is_automatic.raw_value" class="badge badge-info">Auto</span>
+                                                <span t-else="" class="badge badge-secondary">Manual</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Utility Meter Calendar View -->
+    <record id="view_utility_meter_calendar" model="ir.ui.view">
+        <field name="name">facilities.utility.meter.calendar</field>
+        <field name="model">facilities.utility.meter</field>
+        <field name="arch" type="xml">
+            <calendar string="Utility Meters" date_start="last_reading_date" color="meter_type">
+                <field name="name"/>
+                <field name="meter_type"/>
+                <field name="current_reading"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Utility Meter Graph View -->
+    <record id="view_utility_meter_graph" model="ir.ui.view">
+        <field name="name">facilities.utility.meter.graph</field>
+        <field name="model">facilities.utility.meter</field>
+        <field name="arch" type="xml">
+            <graph string="Utility Meter Analysis" type="bar">
+                <field name="meter_type" type="row"/>
+                <field name="total_consumption" type="measure"/>
+                <field name="estimated_monthly_cost" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Utility Meter Actions -->
+    <record id="action_utility_meter" model="ir.actions.act_window">
+        <field name="name">Utility Meters</field>
+        <field name="res_model">facilities.utility.meter</field>
+        <field name="view_mode">list,kanban,form,calendar,graph</field>
+        <field name="search_view_id" ref="view_utility_meter_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first utility meter!
+            </p>
+            <p>
+                Utility meters help you track energy consumption across your facilities.
+                Set up meters for electricity, water, gas, and other utilities to monitor usage and costs.
+            </p>
+        </field>
+    </record>
+</odoo>

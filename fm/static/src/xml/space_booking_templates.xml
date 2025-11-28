@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- Space Booking Kanban Template -->
+    <t t-name="facilities_management.SpaceBookingKanban">
+        <div class="o_kanban_record_top">
+            <div class="o_kanban_record_headings">
+                <strong class="o_kanban_record_title">
+                    <field name="name"/>
+                </strong>
+            </div>
+            <div class="o_kanban_record_top_right">
+                <field name="priority" widget="priority"/>
+            </div>
+        </div>
+        <div class="o_kanban_record_body">
+            <div class="o_kanban_record_bottom">
+                <div class="oe_kanban_text_left">
+                    <field name="room_id"/>
+                    <field name="start_datetime"/>
+                    <field name="end_datetime"/>
+                </div>
+                <div class="oe_kanban_text_right">
+                    <field name="state"/>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <!-- Space Booking Form Template -->
+    <t t-name="facilities_management.SpaceBookingForm">
+        <form>
+            <sheet>
+                <group>
+                    <group>
+                        <field name="name"/>
+                        <field name="room_id"/>
+                        <field name="user_id"/>
+                        <field name="booking_type"/>
+                        <field name="priority"/>
+                    </group>
+                    <group>
+                        <field name="start_datetime"/>
+                        <field name="end_datetime"/>
+                        <field name="state"/>
+                        <field name="department_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Details">
+                        <group>
+                            <field name="purpose"/>
+                            <field name="attendees"/>
+                            <field name="required_capacity"/>
+                            <field name="capacity_utilization"/>
+                            <field name="total_cost"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </page>
+                    <page string="Equipment">
+                        <field name="required_equipment_ids"/>
+                        <field name="equipment_availability"/>
+                    </page>
+                    <page string="Notes">
+                        <field name="notes"/>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+    </t>
+</templates>

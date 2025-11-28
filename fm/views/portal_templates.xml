@@ -1,0 +1,1364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Portal Service Requests List -->
+    <template id="portal_my_service_requests" name="My Service Requests">
+        <t t-call="facilities_management.portal_layout_with_navigation">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+
+            <!-- Custom Search and Filter Controls -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-3">
+                            <label for="sortby" class="form-label">Sort By:</label>
+                            <select name="sortby" id="sortby" class="form-select" onchange="this.form.submit()">
+                                <t t-foreach="searchbar_sortings.items()" t-as="sorting_item">
+                                    <option t-att-value="sorting_item[0]" t-att-selected="sorting_item[0] == sortby" t-esc="sorting_item[1]['label']"/>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="filterby" class="form-label">Filter By:</label>
+                            <select name="filterby" id="filterby" class="form-select" onchange="this.form.submit()">
+                                <t t-foreach="searchbar_filters.items()" t-as="filter_item">
+                                    <option t-att-value="filter_item[0]" t-att-selected="filter_item[0] == filterby" t-esc="filter_item[1]['label']"/>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="groupby" class="form-label">Group By:</label>
+                            <select name="groupby" id="groupby" class="form-select" onchange="this.form.submit()">
+                                <t t-foreach="searchbar_groupby.items()" t-as="group_item">
+                                    <option t-att-value="group_item[0]" t-att-selected="group_item[0] == groupby" t-esc="group_item[1]['label']"/>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="search" class="form-label">Search:</label>
+                            <div class="input-group">
+                                <input type="text" name="search" id="search" class="form-control" t-att-value="search" placeholder="Search requests..."/>
+                                <button type="submit" class="btn btn-outline-secondary">
+                                    <i class="fa fa-search"/>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <t t-if="not service_requests">
+                <div class="alert alert-warning mt-3" role="alert">
+                    <h4 class="alert-heading">No Service Requests Found</h4>
+                    <p>You haven't submitted any service requests yet.</p>
+                    <a href="/my/service-request/new" class="btn btn-primary">
+                        <i class="fa fa-plus"/> Create Your First Service Request
+                    </a>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3>My Service Requests</h3>
+                    <div class="btn-group">
+                        <a href="/dashboard" class="btn btn-outline-info">
+                            <i class="fa fa-dashboard"/> Dashboard
+                        </a>
+                        <a href="/my/service-request/new" class="btn btn-primary">
+                            <i class="fa fa-plus"/> New Service Request
+                        </a>
+                    </div>
+                </div>
+
+                <t t-call="portal.portal_table">
+                    <thead>
+                        <tr class="active">
+                            <th>Request #</th>
+                            <th>Title</th>
+                            <th>Service Type</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Request Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="service_requests" t-as="request">
+                            <tr>
+                                <td>
+                                    <a t-attf-href="/my/service-request/#{request.id}">
+                                        <t t-esc="request.name"/>
+                                    </a>
+                                </td>
+                                <td><t t-esc="request.title"/></td>
+                                <td>
+                                    <span class="badge badge-info">
+                                        <t t-esc="dict(request._fields['service_type'].selection)[request.service_type]"/>
+                                    </span>
+                                </td>
+                                <td>
+                                    <t t-if="request.priority == '5'">
+                                        <span class="badge badge-danger">Critical</span>
+                                    </t>
+                                    <t t-elif="request.priority == '4'">
+                                        <span class="badge badge-warning">Very High</span>
+                                    </t>
+                                    <t t-elif="request.priority == '3'">
+                                        <span class="badge badge-warning">High</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="badge badge-secondary">
+                                            <t t-esc="dict(request._fields['priority'].selection)[request.priority]"/>
+                                        </span>
+                                    </t>
+                                </td>
+                                <td>
+                                    <t t-if="request.state == 'draft'">
+                                        <span class="badge badge-secondary">Draft</span>
+                                    </t>
+                                    <t t-elif="request.state == 'submitted'">
+                                        <span class="badge badge-primary">Submitted</span>
+                                    </t>
+                                    <t t-elif="request.state == 'in_progress'">
+                                        <span class="badge badge-info">In Progress</span>
+                                    </t>
+                                    <t t-elif="request.state == 'resolved'">
+                                        <span class="badge badge-success">Resolved</span>
+                                    </t>
+                                    <t t-elif="request.state == 'closed'">
+                                        <span class="badge badge-dark">Closed</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="badge badge-secondary">
+                                            <t t-esc="dict(request._fields['state'].selection)[request.state]"/>
+                                        </span>
+                                    </t>
+                                </td>
+                                <td><t t-esc="request.request_date" t-options="{'widget': 'datetime'}"/></td>
+                                <td>
+                                    <a t-attf-href="/my/service-request/#{request.id}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fa fa-eye"/> View
+                                    </a>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Portal Service Request Detail -->
+    <template id="portal_service_request_detail" name="Service Request Detail">
+        <t t-call="facilities_management.portal_layout_with_navigation">
+            <t t-set="o_portal_fullwidth_alert" t-value="True"/>
+
+            <!-- Success/Error Messages -->
+            <t t-if="request.params.get('reopened') == '1'">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fa fa-check-circle"/> 
+                    <strong>Success!</strong> Your service request has been reopened and our team has been notified.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+            </t>
+
+            <div class="row mt-3">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">
+                                    <t t-esc="service_request.name"/> - <t t-esc="service_request.title"/>
+                                </h4>
+                                <t t-if="service_request.state == 'resolved'">
+                                    <span class="badge badge-success badge-lg">Resolved</span>
+                                </t>
+                                <t t-elif="service_request.state == 'in_progress'">
+                                    <span class="badge badge-info badge-lg">In Progress</span>
+                                </t>
+                                <t t-elif="service_request.state == 'submitted'">
+                                    <span class="badge badge-primary badge-lg">Submitted</span>
+                                </t>
+                                <t t-else="">
+                                    <span class="badge badge-secondary badge-lg">
+                                        <t t-esc="dict(service_request._fields['state'].selection)[service_request.state]"/>
+                                    </span>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Service Type:</strong> 
+                                        <span class="badge badge-info">
+                                            <t t-esc="dict(service_request._fields['service_type'].selection)[service_request.service_type]"/>
+                                        </span>
+                                    </p>
+                                    <p><strong>Priority:</strong> 
+                                        <t t-if="service_request.priority == '5'">
+                                            <span class="badge badge-danger">Critical</span>
+                                        </t>
+                                        <t t-elif="service_request.priority in ['3', '4']">
+                                            <span class="badge badge-warning">
+                                                <t t-esc="dict(service_request._fields['priority'].selection)[service_request.priority]"/>
+                                            </span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="badge badge-secondary">
+                                                <t t-esc="dict(service_request._fields['priority'].selection)[service_request.priority]"/>
+                                            </span>
+                                        </t>
+                                    </p>
+                                    <p><strong>Request Date:</strong> <t t-esc="service_request.request_date" t-options="{'widget': 'datetime'}"/></p>
+                                    <p t-if="service_request.due_date"><strong>Due Date:</strong> <t t-esc="service_request.due_date" t-options="{'widget': 'datetime'}"/></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p t-if="service_request.assigned_to_id"><strong>Assigned To:</strong> <t t-esc="service_request.assigned_to_id.name"/></p>
+                                    <p t-if="service_request.team_id"><strong>Team:</strong> <t t-esc="service_request.team_id.name"/></p>
+                                    <p t-if="service_request.resolution_date"><strong>Resolution Date:</strong> <t t-esc="service_request.resolution_date" t-options="{'widget': 'datetime'}"/></p>
+                                    <p><strong>Days Open:</strong> <t t-esc="service_request.days_open"/> days</p>
+                                </div>
+                            </div>
+                            
+                            <hr/>
+                            <h5>Description</h5>
+                            <div t-field="service_request.description"/>
+                            
+                            <t t-if="service_request.resolution_notes and service_request.state in ['resolved', 'closed']">
+                                <hr/>
+                                <h5>Resolution Notes</h5>
+                                <div t-field="service_request.resolution_notes"/>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Section -->
+                    <t t-if="service_request.state in ['resolved', 'closed'] and not service_request.feedback_rating">
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h5 class="mb-0">Provide Feedback</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Please provide your feedback on the completed service:</strong></p>
+                                <form t-attf-action="/my/service-request/#{service_request.id}/feedback" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div class="form-group">
+                                        <label for="rating">Rating</label>
+                                        <select name="rating" id="rating" class="form-control" required="True">
+                                            <option value="">Select Rating</option>
+                                            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                                            <option value="4">⭐⭐⭐⭐ Good</option>
+                                            <option value="3">⭐⭐⭐ Average</option>
+                                            <option value="2">⭐⭐ Poor</option>
+                                            <option value="1">⭐ Very Poor</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="comments">Comments</label>
+                                        <textarea name="comments" id="comments" class="form-control" rows="3" placeholder="Please share your feedback about the service provided..."></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-paper-plane"></i> Submit Feedback
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Show feedback if already provided -->
+                    <t t-if="service_request.feedback_rating">
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h5 class="mb-0">Your Feedback</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Rating:</strong> 
+                                    <t t-foreach="range(int(service_request.feedback_rating))" t-as="star">
+                                        <i class="fa fa-star text-warning"/>
+                                    </t>
+                                    <t t-foreach="range(5 - int(service_request.feedback_rating))" t-as="star">
+                                        <i class="fa fa-star-o text-muted"/>
+                                    </t>
+                                    (<t t-esc="service_request.feedback_rating"/>/5)
+                                </p>
+                                <p t-if="service_request.feedback_comments"><strong>Comments:</strong> <t t-esc="service_request.feedback_comments"/></p>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Reopen Request Section -->
+                    <t t-if="service_request.state in ['closed', 'resolved', 'cancelled']">
+                        <t t-set="can_reopen" t-value="False"/>
+                        
+                        
+                        <!-- Check if current user is the requester or has manager permissions -->
+                        <t t-if="service_request.requester_id.id == request.env.user.id or request.env.user.has_group('facilities_management.group_facilities_manager')">
+                            <t t-set="can_reopen" t-value="True"/>
+                        </t>
+                        <t t-if="can_reopen">
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-refresh"/> Reopen Request
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Need to reopen this request?</strong></p>
+                                    <p>If the issue wasn't fully resolved or you have additional concerns, you can reopen this service request.</p>
+                                    
+                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reopenModal">
+                                        <i class="fa fa-refresh"/> Reopen Request
+                                    </button>
+                                    
+                                    <!-- Alternative direct form for testing -->
+                                    <div class="mt-2">
+                                        <small class="text-muted">Alternative: Direct reopen form</small>
+                                        <form t-attf-action="/my/service-request/#{service_request.id}/reopen" method="post" style="display: inline-block;">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <input type="hidden" name="reopen_reason" value="Test reopen - issue not fully resolved"/>
+                                            <button type="submit" class="btn btn-sm btn-outline-warning" onclick="return confirm('Are you sure you want to reopen this request?')">
+                                                <i class="fa fa-refresh"/> Direct Reopen (Test)
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="alert alert-warning">
+                                <strong>Cannot Reopen:</strong> You don't have permission to reopen this request or it's not in a reopenable state.
+                                <br/>Current State: <t t-esc="service_request.state"/>
+                                <br/>User Match: <t t-if="service_request.requester_id.id == request.env.user.id">Yes (You are the requester)</t><t t-else="">No (You are not the requester)</t>
+                                <br/>Manager Permissions: <t t-if="request.env.user.has_group('facilities_management.group_facilities_manager')">Yes</t><t t-else="">No</t>
+                                <br/><strong>Note:</strong> You can only reopen service requests that you created, or you need manager permissions.
+                            </div>
+                        </t>
+                    </t>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Request Info Sidebar -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Request Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Request Number:</strong> <t t-esc="service_request.name"/></p>
+                            <p><strong>Status:</strong> 
+                                <span t-attf-class="badge badge-#{service_request.state == 'resolved' and 'success' or service_request.state == 'in_progress' and 'info' or service_request.state == 'submitted' and 'primary' or 'secondary'}">
+                                    <t t-esc="dict(service_request._fields['state'].selection)[service_request.state]"/>
+                                </span>
+                            </p>
+                            <p t-if="service_request.category_id"><strong>Service Category:</strong> <t t-esc="service_request.category_id.name"/></p>
+                            <p t-if="service_request.sla_deadline"><strong>SLA Deadline:</strong> <t t-esc="service_request.sla_deadline" t-options="{'widget': 'datetime'}"/></p>
+                            
+                            <t t-if="service_request.contact_phone or service_request.contact_email">
+                                <hr/>
+                                <h6>Contact Information</h6>
+                                <p t-if="service_request.contact_phone"><strong>Contact Phone:</strong> <t t-esc="service_request.contact_phone"/></p>
+                                <p t-if="service_request.contact_email"><strong>Contact Email:</strong> <t t-esc="service_request.contact_email"/></p>
+                            </t>
+                            
+                            <t t-if="service_request.facility_id or service_request.building_id or service_request.floor_id or service_request.room_id">
+                                <hr/>
+                                <h6>Location</h6>
+                                <p t-if="service_request.facility_id"><strong>Facility:</strong> <t t-esc="service_request.facility_id.name"/></p>
+                                <p t-if="service_request.building_id"><strong>Building:</strong> <t t-esc="service_request.building_id.name"/></p>
+                                <p t-if="service_request.floor_id"><strong>Floor:</strong> <t t-esc="service_request.floor_id.name"/></p>
+                                <p t-if="service_request.room_id"><strong>Room:</strong> <t t-esc="service_request.room_id.name"/></p>
+                            </t>
+
+                            <t t-if="service_request.workorder_id">
+                                <hr/>
+                                <h6>Related Work Order</h6>
+                                <p><strong>Work Order:</strong> <t t-esc="service_request.workorder_id.name"/></p>
+                                <p><strong>Status:</strong> <t t-esc="service_request.workorder_id.state"/></p>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5 class="mb-0">Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <a href="/my/service-requests" class="btn btn-outline-primary btn-block mb-2">
+                                <i class="fa fa-list"/> All My Requests
+                            </a>
+                            <a href="/my/service-request/new" class="btn btn-primary btn-block mb-2">
+                                <i class="fa fa-plus"/> New Request
+                            </a>
+                            <a href="/my/service-catalog" class="btn btn-outline-info btn-block mb-2">
+                                <i class="fa fa-book"/> Service Catalog
+                            </a>
+                            <a href="/my/help-center" class="btn btn-outline-secondary btn-block">
+                                <i class="fa fa-question-circle"/> Help Center
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reopen Modal -->
+            <div class="modal fade" id="reopenModal" tabindex="-1" role="dialog" aria-labelledby="reopenModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="reopenModalLabel">
+                                <i class="fa fa-refresh"/> Reopen Service Request
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            </button>
+                        </div>
+                        <form t-attf-action="/my/service-request/#{service_request.id}/reopen" method="post" id="reopenForm">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="modal-body">
+                                <div class="alert alert-info">
+                                    <i class="fa fa-info-circle"/> 
+                                    <strong>Reopening Request:</strong> <t t-esc="service_request.name"/> - <t t-esc="service_request.title"/>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="reopen_reason" class="required">Why are you reopening this request?</label>
+                                    <textarea name="reopen_reason" id="reopen_reason" class="form-control" rows="4" required="True" placeholder="Please explain why you need to reopen this service request. For example: 'The issue was not fully resolved' or 'New problems have appeared' or 'Additional work is needed'..."></textarea>
+                                    <small class="form-text text-muted">This information will help our team understand what additional assistance you need.</small>
+                                </div>
+                                
+                                <div class="alert alert-warning">
+                                    <i class="fa fa-exclamation-triangle"/> 
+                                    <strong>Note:</strong> Reopening this request will change its status back to "Submitted" and notify our team to take action.
+                                </div>
+                                
+                                <!-- Loading indicator -->
+                                <div id="reopenLoading" class="alert alert-info" style="display: none;">
+                                    <i class="fa fa-spinner fa-spin"></i> Reopening request, please wait...
+                                </div>
+                                
+                                <!-- Error display -->
+                                <div id="reopenError" class="alert alert-danger" style="display: none;">
+                                    <i class="fa fa-exclamation-triangle"></i> <span id="reopenErrorMessage"></span>
+                                </div>
+                                
+                                <!-- Success display -->
+                                <div id="reopenSuccess" class="alert alert-success" style="display: none;">
+                                    <i class="fa fa-check-circle"></i> <span id="reopenSuccessMessage"></span>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    <i class="fa fa-times"/> Cancel
+                                </button>
+                                <button type="submit" class="btn btn-warning" id="reopenSubmitBtn">
+                                    <i class="fa fa-refresh"/> Reopen Request
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JavaScript for reopen functionality -->
+            <script type="text/javascript">
+                <![CDATA[
+                document.addEventListener('DOMContentLoaded', function() {
+                    const reopenForm = document.getElementById('reopenForm');
+                    const reopenSubmitBtn = document.getElementById('reopenSubmitBtn');
+                    const reopenLoading = document.getElementById('reopenLoading');
+                    const reopenError = document.getElementById('reopenError');
+                    const reopenErrorMessage = document.getElementById('reopenErrorMessage');
+                    const reopenSuccess = document.getElementById('reopenSuccess');
+                    const reopenSuccessMessage = document.getElementById('reopenSuccessMessage');
+                    const reopenReasonField = document.getElementById('reopen_reason');
+                    
+                    if (reopenForm) {
+                        reopenForm.addEventListener('submit', function(e) {
+                            e.preventDefault();
+                            
+                            // Hide any previous errors and success messages
+                            reopenError.style.display = 'none';
+                            reopenSuccess.style.display = 'none';
+                            
+                            // Validate form
+                            if (!reopenReasonField.value.trim()) {
+                                showReopenError('Please provide a reason for reopening the request.');
+                                return;
+                            }
+                            
+                            // Show loading state
+                            reopenLoading.style.display = 'block';
+                            reopenSubmitBtn.disabled = true;
+                            reopenSubmitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Reopening...';
+                            
+                            // Submit form via AJAX
+                            const formData = new FormData(reopenForm);
+                            
+                            // Check if fetch is supported, otherwise fallback to regular form submission
+                            if (typeof fetch !== 'undefined') {
+                                fetch(reopenForm.action, {
+                                    method: 'POST',
+                                    body: formData,
+                                    headers: {
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    }
+                                })
+                            .then(response => {
+                                if (response.ok) {
+                                    // Try to parse JSON response
+                                    return response.json().then(data => {
+                                        if (data.success) {
+                                            // Show success message briefly before redirect
+                                            showReopenSuccess(data.message);
+                                            setTimeout(() => {
+                                                window.location.href = data.redirect_url || window.location.href + '?reopened=1';
+                                            }, 1500);
+                                        } else {
+                                            showReopenError(data.error || 'Unknown error occurred');
+                                        }
+                                    }).catch(() => {
+                                        // If not JSON, treat as regular redirect
+                                        window.location.href = response.url || window.location.href + '?reopened=1';
+                                    });
+                                } else {
+                                    // Error response - try to get JSON error message
+                                    return response.json().then(data => {
+                                        showReopenError(data.error || 'Server error: ' + response.status);
+                                    }).catch(() => {
+                                        showReopenError('Server error: ' + response.status);
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Reopen error:', error);
+                                showReopenError('Failed to reopen request. Please try again or contact support.');
+                            })
+                            .finally(() => {
+                                // Reset button state
+                                reopenLoading.style.display = 'none';
+                                reopenSubmitBtn.disabled = false;
+                                reopenSubmitBtn.innerHTML = '<i class="fa fa-refresh"></i> Reopen Request';
+                            });
+                            } else {
+                                // Fallback for browsers without fetch support
+                                reopenForm.submit();
+                            }
+                        });
+                    }
+                    
+                    function showReopenError(message) {
+                        reopenErrorMessage.textContent = message;
+                        reopenError.style.display = 'block';
+                        // Auto-hide error after 5 seconds
+                        setTimeout(() => {
+                            reopenError.style.display = 'none';
+                        }, 5000);
+                    }
+                    
+                    function showReopenSuccess(message) {
+                        // Hide any existing errors
+                        reopenError.style.display = 'none';
+                        
+                        // Show success message
+                        reopenSuccessMessage.textContent = message;
+                        reopenSuccess.style.display = 'block';
+                        
+                        // Auto-hide success message after 3 seconds
+                        setTimeout(() => {
+                            reopenSuccess.style.display = 'none';
+                        }, 3000);
+                    }
+                    
+                    // Get form elements
+                    const reopenModal = document.getElementById('reopenModal');
+                    const reopenButton = document.querySelector('[data-bs-target="#reopenModal"]');
+                    const reopenForm = document.getElementById('reopenForm');
+                    
+                    if (reopenModal) {
+                        reopenModal.addEventListener('show.bs.modal', function() {
+                            // Modal opened
+                        });
+                    }
+                    
+                    if (reopenButton) {
+                        reopenButton.addEventListener('click', function(e) {
+                            
+                            // Fallback: If Bootstrap modal doesn't work, manually show the modal
+                            setTimeout(() => {
+                                if (reopenModal && reopenModal.style.display === 'none') {
+                                    // Bootstrap modal failed, using fallback
+                                    reopenModal.style.display = 'block';
+                                    reopenModal.classList.add('show');
+                                    document.body.classList.add('modal-open');
+                                    
+                                    // Create backdrop
+                                    const backdrop = document.createElement('div');
+                                    backdrop.className = 'modal-backdrop fade show';
+                                    backdrop.id = 'modal-backdrop';
+                                    document.body.appendChild(backdrop);
+                                    
+                                    // Add close functionality for fallback modal
+                                    const closeButtons = reopenModal.querySelectorAll('.close, [data-dismiss="modal"], [data-bs-dismiss="modal"]');
+                                    closeButtons.forEach(btn => {
+                                        btn.addEventListener('click', function() {
+                                            reopenModal.style.display = 'none';
+                                            reopenModal.classList.remove('show');
+                                            document.body.classList.remove('modal-open');
+                                            const existingBackdrop = document.getElementById('modal-backdrop');
+                                            if (existingBackdrop) {
+                                                existingBackdrop.remove();
+                                            }
+                                        });
+                                    });
+                                    
+                                    // Close on backdrop click
+                                    backdrop.addEventListener('click', function() {
+                                        reopenModal.style.display = 'none';
+                                        reopenModal.classList.remove('show');
+                                        document.body.classList.remove('modal-open');
+                                        backdrop.remove();
+                                    });
+                                }
+                            }, 100);
+                        });
+                    }
+                });
+                ]]>
+            </script>
+        </t>
+    </template>
+
+    <!-- Portal New Service Request Form -->
+    <template id="portal_service_request_new" name="New Service Request">
+        <t t-call="facilities_management.portal_layout_with_navigation">
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="mb-0">
+                                    <i class="fa fa-plus-circle"/> Submit New Service Request
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <form action="/my/service-request/create" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div id="alertContainer"></div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="title" class="required">Title</label>
+                                                <input type="text" name="title" id="title" class="form-control" required="True" placeholder="Brief description of your request"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="service_type" class="required">What type of issue are you experiencing?</label>
+                                                <select name="service_type" id="service_type" class="form-control" required="True">
+                                                    <option value="">-- Select Issue Category --</option>
+                                                    <option value="plumbing">🚿 Plumbing &amp; Water Issues</option>
+                                                    <option value="electrical">⚡ Electrical &amp; Power Issues</option>
+                                                    <option value="hvac">❄️ Heating, Cooling &amp; Ventilation</option>
+                                                    <option value="appliances">🏠 Appliances &amp; Equipment</option>
+                                                    <option value="doors_windows">🚪 Doors, Windows &amp; Locks</option>
+                                                    <option value="safety_security">🛡️ Safety &amp; Security</option>
+                                                    <option value="cleaning_maintenance">🧹 Cleaning &amp; General Maintenance</option>
+                                                    <option value="utilities">⚡ Utilities &amp; Services</option>
+                                                    <option value="common_areas">🏢 Common Areas &amp; Amenities</option>
+                                                    <option value="other">❓ Other Issues</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="urgency">How urgent is this issue?</label>
+                                                <select name="urgency" id="urgency" class="form-control">
+                                                    <option value="low">🟢 Not Urgent - Can wait a few days</option>
+                                                    <option value="medium" selected="True">🟡 Moderate - Within 1-2 days would be good</option>
+                                                    <option value="high">🟠 Urgent - Need attention today</option>
+                                                    <option value="critical">🔴 Emergency - Immediate attention required</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="description" class="required">Description</label>
+                                        <textarea name="description" id="description" class="form-control" rows="5" required="True" placeholder="Please describe the issue in detail. For example: 'The air conditioning in the living room is not cooling properly. It's been running but only blowing warm air since yesterday morning.'"></textarea>
+                                    </div>
+
+                                    <!-- Location Information -->
+                                    <div class="card mt-3">
+                                        <div class="card-header">
+                                            <h6 class="mb-0">📍 Where is the issue located? (Optional but helpful)</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="facility_id">Facility</label>
+                                                        <select name="facility_id" id="facility_id" class="form-control">
+                                                            <option value="">Select Facility</option>
+                                                            <t t-foreach="facilities" t-as="facility">
+                                                                <option t-att-value="facility.id"><t t-esc="facility.name"/></option>
+                                                            </t>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="building_id">Building</label>
+                                                        <select name="building_id" id="building_id" class="form-control">
+                                                            <option value="">Select Building</option>
+                                                            <t t-foreach="buildings" t-as="building">
+                                                                <option t-att-value="building.id" t-att-data-facility="building.facility_id.id"><t t-esc="building.name"/></option>
+                                                            </t>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="floor_id">Floor</label>
+                                                        <select name="floor_id" id="floor_id" class="form-control">
+                                                            <option value="">Select Floor</option>
+                                                            <t t-foreach="floors" t-as="floor">
+                                                                <option t-att-value="floor.id" t-att-data-building="floor.building_id.id"><t t-esc="floor.name"/></option>
+                                                            </t>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="room_id">Room</label>
+                                                        <select name="room_id" id="room_id" class="form-control">
+                                                            <option value="">Select Room</option>
+                                                            <t t-foreach="rooms" t-as="room">
+                                                                <option t-att-value="room.id" t-att-data-floor="room.floor_id.id"><t t-esc="room.name"/></option>
+                                                            </t>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Contact Information -->
+                                    <div class="card mt-3">
+                                        <div class="card-header">
+                                            <h6 class="mb-0">📞 How can we reach you about this issue?</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="contact_phone">Phone Number</label>
+                                                        <input type="tel" name="contact_phone" id="contact_phone" class="form-control" t-att-value="request.env.user.phone"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="contact_email">Email Address</label>
+                                                        <input type="email" name="contact_email" id="contact_email" class="form-control" t-att-value="request.env.user.email"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- File Attachment -->
+                                    <div class="form-group mt-3">
+                                        <label for="attachment">Attachment (Optional)</label>
+                                        <input type="file" name="attachment" id="attachment" class="form-control-file"/>
+                                        <small class="form-text text-muted">Upload images or documents related to your request</small>
+                                    </div>
+
+                                    <div class="form-group mt-4">
+                                        <button type="submit" class="btn btn-primary btn-lg">
+                                            <i class="fa fa-paper-plane"/> Submit Service Request
+                                        </button>
+                                        <a href="/my/service-requests" class="btn btn-secondary btn-lg ml-2">
+                                            <i class="fa fa-times"/> Cancel
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal Service Request From Catalog -->
+    <template id="portal_service_request_from_catalog" name="Service Request From Catalog">
+        <t t-call="facilities_management.portal_layout_with_navigation">
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="mb-0">
+                                    <i class="fa fa-paper-plane"/> Request Service: <t t-esc="catalog_item.name"/>
+                                </h4>
+                                <p class="text-muted mb-0 mt-2">
+                                    <t t-esc="catalog_item.short_description or catalog_item.description"/>
+                                </p>
+                            </div>
+                            <div class="card-body">
+                                <form action="/my/service-request/create" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="catalog_id" t-att-value="catalog_item.id"/>
+                                    <input type="hidden" name="service_type" t-att-value="catalog_item.category"/>
+                                    <input type="hidden" name="title" t-att-value="catalog_item.name"/>
+                                    
+                                    <div id="alertContainer"></div>
+                                    
+                                    <!-- Pre-filled service information -->
+                                    <div class="alert alert-info">
+                                        <h6><i class="fa fa-info-circle"/> Service Information</h6>
+                                        <p><strong>Service:</strong> <t t-esc="catalog_item.name"/></p>
+                                        <p><strong>Category:</strong> <t t-esc="dict(catalog_item._fields['category'].selection)[catalog_item.category]"/></p>
+                                        <t t-if="catalog_item.estimated_cost">
+                                            <p><strong>Estimated Cost:</strong> $<t t-esc="catalog_item.estimated_cost"/></p>
+                                        </t>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="urgency">How urgent is this request?</label>
+                                                <select name="urgency" id="urgency" class="form-control">
+                                                    <option value="low">🟢 Not Urgent - Can wait a few days</option>
+                                                    <option value="medium" selected="True">🟡 Moderate - Within 1-2 days would be good</option>
+                                                    <option value="high">🟠 Urgent - Need attention today</option>
+                                                    <option value="critical">🔴 Emergency - Immediate attention required</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="description" class="required">Additional Details</label>
+                                        <textarea name="description" id="description" class="form-control" rows="4" required="True" t-att-placeholder="'Please provide any additional details about your ' + catalog_item.name.lower() + ' request.'"></textarea>
+                                    </div>
+
+                                    <!-- Location Information -->
+                                    <div class="card mb-3">
+                                        <div class="card-header">
+                                            <h6 class="mb-0"><i class="fa fa-map-marker"/> Location Information</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="facility_id">Facility</label>
+                                                        <select name="facility_id" id="facility_id" class="form-control">
+                                                            <option value="">-- Select Facility --</option>
+                                                            <t t-foreach="facilities" t-as="facility">
+                                                                <option t-att-value="facility.id"><t t-esc="facility.name"/></option>
+                                                            </t>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="building_id">Building</label>
+                                                        <select name="building_id" id="building_id" class="form-control">
+                                                            <option value="">-- Select Building --</option>
+                                                            <t t-foreach="buildings" t-as="building">
+                                                                <option t-att-value="building.id"><t t-esc="building.name"/></option>
+                                                            </t>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="floor_id">Floor</label>
+                                                        <select name="floor_id" id="floor_id" class="form-control">
+                                                            <option value="">-- Select Floor --</option>
+                                                            <t t-foreach="floors" t-as="floor">
+                                                                <option t-att-value="floor.id"><t t-esc="floor.name"/></option>
+                                                            </t>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="room_id">Room</label>
+                                                        <select name="room_id" id="room_id" class="form-control">
+                                                            <option value="">-- Select Room --</option>
+                                                            <t t-foreach="rooms" t-as="room">
+                                                                <option t-att-value="room.id"><t t-esc="room.name"/></option>
+                                                            </t>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Contact Information -->
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="contact_phone">Contact Phone</label>
+                                                <input type="tel" name="contact_phone" id="contact_phone" class="form-control" placeholder="Your phone number"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="contact_email">Contact Email</label>
+                                                <input type="email" name="contact_email" id="contact_email" class="form-control" placeholder="Your email address"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group text-center">
+                                        <button type="submit" class="btn btn-primary btn-lg">
+                                            <i class="fa fa-paper-plane"/> Submit Service Request
+                                        </button>
+                                        <a href="/my/service-catalog" class="btn btn-secondary btn-lg ml-2">
+                                            <i class="fa fa-arrow-left"/> Back to Catalog
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal Service Catalog -->
+    <template id="portal_service_catalog" name="Service Catalog">
+        <t t-call="facilities_management.portal_layout_with_navigation">
+            <div class="container mt-3">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3><i class="fa fa-book"/> Service Catalog</h3>
+                    <a href="/my/service-requests" class="btn btn-outline-primary">
+                        <i class="fa fa-list"/> My Requests
+                    </a>
+                </div>
+
+                <!-- Message if no services found -->
+                <t t-if="not catalog_by_category">
+                    <div class="alert alert-info text-center">
+                        <h4><i class="fa fa-info-circle"/> No Services Available</h4>
+                        <p>Please contact your administrator to set up service catalog items.</p>
+                    </div>
+                </t>
+
+
+                <t t-foreach="catalog_by_category.items()" t-as="category_services">
+                    <t t-set="category" t-value="category_services[0]"/>
+                    <t t-set="services" t-value="category_services[1]"/>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fa fa-cog"/> <t t-esc="dict(services[0]._fields['category'].selection)[category]"/>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <t t-foreach="services" t-as="service">
+                                    <div class="col-md-6 col-lg-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h6 class="card-title"><t t-esc="service.name"/></h6>
+                                                <p class="card-text text-muted small">
+                                                    <t t-esc="service.short_description or service.description[:100] + '...' if service.description and len(service.description) > 100 else service.description"/>
+                                                </p>
+                                                <t t-if="service.estimated_cost">
+                                                    <p class="text-muted small">
+                                                        <strong>Est. Cost:</strong> $<t t-esc="service.estimated_cost"/>
+                                                    </p>
+                                                </t>
+                                            </div>
+                                            <div class="card-footer">
+                                                <a t-attf-href="/my/service-catalog/#{service.id}/request" class="btn btn-primary btn-sm btn-block">
+                                                    <i class="fa fa-paper-plane"/> Request Now
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal Help Center -->
+    <template id="portal_help_center" name="Help Center">
+        <t t-call="facilities_management.portal_layout_with_navigation">
+            <div class="container mt-3">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3><i class="fa fa-question-circle"/> Help Center</h3>
+                    <a href="/my/service-requests" class="btn btn-outline-primary">
+                        <i class="fa fa-list"/> My Requests
+                    </a>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form method="get" class="form-inline">
+                            <div class="form-group mr-3">
+                                <input type="text" name="search" class="form-control" placeholder="Search help articles..." t-att-value="search"/>
+                            </div>
+                            <div class="form-group mr-3">
+                                <select name="category" class="form-control">
+                                    <option value="">All Categories</option>
+                                    <t t-foreach="categories" t-as="cat">
+                                        <option t-att-value="cat['category']" t-att-selected="cat['category'] == current_category">
+                                            <t t-esc="dict(documents[0]._fields['category'].selection)[cat['category']] if documents else cat['category']"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-search"/> Search
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Documents -->
+                    <div class="col-lg-8">
+                        <h5><i class="fa fa-file-text"/> Help Documents</h5>
+                        <t t-if="not documents">
+                            <div class="alert alert-info">
+                                <p>No help documents found.</p>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <t t-foreach="documents" t-as="doc">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="card-title">
+                                                    <i t-attf-class="fa #{doc.icon or 'fa-file-text'}"/>
+                                                    <t t-esc="doc.name"/>
+                                                    <t t-if="doc.featured">
+                                                        <span class="badge badge-warning ml-2">Featured</span>
+                                                    </t>
+                                                </h6>
+                                                <p class="card-text"><t t-esc="doc.description"/></p>
+                                                <small class="text-muted">
+                                                    <t t-esc="dict(doc._fields['document_type'].selection)[doc.document_type]"/> | 
+                                                    <t t-esc="dict(doc._fields['category'].selection)[doc.category]"/>
+                                                </small>
+                                            </div>
+                                            <div>
+                                                <a t-attf-href="/my/help-center/document/#{doc.id}" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fa fa-eye"/> View
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                    </div>
+
+                    <!-- Contacts Sidebar -->
+                    <div class="col-lg-4">
+                        <h5><i class="fa fa-phone"/> Contact Directory</h5>
+                        <t t-foreach="contacts" t-as="contact">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title"><t t-esc="contact.name"/></h6>
+                                    <p class="card-text small">
+                                        <t t-if="contact.specialization">
+                                            <strong><t t-esc="contact.specialization"/></strong><br/>
+                                        </t>
+                                        <t t-if="contact.email">
+                                            <i class="fa fa-envelope"/> <t t-esc="contact.email"/><br/>
+                                        </t>
+                                        <t t-if="contact.phone">
+                                            <i class="fa fa-phone"/> <t t-esc="contact.phone"/><br/>
+                                        </t>
+                                        <t t-if="contact.available_hours">
+                                            <i class="fa fa-clock-o"/> <t t-esc="contact.available_hours"/>
+                                        </t>
+                                    </p>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal layout logo override removed - using redirect approach instead -->
+
+    <!-- Custom Portal Layout with Top Navigation -->
+    <template id="portal_layout_with_navigation" name="Portal Layout with Navigation" inherit_id="portal.portal_layout">
+        <xpath expr="//div[@id='wrap']" position="before">
+            <!-- Top Navigation Menu -->
+            <nav class="navbar navbar-expand-lg navbar-light facilities-nav">
+                <div class="container">
+                    <!-- Brand/Logo -->
+                    <a class="navbar-brand" href="/dashboard">
+                        <i class="fa fa-building me-2"></i>
+                        <span>Facilities Portal</span>
+                    </a>
+                    
+                    <!-- Mobile toggle button -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <!-- Navigation Menu -->
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/dashboard">
+                                    <i class="fa fa-dashboard me-1"></i>Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/my/service-requests">
+                                    <i class="fa fa-list me-1"></i>My Requests
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/my/service-catalog">
+                                    <i class="fa fa-book me-1"></i>Service Catalog
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/my/help-center">
+                                    <i class="fa fa-question-circle me-1"></i>Help Center
+                                </a>
+                            </li>
+                        </ul>
+                        
+                    </div>
+                </div>
+            </nav>
+        </xpath>
+    </template>
+
+    <!-- Portal Dashboard -->
+    <template id="portal_dashboard" name="Service Request Dashboard">
+        <t t-call="facilities_management.portal_layout_with_navigation">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            
+            <div class="container-fluid mt-3">
+                <!-- Dashboard Header -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h2><i class="fa fa-dashboard"/> Service Request Dashboard</h2>
+                            <div class="d-flex align-items-center">
+                                <a href="/my/service-request/new" class="btn btn-primary">
+                                    <i class="fa fa-plus"/> New Request
+                                </a>
+                                <a href="/my/service-requests" class="btn btn-outline-primary">
+                                    <i class="fa fa-list"/> All Requests
+                                </a>
+                                <a href="/web/session/logout?redirect=/" class="btn btn-outline-danger">
+                                    <i class="fa fa-sign-out"/> Sign Out
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title"><t t-esc="total_requests"/></h4>
+                                        <p class="card-text">Total Requests</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fa fa-file-text fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title"><t t-esc="open_requests"/></h4>
+                                        <p class="card-text">Open Requests</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fa fa-clock-o fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title"><t t-esc="resolved_requests"/></h4>
+                                        <p class="card-text">Resolved</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fa fa-check fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-danger text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title"><t t-esc="overdue_requests"/></h4>
+                                        <p class="card-text">Overdue</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fa fa-exclamation-triangle fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Recent Requests -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fa fa-history"/> Recent Service Requests</h5>
+                            </div>
+                            <div class="card-body">
+                                <t t-if="not recent_requests">
+                                    <div class="text-center py-4">
+                                        <i class="fa fa-file-text fa-3x text-muted mb-3"></i>
+                                        <h5>No service requests yet</h5>
+                                        <p class="text-muted">Submit your first service request to get started.</p>
+                                        <a href="/my/service-request/new" class="btn btn-primary">
+                                            <i class="fa fa-plus"/> Submit Request
+                                        </a>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Request #</th>
+                                                    <th>Title</th>
+                                                    <th>Service Type</th>
+                                                    <th>Status</th>
+                                                    <th>Date</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="recent_requests" t-as="request">
+                                                    <tr>
+                                                        <td>
+                                                            <a t-attf-href="/my/service-request/#{request.id}">
+                                                                <t t-esc="request.name"/>
+                                                            </a>
+                                                        </td>
+                                                        <td><t t-esc="request.title"/></td>
+                                                        <td>
+                                                            <span class="badge badge-info">
+                                                                <t t-esc="dict(request._fields['service_type'].selection)[request.service_type]"/>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <t t-if="request.state == 'submitted'">
+                                                                <span class="badge badge-primary">Submitted</span>
+                                                            </t>
+                                                            <t t-elif="request.state == 'in_progress'">
+                                                                <span class="badge badge-info">In Progress</span>
+                                                            </t>
+                                                            <t t-elif="request.state == 'resolved'">
+                                                                <span class="badge badge-success">Resolved</span>
+                                                            </t>
+                                                            <t t-elif="request.state == 'closed'">
+                                                                <span class="badge badge-dark">Closed</span>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <span class="badge badge-secondary">
+                                                                    <t t-esc="dict(request._fields['state'].selection)[request.state]"/>
+                                                                </span>
+                                                            </t>
+                                                        </td>
+                                                        <td><t t-esc="request.request_date" t-options="{'widget': 'datetime'}"/></td>
+                                                        <td>
+                                                            <a t-attf-href="/my/service-request/#{request.id}" class="btn btn-sm btn-outline-primary">
+                                                                <i class="fa fa-eye"/> View
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <a href="/my/service-requests" class="btn btn-outline-primary">
+                                            <i class="fa fa-list"/> View All Requests
+                                        </a>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal My Home - Add Service Request Counter -->
+    <template id="portal_my_home_service_requests" name="Portal My Home: Service Request Entries" inherit_id="portal.portal_my_home" priority="100">
+        <xpath expr="//div[@id='portal_common_category']" position="after">
+            <div class="o_portal_category row g-2 mt-3" id="portal_service_requests_category">
+                <div class="col-md-6 order-2">
+                    <a href="/dashboard" class="d-flex gap-2 gap-md-3 py-3 pe-2 px-md-3 h-100 rounded text-decoration-none bg-100">
+                        <div class="o_portal_icon d-none">
+                            <img src="/portal/static/src/img/portal-connection.svg"/>
+                        </div>
+                        <div>
+                            <div class="mt-0 mb-1 fs-5 fw-normal lh-1 d-flex gap-2">
+                                <span t-if="service_request_count" t-esc="service_request_count" class="fw-bold"/>
+                                <span>Service Requests</span>
+                            </div>
+                            <div class="opacity-75">
+                                Submit and track service requests
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

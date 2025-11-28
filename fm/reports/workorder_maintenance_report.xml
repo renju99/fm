@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_workorder_maintenance" model="ir.actions.report">
+        <field name="name">Workorder Maintenance Report</field>
+        <field name="model">facilities.workorder</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">facilities_management.report_workorder_maintenance_template</field>
+        <field name="report_file">facilities_management.report_workorder_maintenance_template</field>
+        <field name="print_report_name">'Workorder Report - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="facilities_management.model_facilities_workorder"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_workorder_maintenance_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="wo">
+                <t t-set="o" t-value="wo"/>
+                <t t-call="web.external_layout">
+                    <div class="page" style="padding:10px;">
+                        <!-- Header Section -->
+                        <div style="background:#fff; padding:16px; margin-bottom:12px; border-radius:8px; box-shadow:0 1px 6px #e2e8f0;">
+                            <div style="display:flex; align-items:center; gap:20px; border-bottom:2px solid #e2e8f0; padding-bottom:10px;">
+                                <div style="flex:1;">
+                                    <h2 style="margin:0; color:#3151b7; font-size:1.7rem;">Workorder Maintenance Report</h2>
+                                    <div style="font-size:15px; color:#666; margin-top:2px;">
+                                        <span style="background:#e3f6fc; color:#31708f; padding:2px 7px; border-radius:5px; margin-right:5px;">
+                                            <b>Reference:</b> <span t-field="wo.name"/>
+                                        </span>
+                                        <span style="background:#e3f1fc; color:#31708f; padding:2px 7px; border-radius:5px;">
+                                            <b>Type:</b> <span t-field="wo.work_order_type"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span style="background:#eafaf1; color:#28a745; font-weight:700; padding:4px 10px; font-size:12px; border-radius:6px;">
+                                        <t t-if="wo.status == 'done'">&#10004; Completed</t>
+                                        <t t-elif="wo.status == 'in_progress'">&#9889; In Progress</t>
+                                        <t t-elif="wo.status == 'draft'">&#9203; Draft</t>
+                                        <t t-elif="wo.status == 'cancelled'">&#10060; Cancelled</t>
+                                        <t t-else=""><span t-field="wo.status"/></t>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Workorder Info Table -->
+                            <table style="width:100%; font-size:13px; border-collapse:collapse; margin-top:10px;">
+                                <tr style="background:#edf6fb;">
+                                    <td style="font-weight:600; color:#347ab7; width:26%; padding:6px;">Asset</td>
+                                    <td style="padding:6px;"><span t-field="wo.asset_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:600; color:#347ab7; padding:6px;">Facility</td>
+                                    <td style="padding:6px;"><span t-field="wo.facility_id.name"/></td>
+                                </tr>
+                                <tr style="background:#e3f1fc;">
+                                    <td style="font-weight:600; color:#31708f; padding:6px;">Room</td>
+                                    <td style="padding:6px;"><span t-field="wo.room_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:600; color:#31708f; padding:6px;">Building</td>
+                                    <td style="padding:6px;"><span t-field="wo.building_id.name"/></td>
+                                </tr>
+                                <tr style="background:#edf6fb;">
+                                    <td style="font-weight:600; color:#347ab7; padding:6px;">Floor</td>
+                                    <td style="padding:6px;"><span t-field="wo.floor_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:600; color:#31708f; padding:6px;">Priority</td>
+                                    <td style="padding:6px;">
+                                        <t t-if="wo.priority == '3'"><span style="color:#d63031; font-weight:700;">&#11088; High</span></t>
+                                        <t t-elif="wo.priority == '2'"><span style="color:#fd7e14; font-weight:700;">Medium</span></t>
+                                        <t t-elif="wo.priority == '1'"><span style="color:#1c7ed6; font-weight:700;">Low</span></t>
+                                        <t t-elif="wo.priority == '0'"><span style="color:#636e72; font-weight:700;">Very Low</span></t>
+                                        <t t-else=""><span t-field="wo.priority"/></t>
+                                    </td>
+                                </tr>
+                                <tr style="background:#e3f1fc;">
+                                    <td style="font-weight:600; color:#31708f; padding:6px;">Service Type</td>
+                                    <td style="padding:6px;"><span t-field="wo.service_type"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:600; color:#347ab7; padding:6px;">Maintenance Team</td>
+                                    <td style="padding:6px;"><span t-field="wo.maintenance_team_id.name"/></td>
+                                </tr>
+                                <tr style="background:#edf6fb;">
+                                    <td style="font-weight:600; color:#347ab7; padding:6px;">Scheduled Start</td>
+                                    <td style="padding:6px;"><span t-field="wo.start_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:600; color:#347ab7; padding:6px;">Scheduled End</td>
+                                    <td style="padding:6px;"><span t-field="wo.end_date"/></td>
+                                </tr>
+                                <tr style="background:#e3f1fc;">
+                                    <td style="font-weight:600; color:#31708f; padding:6px;">Actual Start</td>
+                                    <td style="padding:6px;"><span t-field="wo.actual_start_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:600; color:#31708f; padding:6px;">Actual End</td>
+                                    <td style="padding:6px;"><span t-field="wo.actual_end_date"/></td>
+                                </tr>
+                                <tr style="background:#edf6fb;">
+                                    <td style="font-weight:600; color:#347ab7; padding:6px;">Approval State</td>
+                                    <td style="padding:6px;"><span t-field="wo.approval_state"/></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Parts Used Section -->
+                        <div style="background:#fff; padding:12px; border-radius:8px; box-shadow:0 1px 6px #e2e8f0; margin-bottom:12px;">
+                            <h3 style="color:#3151b7; font-size:1.15rem; margin-bottom:8px;">Parts &amp; Materials Used</h3>
+                            <table class="table table-bordered table-sm" style="width:100%; font-size:12px; border-collapse:collapse;">
+                                <thead style="background:#e3f1fc;">
+                                    <tr>
+                                        <th>Part</th>
+                                        <th>Quantity</th>
+                                        <th>Unit</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="wo.parts_used_ids" t-as="part">
+                                        <td><span t-field="part.product_id.name"/></td>
+                                        <td><span t-field="part.quantity"/></td>
+                                        <td><span t-field="part.uom_id.name"/></td>
+                                        <td><span t-field="part.notes"/></td>
+                                    </tr>
+                                    <tr t-if="not wo.parts_used_ids">
+                                        <td colspan="4" style="color:#bbb; text-align:center;">No parts used for this workorder.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Safety Instructions Section -->
+                        <div style="background:#fff3cd; padding:16px; border-radius:8px; box-shadow:0 1px 6px #e2e8f0; margin-bottom:12px; border-left:4px solid #ffc107;">
+                            <h3 style="color:#856404; font-size:1.2rem; margin-bottom:12px;">
+                                <i class="fa fa-exclamation-triangle" style="margin-right:8px;"></i>Safety Instructions &amp; Procedures
+                            </h3>
+                            <div style="color:#856404; font-size:14px;">
+                                <p style="margin-bottom:8px;"><strong>Before starting any work:</strong></p>
+                                <ul style="margin-bottom:8px; padding-left:20px;">
+                                    <li>Ensure all safety protocols are met and PPE is worn</li>
+                                    <li>Verify equipment is properly isolated and locked out</li>
+                                    <li>Review the work area for potential hazards</li>
+                                    <li>Confirm all required permits are in place</li>
+                                </ul>
+                                <p style="margin-bottom:8px;"><strong>During work execution:</strong></p>
+                                <ul style="margin-bottom:8px; padding-left:20px;">
+                                    <li>Follow standard operating procedures exactly</li>
+                                    <li>Document any issues or deviations immediately</li>
+                                    <li>Stop work if unsafe conditions are encountered</li>
+                                    <li>Keep your supervisor informed of progress</li>
+                                </ul>
+                                <p style="margin-bottom:0;"><strong>After completion:</strong></p>
+                                <ul style="margin-bottom:0; padding-left:20px;">
+                                    <li>Clean up work area and return tools</li>
+                                    <li>Verify all safety devices are restored</li>
+                                    <li>Update the work order with completion status</li>
+                                    <li>Report any remaining issues to supervision</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task Checklist Section -->
+                        <div style="background:#fff; padding:16px; border-radius:8px; box-shadow:0 1px 6px #e2e8f0;">
+                            <h3 style="color:#3151b7; font-size:1.3rem; margin-bottom:16px;">
+                                <i class="fa fa-tasks" style="margin-right:8px;"></i>Workorder Tasks &amp; Checklist
+                            </h3>
+                            
+                            <!-- Group tasks by section for better organization -->
+                            <t t-foreach="wo.section_ids" t-as="section">
+                                <div style="margin-bottom:20px; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden;">
+                                    <div style="background:#e3f1fc; padding:10px; border-bottom:1px solid #e2e8f0;">
+                                        <h4 style="margin:0; color:#31708f; font-size:1.1rem;">
+                                            <i class="fa fa-folder" style="margin-right:6px;"></i><span t-field="section.name"/>
+                                        </h4>
+                                    </div>
+                                    <div style="padding:0;">
+                                        <table style="width:100%; font-size:12px; border-collapse:collapse;">
+                                            <thead style="background:#f8f9fa;">
+                                                <tr>
+                                                    <th style="padding:8px; text-align:left; border-bottom:1px solid #dee2e6; width:5%;">Seq</th>
+                                                    <th style="padding:8px; text-align:left; border-bottom:1px solid #dee2e6; width:25%;">Task Description</th>
+                                                    <th style="padding:8px; text-align:left; border-bottom:1px solid #dee2e6; width:20%;">Instructions</th>
+                                                    <th style="padding:8px; text-align:center; border-bottom:1px solid #dee2e6; width:10%;">Status</th>
+                                                    <th style="padding:8px; text-align:left; border-bottom:1px solid #dee2e6; width:15%;">Notes</th>
+                                                    <th style="padding:8px; text-align:center; border-bottom:1px solid #dee2e6; width:10%;">Images</th>
+                                                    <th style="padding:8px; text-align:center; border-bottom:1px solid #dee2e6; width:8%;">Duration</th>
+                                                    <th style="padding:8px; text-align:left; border-bottom:1px solid #dee2e6; width:7%;">Tools</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr t-foreach="section.task_ids" t-as="task">
+                                                    <td style="padding:8px; border-bottom:1px solid #f1f3f4; text-align:center;">
+                                                        <span t-field="task.sequence"/>
+                                                    </td>
+                                                    <td style="padding:8px; border-bottom:1px solid #f1f3f4;">
+                                                        <span t-field="task.name"/>
+                                                        <t t-if="task.is_checklist_item">
+                                                            <span style="color:#1c7ed6; font-weight:600; margin-left:4px;">&#10003;</span>
+                                                        </t>
+                                                    </td>
+                                                    <td style="padding:8px; border-bottom:1px solid #f1f3f4;">
+                                                        <div style="max-height:60px; overflow-y:auto;">
+                                                            <span t-field="task.description"/>
+                                                        </div>
+                                                    </td>
+                                                    <td style="padding:8px; border-bottom:1px solid #f1f3f4; text-align:center;">
+                                                        <t t-if="task.is_done">
+                                                            <span style="color:#28a745; font-weight:600; background:#d4edda; padding:2px 6px; border-radius:4px;">&#10004; Done</span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span style="color:#d63031; font-weight:600; background:#f8d7da; padding:2px 6px; border-radius:4px;">&#10006; Pending</span>
+                                                        </t>
+                                                    </td>
+                                                    <td style="padding:8px; border-bottom:1px solid #f1f3f4;">
+                                                        <div style="max-height:60px; overflow-y:auto;">
+                                                            <span t-field="task.notes"/>
+                                                        </div>
+                                                    </td>
+                                                    <td style="padding:8px; border-bottom:1px solid #f1f3f4; text-align:center;">
+                                                        <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
+                                                            <t t-if="task.before_image">
+                                                                <img t-att-src="'data:image/png;base64,%s' % task.before_image" 
+                                                                     style="max-width:40px; max-height:40px; border-radius:4px; border:1px solid #ddd;"
+                                                                     title="Before Image"/>
+                                                            </t>
+                                                            <t t-if="task.after_image">
+                                                                <img t-att-src="'data:image/png;base64,%s' % task.after_image" 
+                                                                     style="max-width:40px; max-height:40px; border-radius:4px; border:1px solid #ddd;"
+                                                                     title="After Image"/>
+                                                            </t>
+                                                        </div>
+                                                    </td>
+                                                    <td style="padding:8px; border-bottom:1px solid #f1f3f4; text-align:center;">
+                                                        <t t-if="task.duration">
+                                                            <span t-field="task.duration"/>h
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span style="color:#bbb;">&#8212;</span>
+                                                        </t>
+                                                    </td>
+                                                    <td style="padding:8px; border-bottom:1px solid #f1f3f4;">
+                                                        <t t-if="task.tools_materials">
+                                                            <div style="max-height:60px; overflow-y:auto; font-size:11px;">
+                                                                <span t-field="task.tools_materials"/>
+                                                            </div>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span style="color:#bbb;">&#8212;</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </t>
+                            
+                            <!-- Tasks without sections -->
+                            <t t-if="wo.workorder_task_ids and not wo.section_ids">
+                                <div style="margin-bottom:20px; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden;">
+                                    <div style="background:#f8f9fa; padding:10px; border-bottom:1px solid #e2e8f0;">
+                                        <h4 style="margin:0; color:#6c757d; font-size:1.1rem;">
+                                            <i class="fa fa-list" style="margin-right:6px;"></i>General Tasks
+                                        </h4>
+                                    </div>
+                                    <div style="padding:0;">
+                                        <table style="width:100%; font-size:12px; border-collapse:collapse;">
+                                            <thead style="background:#f8f9fa;">
+                                                <tr>
+                                                    <th style="padding:8px; text-align:left; border-bottom:1px solid #dee2e6; width:5%;">Seq</th>
+                                                    <th style="padding:8px; text-align:left; border-bottom:1px solid #dee2e6; width:30%;">Task Description</th>
+                                                    <th style="padding:8px; text-align:left; border-bottom:1px solid #dee2e6; width:25%;">Instructions</th>
+                                                    <th style="padding:8px; text-align:center; border-bottom:1px solid #dee2e6; width:15%;">Status</th>
+                                                    <th style="padding:8px; text-align:left; border-bottom:1px solid #dee2e6; width:15%;">Notes</th>
+                                                    <th style="padding:8px; text-align:center; border-bottom:1px solid #dee2e6; width:10%;">Images</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr t-foreach="wo.workorder_task_ids" t-as="task">
+                                                    <td style="padding:8px; border-bottom:1px solid #f1f3f4; text-align:center;">
+                                                        <span t-field="task.sequence"/>
+                                                    </td>
+                                                    <td style="padding:8px; border-bottom:1px solid #f1f3f4;">
+                                                        <span t-field="task.name"/>
+                                                        <t t-if="task.is_checklist_item">
+                                                            <span style="color:#1c7ed6; font-weight:600; margin-left:4px;">&#10003;</span>
+                                                        </t>
+                                                    </td>
+                                                    <td style="padding:8px; border-bottom:1px solid #f1f3f4;">
+                                                        <div style="max-height:60px; overflow-y:auto;">
+                                                            <span t-field="task.description"/>
+                                                        </div>
+                                                    </td>
+                                                    <td style="padding:8px; border-bottom:1px solid #f1f3f4; text-align:center;">
+                                                        <t t-if="task.is_done">
+                                                            <span style="color:#28a745; font-weight:600; background:#d4edda; padding:2px 6px; border-radius:4px;">&#10004; Done</span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span style="color:#d63031; font-weight:600; background:#f8d7da; padding:2px 6px; border-radius:4px;">&#10006; Pending</span>
+                                                        </t>
+                                                    </td>
+                                                    <td style="padding:8px; border-bottom:1px solid #f1f3f4;">
+                                                        <div style="max-height:60px; overflow-y:auto;">
+                                                            <span t-field="task.notes"/>
+                                                        </div>
+                                                    </td>
+                                                    <td style="padding:8px; border-bottom:1px solid #f1f3f4; text-align:center;">
+                                                        <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
+                                                            <t t-if="task.before_image">
+                                                                <img t-att-src="'data:image/png;base64,%s' % task.before_image" 
+                                                                     style="max-width:40px; max-height:40px; border-radius:4px; border:1px solid #ddd;"
+                                                                     title="Before Image"/>
+                                                            </t>
+                                                            <t t-if="task.after_image">
+                                                                <img t-att-src="'data:image/png;base64,%s' % task.after_image" 
+                                                                     style="max-width:40px; max-height:40px; border-radius:4px; border:1px solid #ddd;"
+                                                                     title="After Image"/>
+                                                            </t>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </t>
+                            
+                            <!-- No tasks message -->
+                            <t t-if="not wo.workorder_task_ids">
+                                <div style="text-align:center; padding:20px; color:#6c757d; background:#f8f9fa; border-radius:6px;">
+                                    <i class="fa fa-info-circle" style="font-size:24px; margin-bottom:8px;"></i>
+                                    <p style="margin:0;">No tasks found for this workorder.</p>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

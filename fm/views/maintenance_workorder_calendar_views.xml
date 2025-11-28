@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_workorder_technician_calendar" model="ir.ui.view">
+        <field name="name">facilities.workorder.technician.calendar</field>
+        <field name="model">facilities.workorder</field>
+        <field name="arch" type="xml">
+            <calendar string="Technician Calendar"
+                      date_start="start_date"
+                      date_stop="end_date"
+                      color="technician_id">
+                <field name="name"/>
+                <field name="status"/>
+                <field name="service_type"/>
+                <field name="maintenance_team_id"/>
+                <field name="priority"/>
+                <field name="asset_id"/>
+                <field name="work_order_type"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_workorder_team_calendar" model="ir.ui.view">
+        <field name="name">facilities.workorder.team.calendar</field>
+        <field name="model">facilities.workorder</field>
+        <field name="arch" type="xml">
+            <calendar string="Team Calendar"
+                      date_start="start_date"
+                      date_stop="end_date"
+                      color="maintenance_team_id">
+                <field name="name"/>
+                <field name="status"/>
+                <field name="service_type"/>
+                <field name="technician_id"/>
+                <field name="priority"/>
+                <field name="asset_id"/>
+                <field name="work_order_type"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_workorder_calendar_search" model="ir.ui.view">
+        <field name="name">facilities.workorder.calendar.search</field>
+        <field name="model">facilities.workorder</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="technician_id"/>
+                <field name="maintenance_team_id"/>
+                <field name="status"/>
+                <field name="service_type"/>
+                <field name="priority"/>
+                <field name="start_date" readonly="start_date_readonly or sla_dates_readonly"/>
+                <field name="end_date" readonly="sla_dates_readonly"/>
+                <filter name="my_team" string="My Team"
+                        domain="[('maintenance_team_id.leader_id.user_id', '=', uid)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_technician" string="Technician" context="{'group_by': 'technician_id'}"/>
+                    <filter name="group_team" string="Team" context="{'group_by': 'maintenance_team_id'}"/>
+                    <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_workorder_technician_calendar" model="ir.actions.act_window">
+        <field name="name">Technician Calendar</field>
+        <field name="res_model">facilities.workorder</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="view_id" ref="view_workorder_technician_calendar"/>
+        <field name="search_view_id" ref="view_workorder_calendar_search"/>
+        <field name="context">{'group_by': 'technician_id'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No scheduled work orders found!</p>
+            <p>Assign technicians to work orders and view their workload distribution.</p>
+        </field>
+    </record>
+
+    <record id="action_workorder_team_calendar" model="ir.actions.act_window">
+        <field name="name">Team Calendar</field>
+        <field name="res_model">facilities.workorder</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="view_id" ref="view_workorder_team_calendar"/>
+        <field name="search_view_id" ref="view_workorder_calendar_search"/>
+        <field name="context">{'group_by': 'maintenance_team_id'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No scheduled work orders found!</p>
+            <p>Assign teams to work orders and view their workload distribution.</p>
+        </field>
+    </record>
+
+</odoo>

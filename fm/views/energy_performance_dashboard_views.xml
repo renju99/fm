@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Energy Performance Dashboard Form View -->
+        <record id="view_energy_performance_dashboard" model="ir.ui.view">
+            <field name="name">facilities.energy.performance.dashboard</field>
+            <field name="model">facilities.energy.performance.dashboard</field>
+            <field name="arch" type="xml">
+                <form string="Energy Performance Dashboard">
+                    <header>
+                        <button name="action_process" string="Process Analysis" type="object" class="btn-primary"/>
+                        <button name="action_reset" string="Reset" type="object" class="btn-secondary"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Energy Performance Analysis Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                                <field name="facility_id"/>
+                                <field name="meter_ids" widget="many2many_tags"/>
+                                <field name="industry_benchmark_cost"/>
+                            </group>
+                            <group>
+                                <field name="total_meters"/>
+                                <field name="total_consumption"/>
+                                <field name="total_energy_cost"/>
+                                <field name="avg_efficiency_score"/>
+                                <field name="benchmark_performance"/>
+                            </group>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Consumption Breakdown" name="consumption_breakdown">
+                                <group>
+                                    <group string="Energy Consumption by Type">
+                                        <field name="electricity_consumption"/>
+                                        <field name="water_consumption"/>
+                                        <field name="gas_consumption"/>
+                                        <field name="steam_consumption"/>
+                                    </group>
+                                    <group string="Cost Breakdown by Type">
+                                        <field name="electricity_cost"/>
+                                        <field name="water_cost"/>
+                                        <field name="gas_cost"/>
+                                        <field name="steam_cost"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <page string="Efficiency Metrics" name="efficiency_metrics">
+                                <group>
+                                    <group string="Efficiency Scores">
+                                        <field name="energy_efficiency_score"/>
+                                        <field name="water_efficiency_score"/>
+                                        <field name="sustainability_score"/>
+                                        <field name="co2_emissions"/>
+                                    </group>
+                                    <group string="Performance Indicators">
+                                        <field name="peak_demand"/>
+                                        <field name="average_demand"/>
+                                        <field name="load_factor"/>
+                                        <field name="utilization_rate"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <page string="Cost Analysis" name="cost_analysis">
+                                <group>
+                                    <group string="Cost Metrics">
+                                        <field name="cost_per_sqm"/>
+                                        <field name="cost_per_occupant"/>
+                                        <field name="cost_per_hour"/>
+                                    </group>
+                                    <group string="Trend Analysis">
+                                        <field name="consumption_trend"/>
+                                        <field name="trend_percentage"/>
+                                        <field name="cost_trend"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <page string="Alerts &amp; Anomalies" name="alerts_anomalies">
+                                <group>
+                                    <group string="Alert Summary">
+                                        <field name="total_alerts"/>
+                                        <field name="high_consumption_alerts"/>
+                                        <field name="cost_anomaly_alerts"/>
+                                        <field name="maintenance_alerts"/>
+                                    </group>
+                                    <group string="Benchmark Analysis">
+                                        <field name="benchmark_performance"/>
+                                        <field name="industry_benchmark_cost"/>
+                                        <field name="cost_per_sqm"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <page string="Performance Data" name="performance_data">
+                                <field name="performance_data" readonly="1" nolabel="1" widget="ace" options="{'mode': 'json'}"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Energy Performance Dashboard List View -->
+        <record id="view_energy_performance_dashboard_list" model="ir.ui.view">
+            <field name="name">facilities.energy.performance.dashboard.list</field>
+            <field name="model">facilities.energy.performance.dashboard</field>
+            <field name="arch" type="xml">
+                <list string="Energy Performance Dashboards" create="true" edit="true" delete="true">
+                    <field name="name"/>
+                    <field name="facility_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="total_meters"/>
+                    <field name="total_consumption"/>
+                    <field name="total_energy_cost"/>
+                    <field name="avg_efficiency_score"/>
+                    <field name="consumption_trend"/>
+                    <field name="benchmark_performance"/>
+                    <field name="state" widget="badge"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Energy Performance Dashboard Search View -->
+        <record id="view_energy_performance_dashboard_search" model="ir.ui.view">
+            <field name="name">facilities.energy.performance.dashboard.search</field>
+            <field name="model">facilities.energy.performance.dashboard</field>
+            <field name="arch" type="xml">
+                <search string="Energy Performance Dashboards">
+                    <field name="name"/>
+                    <field name="facility_id"/>
+                    <field name="meter_ids"/>
+                    
+                    <separator/>
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Processing" name="processing" domain="[('state', '=', 'processing')]"/>
+                    <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                    <filter string="Error" name="error" domain="[('state', '=', 'error')]"/>
+                    
+                    <separator/>
+                    <filter string="Current Year" name="current_year" domain="[('date_from', '>=', datetime.datetime.now().replace(month=1, day=1).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Current Month" name="current_month" domain="[('date_from', '>=', datetime.datetime.now().replace(day=1).strftime('%Y-%m-%d'))]"/>
+                    
+                    <group expand="0" string="Group By">
+                        <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                        <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+                        <filter string="Benchmark Performance" name="group_benchmark" context="{'group_by': 'benchmark_performance'}"/>
+                        <filter string="Consumption Trend" name="group_trend" context="{'group_by': 'consumption_trend'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Energy Performance Dashboard Kanban View -->
+        <record id="view_energy_performance_dashboard_kanban" model="ir.ui.view">
+            <field name="name">facilities.energy.performance.dashboard.kanban</field>
+            <field name="model">facilities.energy.performance.dashboard</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_small_column">
+                    <field name="name"/>
+                    <field name="facility_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="total_meters"/>
+                    <field name="total_consumption"/>
+                    <field name="total_energy_cost"/>
+                    <field name="avg_efficiency_score"/>
+                    <field name="consumption_trend"/>
+                    <field name="benchmark_performance"/>
+                    <field name="state"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <field name="name"/>
+                                            </strong>
+                                            <div class="o_kanban_record_subtitle">
+                                                <field name="facility_id"/> - <field name="date_from"/> to <field name="date_to"/>
+                                            </div>
+                                        </div>
+                                        <div class="o_kanban_record_top_right">
+                                            <span t-if="record.state.raw_value == 'draft'" class="badge badge-secondary">Draft</span>
+                                            <span t-if="record.state.raw_value == 'processing'" class="badge badge-info">Processing</span>
+                                            <span t-if="record.state.raw_value == 'completed'" class="badge badge-success">Completed</span>
+                                            <span t-if="record.state.raw_value == 'error'" class="badge badge-danger">Error</span>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_body">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Total Consumption</div>
+                                                <div><field name="total_consumption"/></div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Total Cost</div>
+                                                <div><field name="total_energy_cost"/></div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt8">
+                                            <div class="col-6">
+                                                <div class="text-muted">Efficiency Score</div>
+                                                <div><field name="avg_efficiency_score"/>/100</div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Meters</div>
+                                                <div><field name="total_meters"/></div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt8">
+                                            <div class="col-12">
+                                                <div class="text-muted">Trend</div>
+                                                <div>
+                                                    <span t-if="record.consumption_trend.raw_value == 'increasing'" class="badge badge-danger">↗ Increasing</span>
+                                                    <span t-if="record.consumption_trend.raw_value == 'decreasing'" class="badge badge-success">↘ Decreasing</span>
+                                                    <span t-if="record.consumption_trend.raw_value == 'stable'" class="badge badge-info">→ Stable</span>
+                                                    <span t-if="record.consumption_trend.raw_value == 'fluctuating'" class="badge badge-warning">↕ Fluctuating</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt8">
+                                            <div class="col-12">
+                                                <div class="text-muted">Benchmark</div>
+                                                <div>
+                                                    <span t-if="record.benchmark_performance.raw_value == 'excellent'" class="badge badge-success">Excellent</span>
+                                                    <span t-if="record.benchmark_performance.raw_value == 'good'" class="badge badge-info">Good</span>
+                                                    <span t-if="record.benchmark_performance.raw_value == 'average'" class="badge badge-secondary">Average</span>
+                                                    <span t-if="record.benchmark_performance.raw_value == 'below_average'" class="badge badge-warning">Below Average</span>
+                                                    <span t-if="record.benchmark_performance.raw_value == 'poor'" class="badge badge-danger">Poor</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Energy Performance Dashboard Graph View -->
+        <record id="view_energy_performance_dashboard_graph" model="ir.ui.view">
+            <field name="name">facilities.energy.performance.dashboard.graph</field>
+            <field name="model">facilities.energy.performance.dashboard</field>
+            <field name="arch" type="xml">
+                <graph string="Energy Performance Analysis" type="bar">
+                    <field name="facility_id" type="row"/>
+                    <field name="total_consumption" type="measure"/>
+                    <field name="total_energy_cost" type="measure"/>
+                    <field name="avg_efficiency_score" type="measure"/>
+                    <field name="co2_emissions" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- Energy Performance Dashboard Actions -->
+        <record id="action_energy_performance_dashboard" model="ir.actions.act_window">
+            <field name="name">Energy Performance Dashboards</field>
+            <field name="res_model">facilities.energy.performance.dashboard</field>
+            <field name="view_mode">kanban,list,form,graph</field>
+            <field name="search_view_id" ref="view_energy_performance_dashboard_search"/>
+            <field name="context">{'search_default_completed': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first energy performance analysis!
+                </p>
+                <p>
+                    Energy performance dashboards provide comprehensive insights into energy consumption,
+                    efficiency metrics, cost analysis, and sustainability performance across your facilities.
+                </p>
+            </field>
+        </record>
+
+        <!-- Energy Performance Dashboard Server Action for Interactive Dashboard -->
+        <record id="action_energy_performance_dashboard_interactive" model="ir.actions.server">
+            <field name="name">Interactive Energy Performance Dashboard</field>
+            <field name="model_id" ref="model_facilities_energy_performance_dashboard"/>
+            <field name="binding_model_id" ref="model_facilities_energy_performance_dashboard"/>
+            <field name="binding_view_types">form,list</field>
+            <field name="state">code</field>
+            <field name="code">
+action = {
+    'type': 'ir.actions.client',
+    'tag': 'facilities_energy_performance_dashboard',
+    'name': 'Interactive Energy Performance Dashboard',
+    'target': 'current',
+    'context': {
+        'active_id': env.context.get('active_id'),
+        'active_ids': env.context.get('active_ids'),
+        'active_model': env.context.get('active_model'),
+    }
+}
+            </field>
+        </record>
+    </data>
+</odoo>

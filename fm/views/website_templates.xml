@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Service Request Success Page -->
+    <template id="service_request_success_template" name="Service Request Success">
+        <t t-call="website.layout">
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2">
+                        <div class="card border-success">
+                            <div class="card-header bg-success text-white">
+                                <h4 class="mb-0">
+                                    <i class="fa fa-check-circle"></i> Service Request Submitted Successfully!
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <t t-if="service_request">
+                                    <div class="alert alert-success" role="alert">
+                                        <h5 class="alert-heading">Request Confirmation</h5>
+                                        <p>Your service request has been submitted successfully and will be reviewed by our facilities team.</p>
+                                        <hr/>
+                                        <p class="mb-0">
+                                            <strong>Request Number:</strong> <t t-esc="service_request.name"/><br/>
+                                            <strong>Title:</strong> <t t-esc="service_request.title"/><br/>
+                                            <strong>Service Type:</strong> <t t-esc="dict(service_request._fields['service_type'].selection)[service_request.service_type]"/><br/>
+                                            <strong>Priority:</strong> <t t-esc="dict(service_request._fields['priority'].selection)[service_request.priority]"/><br/>
+                                            <strong>Status:</strong> <span class="badge badge-primary">Submitted</span>
+                                        </p>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="alert alert-success" role="alert">
+                                        <h5 class="alert-heading">Request Submitted</h5>
+                                        <p>Your service request has been submitted successfully!</p>
+                                    </div>
+                                </t>
+
+                                <div class="text-center mt-4">
+                                    <h6>What happens next?</h6>
+                                    <div class="row mt-3">
+                                        <div class="col-md-3">
+                                            <div class="text-center">
+                                                <i class="fa fa-paper-plane fa-2x text-primary mb-2"></i>
+                                                <p class="small"><strong>1. Submitted</strong><br/>Request received</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="text-center">
+                                                <i class="fa fa-user fa-2x text-info mb-2"></i>
+                                                <p class="small"><strong>2. Assigned</strong><br/>Technician assigned</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="text-center">
+                                                <i class="fa fa-wrench fa-2x text-warning mb-2"></i>
+                                                <p class="small"><strong>3. In Progress</strong><br/>Work begins</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="text-center">
+                                                <i class="fa fa-check fa-2x text-success mb-2"></i>
+                                                <p class="small"><strong>4. Resolved</strong><br/>Work completed</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center mt-4">
+                                    <a href="/service-request/form" class="btn btn-primary mr-2">
+                                        <i class="fa fa-plus"></i> Submit Another Request
+                                    </a>
+                                    <a href="/my" class="btn btn-outline-primary">
+                                        <i class="fa fa-home"></i> Back to Portal
+                                    </a>
+                                </div>
+
+                                <div class="mt-4 p-3 bg-light rounded">
+                                    <h6><i class="fa fa-info-circle"></i> Need immediate assistance?</h6>
+                                    <p class="mb-0">
+                                        For urgent matters, contact our facilities team directly:<br/>
+                                        <i class="fa fa-envelope"></i> <a href="mailto:facilities@company.com">facilities@company.com</a> | 
+                                        <i class="fa fa-phone"></i> <a href="tel:+1-555-0101">+1-555-0101</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Service Request Form Page -->
+    <template id="service_request_form_template" name="Service Request Form">
+        <t t-call="website.layout">
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h3 class="mb-0">
+                                    <i class="fa fa-plus-circle"></i> Submit Service Request
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <form action="/service-request/submit" method="post" enctype="multipart/form-data">
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="title" name="title" required="required" placeholder="Brief description of the issue"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="service_type" class="form-label">Service Type <span class="text-danger">*</span></label>
+                                                <select class="form-control" id="service_type" name="service_type" required="required">
+                                                    <option value="">-- Select Service Type --</option>
+                                                    <option value="maintenance">Maintenance</option>
+                                                    <option value="cleaning">Cleaning</option>
+                                                    <option value="security">Security</option>
+                                                    <option value="landscaping">Landscaping</option>
+                                                    <option value="hvac">HVAC</option>
+                                                    <option value="electrical">Electrical</option>
+                                                    <option value="plumbing">Plumbing</option>
+                                                    <option value="it_support">IT Support</option>
+                                                    <option value="other">Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
+                                        <textarea class="form-control" id="description" name="description" rows="4" required="required" placeholder="Please provide detailed description of the issue or request..."></textarea>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="priority" class="form-label">Priority</label>
+                                                <select class="form-control" id="priority" name="priority">
+                                                    <option value="2">Normal</option>
+                                                    <option value="3">High</option>
+                                                    <option value="4">Urgent</option>
+                                                    <option value="5">Critical</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="category_id" class="form-label">Service Category</label>
+                                                <select class="form-control" id="category_id" name="category_id">
+                                                    <option value="">-- Select Category --</option>
+                                                    <t t-foreach="categories" t-as="category">
+                                                        <option t-att-value="category.id"><t t-esc="category.name"/></option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="contact_phone" class="form-label">Contact Phone</label>
+                                                <input type="tel" class="form-control" id="contact_phone" name="contact_phone" placeholder="Your phone number"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="contact_email" class="form-label">Contact Email</label>
+                                                <input type="email" class="form-control" id="contact_email" name="contact_email" placeholder="Your email address"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="facility_id" class="form-label">Facility</label>
+                                                <select class="form-control" id="facility_id" name="facility_id">
+                                                    <option value="">-- Select Facility --</option>
+                                                    <t t-foreach="facilities" t-as="facility">
+                                                        <option t-att-value="facility.id"><t t-esc="facility.name"/></option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="attachment" class="form-label">Attachment</label>
+                                                <input type="file" class="form-control" id="attachment" name="attachment" accept="image/*,.pdf,.doc,.docx"/>
+                                                <small class="form-text text-muted">Upload images or documents related to your request</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn btn-primary btn-lg me-3">
+                                            <i class="fa fa-paper-plane"></i> Submit Request
+                                        </button>
+                                        <a href="/my" class="btn btn-outline-secondary btn-lg">
+                                            <i class="fa fa-arrow-left"></i> Back to Portal
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- JavaScript for form functionality -->
+            <script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Form validation
+                    const form = document.querySelector('form[action="/service-request/submit"]');
+                    if (form) {
+                        form.addEventListener('submit', function(e) {
+                            const title = document.getElementById('title');
+                            const description = document.getElementById('description');
+                            const serviceType = document.getElementById('service_type');
+                            
+                            // Basic validation
+                            if (!title.value.trim() || !description.value.trim() || !serviceType.value) {
+                                e.preventDefault();
+                                showError('Please fill in all required fields.');
+                                return false;
+                            }
+                            
+                            // Show loading state
+                            const submitBtn = form.querySelector('button[type="submit"]');
+                            if (submitBtn) {
+                                submitBtn.disabled = true;
+                                submitBtn.innerHTML = '&lt;i class="fa fa-spinner fa-spin"&gt;&lt;/i&gt; Submitting...';
+                            }
+                        });
+                    }
+                    
+                    // Service type change handler
+                    const serviceTypeSelect = document.getElementById('service_type');
+                    if (serviceTypeSelect) {
+                        serviceTypeSelect.addEventListener('change', function() {
+                            const prioritySelect = document.getElementById('priority');
+                            if (prioritySelect) {
+                                const serviceType = this.value;
+                                
+                                // Set default priority based on service type
+                                if (serviceType === 'maintenance') {
+                                    prioritySelect.value = '3'; // High priority for maintenance
+                                } else if (serviceType === 'it_support') {
+                                    prioritySelect.value = '2'; // Normal priority for IT
+                                } else {
+                                    prioritySelect.value = '2'; // Normal priority by default
+                                }
+                            }
+                        });
+                    }
+                    
+                    function showError(message) {
+                        // Remove existing alerts
+                        const existingAlerts = document.querySelectorAll('.alert-danger');
+                        existingAlerts.forEach(alert => alert.remove());
+                        
+                        const alertDiv = document.createElement('div');
+                        alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+                        alertDiv.setAttribute('role', 'alert');
+                        alertDiv.innerHTML = message + 
+                            '&lt;button type="button" class="close" data-dismiss="alert" aria-label="Close"&gt;' +
+                            '&lt;span aria-hidden="true"&gt;&amp;times;&lt;/span&gt;' +
+                            '&lt;/button&gt;';
+                        
+                        // Insert at the beginning of the form
+                        if (form) {
+                            form.insertBefore(alertDiv, form.firstChild);
+                        }
+                        
+                        // Auto-hide after 5 seconds
+                        setTimeout(function() {
+                            if (alertDiv.parentNode) {
+                                alertDiv.remove();
+                            }
+                        }, 5000);
+                    }
+                });
+            </script>
+        </t>
+    </template>
+
+    <!-- Service Request List Page -->
+    <template id="service_request_list_template" name="Service Request List">
+        <t t-call="website.layout">
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-lg-10 offset-lg-1">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3><i class="fa fa-list"></i> My Service Requests</h3>
+                            <a href="/service-request/form" class="btn btn-primary">
+                                <i class="fa fa-plus"></i> New Request
+                            </a>
+                        </div>
+
+                        <t t-if="not service_requests">
+                            <div class="alert alert-info text-center" role="alert">
+                                <h5 class="alert-heading">No Service Requests Found</h5>
+                                <p>You haven't submitted any service requests yet.</p>
+                                <a href="/service-request/form" class="btn btn-primary">
+                                    <i class="fa fa-plus"></i> Submit Your First Request
+                                </a>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="row">
+                                <t t-foreach="service_requests" t-as="request">
+                                    <div class="col-lg-6 mb-4">
+                                        <div class="card h-100">
+                                            <div class="card-header d-flex justify-content-between align-items-center">
+                                                <h6 class="mb-0"><t t-esc="request.name"/></h6>
+                                                <t t-if="request.state == 'submitted'">
+                                                    <span class="badge badge-primary">Submitted</span>
+                                                </t>
+                                                <t t-elif="request.state == 'in_progress'">
+                                                    <span class="badge badge-info">In Progress</span>
+                                                </t>
+                                                <t t-elif="request.state == 'resolved'">
+                                                    <span class="badge badge-success">Resolved</span>
+                                                </t>
+                                                <t t-elif="request.state == 'closed'">
+                                                    <span class="badge badge-dark">Closed</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="badge badge-secondary"><t t-esc="request.state"/></span>
+                                                </t>
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-title"><t t-esc="request.title"/></h6>
+                                                <p class="card-text">
+                                                    <t t-esc="request.description[:150]"/>
+                                                    <t t-if="len(request.description) > 150">...</t>
+                                                </p>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <small class="text-muted">
+                                                            <strong>Type:</strong> <t t-esc="dict(request._fields['service_type'].selection)[request.service_type]"/>
+                                                        </small>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <small class="text-muted">
+                                                            <strong>Priority:</strong> 
+                                                            <t t-if="request.priority == '5'">
+                                                                <span class="text-danger">Critical</span>
+                                                            </t>
+                                                            <t t-elif="request.priority in ['3', '4']">
+                                                                <span class="text-warning">High</span>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <span class="text-info">Normal</span>
+                                                            </t>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <small class="text-muted">
+                                                        <i class="fa fa-calendar"></i> <t t-esc="request.request_date" t-options="{'widget': 'datetime'}"/>
+                                                        <t t-if="request.assigned_to_id">
+                                                            | <i class="fa fa-user"></i> <t t-esc="request.assigned_to_id.name"/>
+                                                        </t>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+
+                        <div class="text-center mt-4">
+                            <a href="/my" class="btn btn-outline-primary">
+                                <i class="fa fa-home"></i> Back to Portal
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

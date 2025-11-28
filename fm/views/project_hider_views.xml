@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Project Hider Actions -->
+        <record id="action_hide_project_elements" model="ir.actions.server">
+            <field name="name">Hide Project Elements</field>
+            <field name="model_id" ref="model_facilities_project_hider"/>
+            <field name="state">code</field>
+            <field name="code">action = model.hide_project_elements()</field>
+        </record>
+        
+        <record id="action_show_project_elements" model="ir.actions.server">
+            <field name="name">Show Project Elements</field>
+            <field name="model_id" ref="model_facilities_project_hider"/>
+            <field name="state">code</field>
+            <field name="code">action = model.show_project_elements()</field>
+        </record>
+        
+        <!-- Project Visibility Menu Items - Commented out since config menu doesn't exist yet -->
+        <!-- 
+        <menuitem 
+            id="menu_project_visibility_config"
+            name="Project Visibility"
+            parent="facilities_management.menu_maintenance_config_main"
+            sequence="100"
+            groups="base.group_system"/>
+            
+        <menuitem 
+            id="menu_hide_project_elements"
+            name="Hide Project Elements"
+            parent="menu_project_visibility_config"
+            action="action_hide_project_elements"
+            sequence="10"
+            groups="base.group_system"/>
+            
+        <menuitem 
+            id="menu_show_project_elements"
+            name="Show Project Elements"
+            parent="menu_project_visibility_config"
+            action="action_show_project_elements"
+            sequence="20"
+            groups="base.group_system"/>
+        -->
+            
+    </data>
+</odoo>

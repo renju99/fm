@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Maintenance Contract Tree View -->
+    <record id="view_maintenance_contract_tree" model="ir.ui.view">
+        <field name="name">maintenance.contract.tree</field>
+        <field name="model">facilities.maintenance.contract</field>
+        <field name="arch" type="xml">
+            <list string="Maintenance Contracts" decoration-info="state=='draft'" decoration-success="state=='active'" decoration-muted="state=='expired'">
+                <field name="name"/>
+                <field name="contract_number"/>
+                <field name="partner_id"/>
+                <field name="contract_type" widget="badge"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="contract_value"/>
+                <field name="total_workorders"/>
+                <field name="total_invoiced"/>
+                <field name="state" widget="badge"/>
+                <field name="currency_id" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Maintenance Contract Form View -->
+    <record id="view_maintenance_contract_form" model="ir.ui.view">
+        <field name="name">maintenance.contract.form</field>
+        <field name="model">facilities.maintenance.contract</field>
+        <field name="arch" type="xml">
+            <form string="Maintenance Contract">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" 
+                            invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_terminate" type="object" string="Terminate" 
+                            invisible="state != 'active'" class="btn-danger"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,expired,terminated"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_view_workorders" 
+                                class="oe_stat_button" icon="fa-wrench"
+                                invisible="total_workorders == 0">
+                            <field name="total_workorders" widget="statinfo" string="Work Orders"/>
+                        </button>
+                        <button type="object" name="action_view_invoices" 
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="not invoice_ids">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="total_invoiced" widget="monetary"/>
+                                </span>
+                                <span class="o_stat_text">Invoiced</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Contract Name"/>
+                        </h1>
+                        <h3>
+                            <field name="contract_number" placeholder="Contract Number"/>
+                        </h3>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="contract_type"/>
+                            <field name="analytic_account_id"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="contract_value"/>
+                            <field name="currency_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    
+                    <field name="description" placeholder="Contract description and scope of work..."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Maintenance Contract Search View -->
+    <record id="view_maintenance_contract_search" model="ir.ui.view">
+        <field name="name">maintenance.contract.search</field>
+        <field name="model">facilities.maintenance.contract</field>
+        <field name="arch" type="xml">
+            <search string="Maintenance Contracts">
+                <field name="name" string="Contract Name"/>
+                <field name="contract_number" string="Contract Number"/>
+                <field name="partner_id" string="Vendor"/>
+                <separator/>
+                <filter name="active_contracts" string="Active" 
+                        domain="[('state', '=', 'active')]"/>
+                <filter name="draft_contracts" string="Draft" 
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="expiring_soon" string="Expiring Soon" 
+                        domain="[('end_date', '&lt;=', (context_today() + relativedelta(days=30))), ('state', '=', 'active')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_by_partner" string="Vendor" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_by_contract_type" string="Contract Type" context="{'group_by': 'contract_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Maintenance Contract Action -->
+    <record id="action_maintenance_contract" model="ir.actions.act_window">
+        <field name="name">Maintenance Contracts</field>
+        <field name="res_model">facilities.maintenance.contract</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_maintenance_contract_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first maintenance contract!
+            </p>
+            <p>
+                Manage maintenance contracts with vendors using standard Odoo partner records.
+                Track work orders and invoices related to each contract.
+            </p>
+        </field>
+    </record>
+
+</odoo>

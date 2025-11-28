@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="portal_service_request_create_from_qr" name="Service Request from QR Code">
+        <t t-call="web.frontend_layout">
+            <t t-set="title">Create Service Request</t>
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fa fa-qrcode me-2"></i>
+                                    <t t-if="is_qr_request">Service Request from QR Code</t>
+                                    <t t-else="">Create Service Request</t>
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <!-- QR Code Location Information -->
+                                <t t-if="room_data and is_qr_request">
+                                    <div class="alert alert-success" role="alert">
+                                        <h5 class="alert-heading">
+                                            <i class="fa fa-map-marker-alt me-2"></i>Location Detected from QR Code
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>Room:</strong> <span t-esc="room_data.get('room_name')"/> (<span t-esc="room_data.get('room_code')"/>)</p>
+                                                <p><strong>Floor:</strong> <span t-esc="room_data.get('floor_name')"/></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong>Building:</strong> <span t-esc="room_data.get('building_name')"/></p>
+                                                <p><strong>Facility:</strong> <span t-esc="room_data.get('facility_name')"/></p>
+                                            </div>
+                                        </div>
+                                        <hr/>
+                                        <p class="mb-0">
+                                            <i class="fa fa-info-circle me-1"></i>
+                                            The location information has been automatically filled from the QR code scan. 
+                                            You can modify it if needed.
+                                        </p>
+                                    </div>
+                                </t>
+
+                                <!-- Service Request Form -->
+                                <form method="post" action="/my/service-request/create" enctype="multipart/form-data">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    
+                                    <!-- Hidden fields for QR code data -->
+                                    <t t-if="room_data and is_qr_request">
+                                        <input type="hidden" name="room_id" t-att-value="room_data.get('room_id')"/>
+                                        <input type="hidden" name="floor_id" t-att-value="room_data.get('floor_id')"/>
+                                        <input type="hidden" name="building_id" t-att-value="room_data.get('building_id')"/>
+                                        <input type="hidden" name="facility_id" t-att-value="room_data.get('facility_id')"/>
+                                    </t>
+
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <!-- Basic Information -->
+                                            <div class="mb-3">
+                                                <label for="title" class="form-label">Request Title <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="title" name="title" required="required" 
+                                                       placeholder="Brief description of the issue"/>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="service_type" class="form-label">Service Type <span class="text-danger">*</span></label>
+                                                <select class="form-select" id="service_type" name="service_type" required="required">
+                                                    <option value="">Select Service Type</option>
+                                                    <option value="plumbing">🚿 Plumbing &amp; Water Issues</option>
+                                                    <option value="electrical">⚡ Electrical &amp; Power Issues</option>
+                                                    <option value="hvac">❄️ Heating, Cooling &amp; Ventilation</option>
+                                                    <option value="appliances">🏠 Appliances &amp; Equipment</option>
+                                                    <option value="doors_windows">🚪 Doors, Windows &amp; Locks</option>
+                                                    <option value="safety_security">🛡️ Safety &amp; Security</option>
+                                                    <option value="cleaning_maintenance">🧹 Cleaning &amp; General Maintenance</option>
+                                                    <option value="utilities">⚡ Utilities &amp; Services</option>
+                                                    <option value="common_areas">🏢 Common Areas &amp; Amenities</option>
+                                                    <option value="other">❓ Other Issues</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
+                                                <textarea class="form-control" id="description" name="description" rows="4" required="required" 
+                                                          placeholder="Please provide detailed information about the issue..."></textarea>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="priority" class="form-label">Priority</label>
+                                                        <select class="form-select" id="priority" name="priority">
+                                                            <option value="0">Very Low</option>
+                                                            <option value="1">Low</option>
+                                                            <option value="2" selected="selected">Normal</option>
+                                                            <option value="3">High</option>
+                                                            <option value="4">Very High</option>
+                                                            <option value="5">Critical</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="urgency" class="form-label">Urgency</label>
+                                                        <select class="form-select" id="urgency" name="urgency">
+                                                            <option value="low">Low</option>
+                                                            <option value="medium" selected="selected">Medium</option>
+                                                            <option value="high">High</option>
+                                                            <option value="critical">Critical</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <!-- Location Information (only show if not from QR code) -->
+                                            <t t-if="not is_qr_request">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h6 class="card-title mb-0">Location Information</h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="mb-3">
+                                                            <label for="facility_id" class="form-label">Facility</label>
+                                                            <select class="form-select" id="facility_id" name="facility_id">
+                                                                <option value="">Select Facility</option>
+                                                                <t t-foreach="facilities" t-as="facility">
+                                                                    <option t-att-value="facility.id" t-esc="facility.name"/>
+                                                                </t>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="mb-3">
+                                                            <label for="building_id" class="form-label">Building</label>
+                                                            <select class="form-select" id="building_id" name="building_id">
+                                                                <option value="">Select Building</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="mb-3">
+                                                            <label for="floor_id" class="form-label">Floor</label>
+                                                            <select class="form-select" id="floor_id" name="floor_id">
+                                                                <option value="">Select Floor</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="mb-3">
+                                                            <label for="room_id" class="form-label">Room</label>
+                                                            <select class="form-select" id="room_id" name="room_id">
+                                                                <option value="">Select Room</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+
+                                            <!-- Contact Information -->
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h6 class="card-title mb-0">Contact Information</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="mb-3">
+                                                        <label for="contact_email" class="form-label">Email</label>
+                                                        <input type="email" class="form-control" id="contact_email" name="contact_email" 
+                                                               t-att-value="request.env.user.email" readonly="readonly"/>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="contact_phone" class="form-label">Phone</label>
+                                                        <input type="tel" class="form-control" id="contact_phone" name="contact_phone" 
+                                                               placeholder="Your phone number"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Attachments -->
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h6 class="card-title mb-0">Attachments</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="mb-3">
+                                                        <label for="attachment" class="form-label">Upload File</label>
+                                                        <input type="file" class="form-control" id="attachment" name="attachment" 
+                                                               accept="image/*,.pdf,.doc,.docx"/>
+                                                        <div class="form-text">Upload photos or documents related to the issue</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Submit Buttons -->
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <div class="d-flex justify-content-between">
+                                                <a href="/my/service-requests" class="btn btn-secondary">
+                                                    <i class="fa fa-arrow-left me-2"></i>Back to Service Requests
+                                                </a>
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fa fa-paper-plane me-2"></i>Submit Service Request
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JavaScript for dynamic location selection -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Only run if not from QR code
+                    <t t-if="not is_qr_request">
+                    const facilitySelect = document.getElementById('facility_id');
+                    const buildingSelect = document.getElementById('building_id');
+                    const floorSelect = document.getElementById('floor_id');
+                    const roomSelect = document.getElementById('room_id');
+
+                    // Facility change handler
+                    facilitySelect.addEventListener('change', function() {
+                        const facilityId = this.value;
+                        buildingSelect.innerHTML = '<option value="">Select Building</option>';
+                        floorSelect.innerHTML = '<option value="">Select Floor</option>';
+                        roomSelect.innerHTML = '<option value="">Select Room</option>';
+                        
+                        if (facilityId) {
+                            fetch('/api/buildings/' + facilityId)
+                                .then(response => response.json())
+                                .then(buildings => {
+                                    buildings.forEach(building => {
+                                        const option = document.createElement('option');
+                                        option.value = building.id;
+                                        option.textContent = building.name;
+                                        buildingSelect.appendChild(option);
+                                    });
+                                });
+                        }
+                    });
+
+                    // Building change handler
+                    buildingSelect.addEventListener('change', function() {
+                        const buildingId = this.value;
+                        floorSelect.innerHTML = '<option value="">Select Floor</option>';
+                        roomSelect.innerHTML = '<option value="">Select Room</option>';
+                        
+                        if (buildingId) {
+                            fetch('/api/floors/' + buildingId)
+                                .then(response => response.json())
+                                .then(floors => {
+                                    floors.forEach(floor => {
+                                        const option = document.createElement('option');
+                                        option.value = floor.id;
+                                        option.textContent = floor.name;
+                                        floorSelect.appendChild(option);
+                                    });
+                                });
+                        }
+                    });
+
+                    // Floor change handler
+                    floorSelect.addEventListener('change', function() {
+                        const floorId = this.value;
+                        roomSelect.innerHTML = '<option value="">Select Room</option>';
+                        
+                        if (floorId) {
+                            fetch('/api/rooms/' + floorId)
+                                .then(response => response.json())
+                                .then(rooms => {
+                                    rooms.forEach(room => {
+                                        const option = document.createElement('option');
+                                        option.value = room.id;
+                                        option.textContent = room.name;
+                                        roomSelect.appendChild(option);
+                                    });
+                                });
+                        }
+                    });
+                    </t>
+                });
+            </script>
+        </t>
+    </template>
+</odoo>

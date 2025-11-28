@@ -1,0 +1,316 @@
+/* Enhanced Mobile Workorder Styles */
+
+/* Mobile Form Styling */
+.o_mobile_form {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* Remove min-height: 100vh to allow proper scrolling */
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem;
+}
+
+.o_mobile_form .o_form_view {
+    background: transparent;
+}
+
+.o_mobile_form .o_form_sheet {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Header Styling */
+.o_mobile_form .o_form_header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px 15px 0 0;
+    padding: 1.5rem;
+    margin: -1px -1px 0 -1px;
+}
+
+.o_mobile_form .oe_title {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.o_mobile_form .oe_title h1 {
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.o_mobile_form .oe_title p {
+    color: #7f8c8d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Status Badges */
+.o_mobile_form .badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.o_mobile_form .badge-lg {
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+}
+
+/* Action Buttons */
+.o_mobile_form .btn {
+    border-radius: 25px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.o_mobile_form .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.o_mobile_form .btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}
+
+.o_mobile_form .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.o_mobile_form .btn-success {
+    background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+}
+
+.o_mobile_form .btn-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.o_mobile_form .btn-danger {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+}
+
+.o_mobile_form .btn-info {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* Cards Styling */
+.o_mobile_form .card {
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.o_mobile_form .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.o_mobile_form .card-header {
+    padding: 1.25rem 1.5rem;
+    border: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.o_mobile_form .card-body {
+    padding: 1.5rem;
+}
+
+/* Form Controls */
+.o_mobile_form .form-control-plaintext {
+    color: #2c3e50;
+    font-weight: 500;
+    padding: 0.5rem 0;
+}
+
+.o_mobile_form .form-label {
+    color: #7f8c8d;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+/* SLA Status Cards */
+.o_mobile_form .row .col-6 .card {
+    margin-bottom: 0;
+}
+
+.o_mobile_form .card-body.text-center {
+    padding: 1rem;
+}
+
+.o_mobile_form .card-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Image Upload Styling */
+.o_mobile_form .img-fluid {
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.o_mobile_form .img-fluid:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.o_mobile_form .btn-outline-warning,
+.o_mobile_form .btn-outline-success {
+    border-radius: 25px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-width: 2px;
+    transition: all 0.3s ease;
+}
+
+.o_mobile_form .btn-outline-warning:hover,
+.o_mobile_form .btn-outline-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Footer Actions */
+.o_mobile_form footer {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 0 0 20px 20px;
+    padding: 1.5rem;
+    margin: 0 -1px -1px -1px;
+    backdrop-filter: blur(10px);
+}
+
+.o_mobile_form footer .btn {
+    margin: 0.25rem;
+}
+
+/* Task Form Specific Styling */
+.o_mobile_form .oe_title h2 {
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Boolean Toggle Styling */
+.o_mobile_form .o_boolean_toggle {
+    transform: scale(1.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .o_mobile_form .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .o_mobile_form .card-body {
+        padding: 1rem;
+    }
+    
+    .o_mobile_form .oe_title h1 {
+        font-size: 1.5rem;
+    }
+    
+    .o_mobile_form .oe_title h2 {
+        font-size: 1.3rem;
+    }
+}
+
+/* Animation for loading states */
+.o_mobile_form .card.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.o_mobile_form .btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.o_mobile_form .btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Enhanced focus states for accessibility */
+.o_mobile_form .btn:focus,
+.o_mobile_form .card:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .o_mobile_form {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    }
+    
+    .o_mobile_form .o_form_sheet {
+        background: rgba(44, 62, 80, 0.95);
+        color: #ecf0f1;
+    }
+    
+    .o_mobile_form .form-control-plaintext {
+        color: #ecf0f1;
+    }
+    
+    .o_mobile_form .form-label {
+        color: #bdc3c7;
+    }
+}
+
+/* Button loading state styles */
+.o_mobile_form .btn.btn-loading {
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
+}
+
+.o_mobile_form .btn.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.o_mobile_form .btn.btn-loading:disabled {
+    opacity: 0.6;
+}

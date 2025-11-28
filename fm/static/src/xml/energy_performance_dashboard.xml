@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-name="facilities_energy_performance_dashboard_template" owl="1">
+        <div class="o_energy_performance_dashboard">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header bg-primary text-white p-3 mb-4">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h2 class="mb-0">
+                                <i class="fa fa-bar-chart me-2"></i>
+                                Energy Performance Dashboard
+                            </h2>
+                            <p class="mb-0 opacity-75">Comprehensive energy consumption and efficiency analytics</p>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-light btn-sm" t-on-click="refreshData">
+                                    <i class="fa fa-refresh me-1"></i>
+                                    Refresh
+                                </button>
+                                <button type="button" class="btn btn-light btn-sm" t-on-click="exportData">
+                                    <i class="fa fa-download me-1"></i>
+                                    Export
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Controls -->
+            <div class="container-fluid mb-4">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-3">
+                                        <label class="form-label">Time Period</label>
+                                        <select class="form-select" t-model="state.selectedPeriod" t-on-change="onPeriodChange">
+                                            <option value="current_year">Current Year</option>
+                                            <option value="current_quarter">Current Quarter</option>
+                                            <option value="current_month">Current Month</option>
+                                            <option value="last_year">Last Year</option>
+                                            <option value="custom_range">Custom Range</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3" t-if="state.showCustomDates">
+                                        <label class="form-label">Date From</label>
+                                        <input type="date" class="form-control" t-model="state.customDateFrom" t-on-change="onCustomDateFromChange"/>
+                                    </div>
+                                    <div class="col-md-3" t-if="state.showCustomDates">
+                                        <label class="form-label">Date To</label>
+                                        <input type="date" class="form-control" t-model="state.customDateTo" t-on-change="onCustomDateToChange"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Facility</label>
+                                        <select class="form-select" t-model="state.selectedFacility" t-on-change="onFacilityChange">
+                                            <option value="">All Facilities</option>
+                                            <t t-if="state.facilities and state.facilities.length">
+                                                <option t-foreach="state.facilities" t-as="facility" t-key="facility.id" t-esc="facility.name" t-att-value="facility.id"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div t-if="state.loading" class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3 mb-0">Loading energy performance data...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div t-if="state.error" class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger" role="alert">
+                            <h4 class="alert-heading">Error Loading Dashboard</h4>
+                            <p t-esc="state.error"/>
+                            <button type="button" class="btn btn-outline-danger btn-sm" t-on-click="refreshData">
+                                <i class="fa fa-refresh me-1"></i>
+                                Try Again
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div t-if="state.dashboardData and !state.loading and !state.error" class="container-fluid">
+                <div class="dashboard-content">
+                    
+                    <!-- Key Performance Indicators -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="card-title opacity-75">Total Consumption</h6>
+                                            <h3 class="mb-0" t-esc="formatConsumption(state.dashboardData.metrics.total_consumption)"/>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fa fa-bolt fa-2x opacity-50"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="card-title opacity-75">Total Cost</h6>
+                                            <h3 class="mb-0" t-esc="formatCurrency(state.dashboardData.metrics.total_energy_cost)"/>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fa fa-dollar fa-2x opacity-50"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="card-title opacity-75">Efficiency Score</h6>
+                                            <h3 class="mb-0" t-esc="formatNumber(state.dashboardData.metrics.avg_efficiency_score)"/>
+                                            <small>/100</small>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fa fa-line-chart fa-2x opacity-50"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="card-title opacity-75">CO₂ Emissions</h6>
+                                            <h3 class="mb-0" t-esc="formatNumber(state.dashboardData.metrics.co2_emissions)"/>
+                                            <small>kg</small>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fa fa-leaf fa-2x opacity-50"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Consumption Breakdown -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-pie-chart me-2"></i>
+                                        Energy Consumption Breakdown
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="text-center">
+                                                <div class="h4 text-primary" t-esc="formatConsumption(state.dashboardData.metrics.electricity_consumption, 'kWh')"/>
+                                                <div class="text-muted">Electricity</div>
+                                                <div class="small" t-esc="formatCurrency(state.dashboardData.metrics.electricity_cost)"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="text-center">
+                                                <div class="h4 text-info" t-esc="formatConsumption(state.dashboardData.metrics.water_consumption, 'm³')"/>
+                                                <div class="text-muted">Water</div>
+                                                <div class="small" t-esc="formatCurrency(state.dashboardData.metrics.water_cost)"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="text-center">
+                                                <div class="h4 text-warning" t-esc="formatConsumption(state.dashboardData.metrics.gas_consumption, 'm³')"/>
+                                                <div class="text-muted">Gas</div>
+                                                <div class="small" t-esc="formatCurrency(state.dashboardData.metrics.gas_cost)"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="text-center">
+                                                <div class="h4 text-danger" t-esc="formatConsumption(state.dashboardData.metrics.steam_consumption, 'Ton-h')"/>
+                                                <div class="text-muted">Steam</div>
+                                                <div class="small" t-esc="formatCurrency(state.dashboardData.metrics.steam_cost)"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Metrics -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-tachometer me-2"></i>
+                                        Performance Indicators
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>Peak Demand</span>
+                                                    <strong t-esc="formatConsumption(state.dashboardData.metrics.peak_demand, 'kW')"/>
+                                                </div>
+                                                <div class="progress mt-1" style="height: 6px;">
+                                                    <div class="progress-bar bg-primary" role="progressbar" 
+                                                         t-att-style="'width: ' + Math.min(100, (state.dashboardData.metrics.peak_demand / 1000) * 100) + '%'"/>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>Average Demand</span>
+                                                    <strong t-esc="formatConsumption(state.dashboardData.metrics.average_demand, 'kW')"/>
+                                                </div>
+                                                <div class="progress mt-1" style="height: 6px;">
+                                                    <div class="progress-bar bg-info" role="progressbar" 
+                                                         t-att-style="'width: ' + Math.min(100, (state.dashboardData.metrics.average_demand / 500) * 100) + '%'"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>Load Factor</span>
+                                                    <strong t-esc="formatPercentage(state.dashboardData.metrics.load_factor)"/>
+                                                </div>
+                                                <div class="progress mt-1" style="height: 6px;">
+                                                    <div class="progress-bar bg-success" role="progressbar" 
+                                                         t-att-style="'width: ' + state.dashboardData.metrics.load_factor + '%'"/>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>Utilization Rate</span>
+                                                    <strong t-esc="formatPercentage(state.dashboardData.metrics.utilization_rate)"/>
+                                                </div>
+                                                <div class="progress mt-1" style="height: 6px;">
+                                                    <div class="progress-bar bg-warning" role="progressbar" 
+                                                         t-att-style="'width: ' + state.dashboardData.metrics.utilization_rate + '%'"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-line-chart me-2"></i>
+                                        Efficiency Scores
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>Energy Efficiency</span>
+                                                    <strong t-esc="formatNumber(state.dashboardData.metrics.energy_efficiency_score)"/>
+                                                </div>
+                                                <div class="progress mt-1" style="height: 8px;">
+                                                    <div class="progress-bar bg-success" role="progressbar" 
+                                                         t-att-style="'width: ' + state.dashboardData.metrics.energy_efficiency_score + '%'"/>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>Water Efficiency</span>
+                                                    <strong t-esc="formatNumber(state.dashboardData.metrics.water_efficiency_score)"/>
+                                                </div>
+                                                <div class="progress mt-1" style="height: 8px;">
+                                                    <div class="progress-bar bg-info" role="progressbar" 
+                                                         t-att-style="'width: ' + state.dashboardData.metrics.water_efficiency_score + '%'"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>Sustainability</span>
+                                                    <strong t-esc="formatNumber(state.dashboardData.metrics.sustainability_score)"/>
+                                                </div>
+                                                <div class="progress mt-1" style="height: 8px;">
+                                                    <div class="progress-bar bg-primary" role="progressbar" 
+                                                         t-att-style="'width: ' + state.dashboardData.metrics.sustainability_score + '%'"/>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>CO₂ Emissions</span>
+                                                    <strong t-esc="formatNumber(state.dashboardData.metrics.co2_emissions)"/> kg
+                                                </div>
+                                                <div class="progress mt-1" style="height: 8px;">
+                                                    <div class="progress-bar bg-warning" role="progressbar" 
+                                                         t-att-style="'width: ' + Math.min(100, (state.dashboardData.metrics.co2_emissions / 1000) * 100) + '%'"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trend Analysis -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-trending-up me-2"></i>
+                                        Consumption Trend
+                                    </h5>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="h2" t-att-class="getTrendColor(state.dashboardData.trends.consumption_trend)">
+                                        <i t-att-class="'fa fa-' + (state.dashboardData.trends.consumption_trend === 'increasing' ? 'arrow-up' : state.dashboardData.trends.consumption_trend === 'decreasing' ? 'arrow-down' : 'minus')"></i>
+                                        <span t-esc="getTrendIcon(state.dashboardData.trends.consumption_trend)"/>
+                                    </div>
+                                    <div class="h4" t-esc="state.dashboardData.trends.consumption_trend"/>
+                                    <div class="text-muted" t-esc="formatPercentage(Math.abs(state.dashboardData.trends.trend_percentage)) + ' vs previous period'"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-dollar me-2"></i>
+                                        Cost Trend
+                                    </h5>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="h2" t-att-class="getTrendColor(state.dashboardData.trends.cost_trend)">
+                                        <i t-att-class="'fa fa-' + (state.dashboardData.trends.cost_trend === 'increasing' ? 'arrow-up' : state.dashboardData.trends.cost_trend === 'decreasing' ? 'arrow-down' : 'minus')"></i>
+                                        <span t-esc="getTrendIcon(state.dashboardData.trends.cost_trend)"/>
+                                    </div>
+                                    <div class="h4" t-esc="state.dashboardData.trends.cost_trend"/>
+                                    <div class="text-muted">Cost performance vs previous period</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alerts and Benchmarks -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-exclamation-triangle me-2"></i>
+                                        Alerts Summary
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-md-3">
+                                            <div class="h4 text-warning" t-esc="state.dashboardData.alerts.total_alerts"/>
+                                            <div class="small text-muted">Total Alerts</div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="h4 text-danger" t-esc="state.dashboardData.alerts.high_consumption_alerts"/>
+                                            <div class="small text-muted">High Consumption</div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="h4 text-info" t-esc="state.dashboardData.alerts.cost_anomaly_alerts"/>
+                                            <div class="small text-muted">Cost Anomalies</div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="h4 text-secondary" t-esc="state.dashboardData.alerts.maintenance_alerts"/>
+                                            <div class="small text-muted">Maintenance</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-trophy me-2"></i>
+                                        Benchmark Performance
+                                    </h5>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="h2" t-att-class="getBenchmarkColor(state.dashboardData.benchmark.benchmark_performance)">
+                                        <i t-att-class="'fa fa-' + (state.dashboardData.benchmark.benchmark_performance === 'excellent' ? 'trophy' : state.dashboardData.benchmark.benchmark_performance === 'good' ? 'medal' : 'chart-line')"></i>
+                                    </div>
+                                    <div class="h4" t-esc="state.dashboardData.benchmark.benchmark_performance"/>
+                                    <div class="text-muted">
+                                        Cost per m²: <strong t-esc="formatCurrency(state.dashboardData.benchmark.cost_per_sqm)"/>
+                                    </div>
+                                    <div class="small text-muted mt-2">
+                                        Industry Benchmark: <strong t-esc="formatCurrency(state.dashboardData.benchmark.industry_benchmark_cost)"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cost Analysis -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-calculator me-2"></i>
+                                        Cost Analysis
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-md-4">
+                                            <div class="h4 text-primary" t-esc="formatCurrency(state.dashboardData.metrics.cost_per_sqm)"/>
+                                            <div class="text-muted">Cost per m²</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="h4 text-success" t-esc="formatCurrency(state.dashboardData.metrics.cost_per_occupant)"/>
+                                            <div class="text-muted">Cost per Occupant</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="h4 text-info" t-esc="formatCurrency(state.dashboardData.metrics.cost_per_hour)"/>
+                                            <div class="text-muted">Cost per Hour</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary Footer -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-8">
+                                            <h6 class="mb-1">Dashboard Summary</h6>
+                                            <p class="mb-0 text-muted">
+                                                Analyzing <strong t-esc="state.dashboardData.summary.total_meters"/> meters across 
+                                                <strong t-if="state.selectedFacility">1 facility</strong>
+                                                <strong t-else="state.selectedFacility">all facilities</strong>
+                                                for the <strong t-esc="state.selectedPeriod"/> period.
+                                            </p>
+                                        </div>
+                                        <div class="col-md-4 text-end">
+                                            <small class="text-muted">
+                                                Last updated: <strong t-esc="state.dashboardData.summary.last_updated"/>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

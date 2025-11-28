@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Demo Assets - HVAC Equipment -->
+        
+        <record id="demo_asset_hvac_1" model="facilities.asset">
+            <field name="name">Main Building HVAC Unit #1</field>
+            <field name="asset_code">HVAC-001</field>
+            <field name="asset_tag">HVAC-001</field>
+            <field name="serial_number">HVAC-2023-001</field>
+            <field name="facility_id" ref="demo_facility_energy_1"/>
+            <field name="building_id" ref="demo_building_energy_1"/>
+            <field name="category_id" ref="demo_category_hvac"/>
+            <field name="state">active</field>
+            <field name="purchased_date">2023-01-15</field>
+            <field name="warranty_expires_date">2026-01-15</field>
+            <field name="purchase_cost">45000.00</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="current_value">38000.00</field>
+            <field name="depreciation_rate">15.0</field>
+            <field name="supplier_id" ref="demo_supplier_hvac_tech"/>
+            <field name="manufacturer_id" ref="demo_manufacturer_carrier"/>
+            <field name="model_number">30HXC060</field>
+            <field name="barcode">HVAC001123456</field>
+            <field name="qr_code">HVAC-001-QR</field>
+            <field name="rfid_tag">RFID-HVAC-001</field>
+            <field name="gps_coordinates">40.7128,-74.0060</field>
+            <field name="floor_plan_location">100,200</field>
+            <field name="insurance_value">45000.00</field>
+            <field name="replacement_cost">50000.00</field>
+            <field name="annual_operating_cost">5000.00</field>
+            <field name="operating_hours_total">8760.0</field>
+            <field name="operating_hours_yearly">8760.0</field>
+            <field name="health_score">85.5</field>
+            <field name="health_trend">stable</field>
+            <field name="prediction_confidence">78.5</field>
+            <field name="next_failure_prediction">2025-06-15 10:00:00</field>
+            <field name="last_scan_location">Main Building - Rooftop</field>
+            <field name="last_scan_time">2024-08-30 14:30:00</field>
+            <field name="scanned_by_id" ref="base.user_admin"/>
+        </record>
+
+        <record id="demo_asset_hvac_2" model="facilities.asset">
+            <field name="name">Innovation Wing HVAC Unit #2</field>
+            <field name="asset_code">HVAC-002</field>
+            <field name="asset_tag">HVAC-002</field>
+            <field name="serial_number">HVAC-2023-002</field>
+            <field name="facility_id" ref="demo_facility_energy_1"/>
+            <field name="building_id" ref="demo_building_energy_2"/>
+            <field name="category_id" ref="demo_category_hvac"/>
+            <field name="state">active</field>
+            <field name="purchased_date">2023-03-20</field>
+            <field name="warranty_expires_date">2026-03-20</field>
+            <field name="purchase_cost">38000.00</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="current_value">32000.00</field>
+            <field name="depreciation_rate">15.0</field>
+            <field name="supplier_id" ref="demo_supplier_hvac_tech"/>
+            <field name="manufacturer_id" ref="demo_manufacturer_carrier"/>
+            <field name="model_number">RT-PRC060</field>
+            <field name="barcode">HVAC002123457</field>
+            <field name="qr_code">HVAC-002-QR</field>
+            <field name="rfid_tag">RFID-HVAC-002</field>
+            <field name="gps_coordinates">40.7128,-74.0060</field>
+            <field name="floor_plan_location">150,250</field>
+            <field name="insurance_value">38000.00</field>
+            <field name="replacement_cost">42000.00</field>
+            <field name="annual_operating_cost">4200.00</field>
+            <field name="operating_hours_total">8760.0</field>
+            <field name="operating_hours_yearly">8760.0</field>
+            <field name="health_score">92.3</field>
+            <field name="health_trend">improving</field>
+            <field name="prediction_confidence">85.2</field>
+            <field name="next_failure_prediction">2025-12-10 08:00:00</field>
+            <field name="last_scan_location">Innovation Wing - Rooftop</field>
+            <field name="last_scan_time">2024-08-29 16:45:00</field>
+            <field name="scanned_by_id" ref="base.user_admin"/>
+        </record>
+
+        <!-- Demo Assets - Electrical Equipment -->
+        
+        <record id="demo_asset_electrical_1" model="facilities.asset">
+            <field name="name">Main Electrical Panel A</field>
+            <field name="asset_code">ELEC-001</field>
+            <field name="asset_tag">ELEC-001</field>
+            <field name="serial_number">ELEC-2022-001</field>
+            <field name="facility_id" ref="demo_facility_energy_1"/>
+            <field name="building_id" ref="demo_building_energy_1"/>
+            <field name="category_id" ref="demo_category_electrical"/>
+            <field name="state">active</field>
+            <field name="purchased_date">2022-06-10</field>
+            <field name="warranty_expires_date">2025-06-10</field>
+            <field name="purchase_cost">25000.00</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="current_value">18000.00</field>
+            <field name="depreciation_rate">20.0</field>
+            <field name="supplier_id" ref="demo_supplier_electrical_pro"/>
+            <field name="manufacturer_id" ref="demo_manufacturer_schneider"/>
+            <field name="model_number">PowerLogic PM8000</field>
+            <field name="barcode">ELEC001123458</field>
+            <field name="qr_code">ELEC-001-QR</field>
+            <field name="rfid_tag">RFID-ELEC-001</field>
+            <field name="gps_coordinates">40.7128,-74.0060</field>
+            <field name="floor_plan_location">50,100</field>
+            <field name="insurance_value">25000.00</field>
+            <field name="replacement_cost">28000.00</field>
+            <field name="annual_operating_cost">1200.00</field>
+            <field name="operating_hours_total">17520.0</field>
+            <field name="operating_hours_yearly">8760.0</field>
+            <field name="health_score">78.9</field>
+            <field name="health_trend">stable</field>
+            <field name="prediction_confidence">72.1</field>
+            <field name="next_failure_prediction">2025-03-20 12:00:00</field>
+            <field name="last_scan_location">Main Building - Basement</field>
+            <field name="last_scan_time">2024-08-28 09:15:00</field>
+            <field name="scanned_by_id" ref="base.user_admin"/>
+        </record>
+
+        <record id="demo_asset_electrical_2" model="facilities.asset">
+            <field name="name">Backup Generator System</field>
+            <field name="asset_code">ELEC-002</field>
+            <field name="asset_tag">ELEC-002</field>
+            <field name="serial_number">ELEC-2021-002</field>
+            <field name="facility_id" ref="demo_facility_energy_1"/>
+            <field name="building_id" ref="demo_building_energy_1"/>
+            <field name="category_id" ref="demo_category_electrical"/>
+            <field name="state">active</field>
+            <field name="purchased_date">2021-09-15</field>
+            <field name="warranty_expires_date">2024-09-15</field>
+            <field name="purchase_cost">65000.00</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="current_value">45000.00</field>
+            <field name="depreciation_rate">12.0</field>
+            <field name="supplier_id" ref="demo_supplier_electrical_pro"/>
+            <field name="manufacturer_id" ref="demo_manufacturer_schneider"/>
+            <field name="model_number">C1500D5</field>
+            <field name="barcode">ELEC002123459</field>
+            <field name="qr_code">ELEC-002-QR</field>
+            <field name="rfid_tag">RFID-ELEC-002</field>
+            <field name="gps_coordinates">40.7128,-74.0060</field>
+            <field name="floor_plan_location">200,300</field>
+            <field name="insurance_value">65000.00</field>
+            <field name="replacement_cost">70000.00</field>
+            <field name="annual_operating_cost">3000.00</field>
+            <field name="operating_hours_total">500.0</field>
+            <field name="operating_hours_yearly">100.0</field>
+            <field name="health_score">88.7</field>
+            <field name="health_trend">improving</field>
+            <field name="prediction_confidence">91.3</field>
+            <field name="next_failure_prediction">2026-01-15 14:30:00</field>
+            <field name="last_scan_location">Main Building - Ground Floor</field>
+            <field name="last_scan_time">2024-08-30 11:20:00</field>
+            <field name="scanned_by_id" ref="base.user_admin"/>
+        </record>
+
+        <!-- Demo Assets - IT Hardware -->
+        
+        <record id="demo_asset_server_1" model="facilities.asset">
+            <field name="name">Main Data Center Server Rack #1</field>
+            <field name="asset_code">IT-001</field>
+            <field name="asset_tag">IT-001</field>
+            <field name="serial_number">IT-2023-001</field>
+            <field name="facility_id" ref="demo_facility_energy_1"/>
+            <field name="building_id" ref="demo_building_energy_1"/>
+            <field name="category_id" ref="demo_category_servers"/>
+            <field name="state">active</field>
+            <field name="purchased_date">2023-02-10</field>
+            <field name="warranty_expires_date">2026-02-10</field>
+            <field name="purchase_cost">15000.00</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="current_value">12000.00</field>
+            <field name="depreciation_rate">25.0</field>
+            <field name="supplier_id" ref="demo_supplier_it_equipment"/>
+            <field name="manufacturer_id" ref="demo_manufacturer_dell"/>
+            <field name="model_number">PowerEdge R750</field>
+            <field name="barcode">IT001123460</field>
+            <field name="qr_code">IT-001-QR</field>
+            <field name="rfid_tag">RFID-IT-001</field>
+            <field name="gps_coordinates">40.7128,-74.0060</field>
+            <field name="floor_plan_location">300,400</field>
+            <field name="insurance_value">15000.00</field>
+            <field name="replacement_cost">18000.00</field>
+            <field name="annual_operating_cost">2500.00</field>
+            <field name="operating_hours_total">13140.0</field>
+            <field name="operating_hours_yearly">8760.0</field>
+            <field name="health_score">95.2</field>
+            <field name="health_trend">stable</field>
+            <field name="prediction_confidence">88.7</field>
+            <field name="next_failure_prediction">2025-11-25 16:00:00</field>
+            <field name="last_scan_location">Main Building - Data Center</field>
+            <field name="last_scan_time">2024-08-30 13:45:00</field>
+            <field name="scanned_by_id" ref="base.user_admin"/>
+        </record>
+
+        <record id="demo_asset_workstation_1" model="facilities.asset">
+            <field name="name">Engineering Workstation #1</field>
+            <field name="asset_code">IT-002</field>
+            <field name="asset_tag">IT-002</field>
+            <field name="serial_number">IT-2023-002</field>
+            <field name="facility_id" ref="demo_facility_energy_1"/>
+            <field name="building_id" ref="demo_building_energy_2"/>
+            <field name="category_id" ref="demo_category_workstations"/>
+            <field name="state">active</field>
+            <field name="purchased_date">2023-04-15</field>
+            <field name="warranty_expires_date">2026-04-15</field>
+            <field name="purchase_cost">3500.00</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="current_value">2800.00</field>
+            <field name="depreciation_rate">30.0</field>
+            <field name="supplier_id" ref="demo_supplier_it_equipment"/>
+            <field name="manufacturer_id" ref="demo_manufacturer_dell"/>
+            <field name="model_number">Z4 G4 Workstation</field>
+            <field name="barcode">IT002123461</field>
+            <field name="qr_code">IT-002-QR</field>
+            <field name="rfid_tag">RFID-IT-002</field>
+            <field name="gps_coordinates">40.7128,-74.0060</field>
+            <field name="floor_plan_location">400,500</field>
+            <field name="insurance_value">3500.00</field>
+            <field name="replacement_cost">4000.00</field>
+            <field name="annual_operating_cost">800.00</field>
+            <field name="operating_hours_total">4380.0</field>
+            <field name="operating_hours_yearly">2190.0</field>
+            <field name="health_score">91.8</field>
+            <field name="health_trend">improving</field>
+            <field name="prediction_confidence">82.4</field>
+            <field name="next_failure_prediction">2025-08-30 10:00:00</field>
+            <field name="last_scan_location">Innovation Wing - Engineering Office</field>
+            <field name="last_scan_time">2024-08-29 15:30:00</field>
+            <field name="scanned_by_id" ref="base.user_admin"/>
+        </record>
+
+        <!-- Demo Assets - Security Systems -->
+        
+        <record id="demo_asset_security_1" model="facilities.asset">
+            <field name="name">Main Building Security Panel</field>
+            <field name="asset_code">SEC-001</field>
+            <field name="asset_tag">SEC-001</field>
+            <field name="serial_number">SEC-2022-001</field>
+            <field name="facility_id" ref="demo_facility_energy_1"/>
+            <field name="building_id" ref="demo_building_energy_1"/>
+            <field name="category_id" ref="demo_category_security"/>
+            <field name="state">active</field>
+            <field name="purchased_date">2022-11-20</field>
+            <field name="warranty_expires_date">2025-11-20</field>
+            <field name="purchase_cost">12000.00</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="current_value">8500.00</field>
+            <field name="depreciation_rate">18.0</field>
+            <field name="supplier_id" ref="demo_supplier_security_sys"/>
+            <field name="manufacturer_id" ref="demo_manufacturer_honeywell"/>
+            <field name="model_number">Vista-128BP</field>
+            <field name="barcode">SEC001123462</field>
+            <field name="qr_code">SEC-001-QR</field>
+            <field name="rfid_tag">RFID-SEC-001</field>
+            <field name="gps_coordinates">40.7128,-74.0060</field>
+            <field name="floor_plan_location">75,125</field>
+            <field name="insurance_value">12000.00</field>
+            <field name="replacement_cost">14000.00</field>
+            <field name="annual_operating_cost">1500.00</field>
+            <field name="operating_hours_total">17520.0</field>
+            <field name="operating_hours_yearly">8760.0</field>
+            <field name="health_score">87.3</field>
+            <field name="health_trend">stable</field>
+            <field name="prediction_confidence">79.6</field>
+            <field name="next_failure_prediction">2025-07-15 09:00:00</field>
+            <field name="last_scan_location">Main Building - Security Office</field>
+            <field name="last_scan_time">2024-08-30 08:00:00</field>
+            <field name="scanned_by_id" ref="base.user_admin"/>
+        </record>
+
+        <!-- Demo Assets - Fire Safety Equipment -->
+        
+        <record id="demo_asset_fire_1" model="facilities.asset">
+            <field name="name">Main Building Fire Suppression System</field>
+            <field name="asset_code">FIRE-001</field>
+            <field name="asset_tag">FIRE-001</field>
+            <field name="serial_number">FIRE-2021-001</field>
+            <field name="facility_id" ref="demo_facility_energy_1"/>
+            <field name="building_id" ref="demo_building_energy_1"/>
+            <field name="category_id" ref="demo_category_fire_safety"/>
+            <field name="state">active</field>
+            <field name="purchased_date">2021-05-10</field>
+            <field name="warranty_expires_date">2024-05-10</field>
+            <field name="purchase_cost">35000.00</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="current_value">22000.00</field>
+            <field name="depreciation_rate">15.0</field>
+            <field name="supplier_id" ref="demo_supplier_security_sys"/>
+            <field name="manufacturer_id" ref="demo_manufacturer_honeywell"/>
+            <field name="model_number">FM-200 System</field>
+            <field name="barcode">FIRE001123463</field>
+            <field name="qr_code">FIRE-001-QR</field>
+            <field name="rfid_tag">RFID-FIRE-001</field>
+            <field name="gps_coordinates">40.7128,-74.0060</field>
+            <field name="floor_plan_location">100,150</field>
+            <field name="insurance_value">35000.00</field>
+            <field name="replacement_cost">40000.00</field>
+            <field name="annual_operating_cost">2000.00</field>
+            <field name="operating_hours_total">26280.0</field>
+            <field name="operating_hours_yearly">8760.0</field>
+            <field name="health_score">93.7</field>
+            <field name="health_trend">stable</field>
+            <field name="prediction_confidence">86.9</field>
+            <field name="next_failure_prediction">2025-12-20 11:30:00</field>
+            <field name="last_scan_location">Main Building - Mechanical Room</field>
+            <field name="last_scan_time">2024-08-28 14:15:00</field>
+            <field name="scanned_by_id" ref="base.user_admin"/>
+        </record>
+
+        <!-- Demo Assets - Office Furniture -->
+        
+        <record id="demo_asset_furniture_1" model="facilities.asset">
+            <field name="name">Executive Conference Table</field>
+            <field name="asset_code">FURN-001</field>
+            <field name="asset_tag">FURN-001</field>
+            <field name="serial_number">FURN-2023-001</field>
+            <field name="facility_id" ref="demo_facility_energy_1"/>
+            <field name="building_id" ref="demo_building_energy_1"/>
+            <field name="category_id" ref="demo_category_conference_room"/>
+            <field name="state">active</field>
+            <field name="purchased_date">2023-01-25</field>
+            <field name="warranty_expires_date">2026-01-25</field>
+            <field name="purchase_cost">8500.00</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="current_value">7200.00</field>
+            <field name="depreciation_rate">10.0</field>
+            <field name="supplier_id" ref="demo_supplier_furniture_co"/>
+            <field name="manufacturer_id" ref="demo_supplier_furniture_co"/>
+            <field name="model_number">Eames Conference Table</field>
+            <field name="barcode">FURN001123464</field>
+            <field name="qr_code">FURN-001-QR</field>
+            <field name="rfid_tag">RFID-FURN-001</field>
+            <field name="gps_coordinates">40.7128,-74.0060</field>
+            <field name="floor_plan_location">500,600</field>
+            <field name="insurance_value">8500.00</field>
+            <field name="replacement_cost">9500.00</field>
+            <field name="annual_operating_cost">200.00</field>
+            <field name="operating_hours_total">2190.0</field>
+            <field name="operating_hours_yearly">1095.0</field>
+            <field name="health_score">98.5</field>
+            <field name="health_trend">stable</field>
+            <field name="prediction_confidence">95.2</field>
+            <field name="next_failure_prediction">2026-05-15 14:00:00</field>
+            <field name="last_scan_location">Main Building - Executive Conference Room</field>
+            <field name="last_scan_time">2024-08-30 10:30:00</field>
+            <field name="scanned_by_id" ref="base.user_admin"/>
+        </record>
+
+        <!-- Demo Assets - Manufacturing Equipment -->
+        
+        <record id="demo_asset_manufacturing_1" model="facilities.asset">
+            <field name="name">Production Line Conveyor System A</field>
+            <field name="asset_code">MFG-001</field>
+            <field name="asset_tag">MFG-001</field>
+            <field name="serial_number">MFG-2020-001</field>
+            <field name="facility_id" ref="demo_facility_energy_2"/>
+            <field name="building_id" ref="demo_building_energy_3"/>
+            <field name="category_id" ref="demo_category_hvac"/>
+            <field name="state">active</field>
+            <field name="purchased_date">2020-08-15</field>
+            <field name="warranty_expires_date">2023-08-15</field>
+            <field name="purchase_cost">125000.00</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="current_value">75000.00</field>
+            <field name="depreciation_rate">12.0</field>
+            <field name="supplier_id" ref="demo_supplier_electrical_pro"/>
+            <field name="manufacturer_id" ref="demo_manufacturer_schneider"/>
+            <field name="model_number">SIMATIC S7-1500</field>
+            <field name="barcode">MFG001123465</field>
+            <field name="qr_code">MFG-001-QR</field>
+            <field name="rfid_tag">RFID-MFG-001</field>
+            <field name="gps_coordinates">40.7128,-74.0060</field>
+            <field name="floor_plan_location">600,700</field>
+            <field name="insurance_value">125000.00</field>
+            <field name="replacement_cost">140000.00</field>
+            <field name="annual_operating_cost">15000.00</field>
+            <field name="operating_hours_total">35040.0</field>
+            <field name="operating_hours_yearly">8760.0</field>
+            <field name="health_score">76.4</field>
+            <field name="health_trend">declining</field>
+            <field name="prediction_confidence">68.9</field>
+            <field name="next_failure_prediction">2025-02-28 16:45:00</field>
+            <field name="last_scan_location">Production Hall A - Line 1</field>
+            <field name="last_scan_time">2024-08-30 12:00:00</field>
+            <field name="scanned_by_id" ref="base.user_admin"/>
+        </record>
+
+        <!-- Demo Assets - Research Equipment -->
+        
+        <record id="demo_asset_research_1" model="facilities.asset">
+            <field name="name">Advanced Microscope System</field>
+            <field name="asset_code">RES-001</field>
+            <field name="asset_tag">RES-001</field>
+            <field name="serial_number">RES-2022-001</field>
+            <field name="facility_id" ref="demo_facility_energy_3"/>
+            <field name="building_id" ref="demo_building_energy_5"/>
+            <field name="category_id" ref="demo_category_hvac"/>
+            <field name="state">active</field>
+            <field name="purchased_date">2022-10-05</field>
+            <field name="warranty_expires_date">2025-10-05</field>
+            <field name="purchase_cost">85000.00</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="current_value">65000.00</field>
+            <field name="depreciation_rate">20.0</field>
+            <field name="supplier_id" ref="demo_supplier_it_equipment"/>
+            <field name="manufacturer_id" ref="demo_manufacturer_zeiss"/>
+            <field name="model_number">LSM 900</field>
+            <field name="barcode">RES001123466</field>
+            <field name="qr_code">RES-001-QR</field>
+            <field name="rfid_tag">RFID-RES-001</field>
+            <field name="gps_coordinates">40.7128,-74.0060</field>
+            <field name="floor_plan_location">700,800</field>
+            <field name="insurance_value">85000.00</field>
+            <field name="replacement_cost">95000.00</field>
+            <field name="annual_operating_cost">5000.00</field>
+            <field name="operating_hours_total">4380.0</field>
+            <field name="operating_hours_yearly">2190.0</field>
+            <field name="health_score">89.6</field>
+            <field name="health_trend">stable</field>
+            <field name="prediction_confidence">83.7</field>
+            <field name="next_failure_prediction">2025-09-15 13:20:00</field>
+            <field name="last_scan_location">Research Laboratory - Lab 1</field>
+            <field name="last_scan_time">2024-08-29 11:45:00</field>
+            <field name="scanned_by_id" ref="base.user_admin"/>
+        </record>
+
+    </data>
+</odoo>

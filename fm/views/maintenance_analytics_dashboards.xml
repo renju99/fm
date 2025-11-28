@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Maintenance KPI Dashboard Client Action -->
+        <record id="action_maintenance_kpi_dashboard_client" model="ir.actions.client">
+            <field name="name">Maintenance KPI Dashboard</field>
+            <field name="tag">maintenance_kpi_dashboard</field>
+            <field name="target">main</field>
+        </record>
+
+        <!-- Technician Performance Dashboard Client Action -->
+        <record id="action_technician_performance_dashboard_client" model="ir.actions.client">
+            <field name="name">Technician Performance Dashboard</field>
+            <field name="tag">technician_performance_dashboard</field>
+            <field name="target">main</field>
+        </record>
+
+        <!-- Resource Utilization Dashboard Client Action -->
+        <record id="action_resource_utilization_dashboard_client" model="ir.actions.client">
+            <field name="name">Resource Utilization Dashboard</field>
+            <field name="tag">resource_utilization_dashboard</field>
+            <field name="target">main</field>
+        </record>
+
+        <!-- Maintenance Performance Dashboard Client Action -->
+        <record id="action_maintenance_performance_dashboard_client" model="ir.actions.client">
+            <field name="name">Maintenance Performance Dashboard</field>
+            <field name="tag">maintenance_performance_dashboard</field>
+            <field name="target">main</field>
+        </record>
+    </data>
+</odoo>
+

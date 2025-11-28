@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Critical Asset Emergency SLA -->
+        <record id="sla_critical_emergency" model="facilities.sla">
+            <field name="name">Critical Asset - Emergency Response</field>
+            <field name="description">Emergency response SLA for critical assets affecting safety or production</field>
+            <field name="active">True</field>
+            <field name="priority">100</field>
+            <field name="asset_criticality">critical</field>
+            <field name="maintenance_type">emergency</field>
+            <field name="response_time_hours">0.5</field>
+            <field name="resolution_time_hours">4.0</field>
+            <field name="warning_threshold">70.0</field>
+            <field name="critical_threshold">90.0</field>
+            <field name="business_hours_only">False</field>
+            <field name="include_weekends">True</field>
+            <field name="include_holidays">True</field>
+            <field name="escalation_enabled">True</field>
+            <field name="max_escalation_level">5</field>
+            <field name="target_mttr_hours">2.0</field>
+            <field name="target_first_time_fix_rate">90.0</field>
+            <field name="target_response_compliance">98.0</field>
+            <field name="target_resolution_compliance">95.0</field>
+        </record>
+
+        <!-- Critical Asset Urgent SLA -->
+        <record id="sla_critical_urgent" model="facilities.sla">
+            <field name="name">Critical Asset - Urgent Response</field>
+            <field name="description">Urgent response SLA for critical assets with high operational impact</field>
+            <field name="active">True</field>
+            <field name="priority">90</field>
+            <field name="asset_criticality">critical</field>
+            <field name="maintenance_type">urgent</field>
+            <field name="response_time_hours">1.0</field>
+            <field name="resolution_time_hours">8.0</field>
+            <field name="warning_threshold">75.0</field>
+            <field name="critical_threshold">90.0</field>
+            <field name="business_hours_only">False</field>
+            <field name="include_weekends">True</field>
+            <field name="include_holidays">False</field>
+            <field name="escalation_enabled">True</field>
+            <field name="max_escalation_level">4</field>
+            <field name="target_mttr_hours">4.0</field>
+            <field name="target_first_time_fix_rate">85.0</field>
+            <field name="target_response_compliance">95.0</field>
+            <field name="target_resolution_compliance">90.0</field>
+        </record>
+
+        <!-- High Priority Asset Corrective SLA -->
+        <record id="sla_high_corrective" model="facilities.sla">
+            <field name="name">High Priority Asset - Corrective Maintenance</field>
+            <field name="description">Corrective maintenance SLA for high priority assets</field>
+            <field name="active">True</field>
+            <field name="priority">80</field>
+            <field name="asset_criticality">high</field>
+            <field name="maintenance_type">corrective</field>
+            <field name="response_time_hours">2.0</field>
+            <field name="resolution_time_hours">24.0</field>
+            <field name="warning_threshold">80.0</field>
+            <field name="critical_threshold">95.0</field>
+            <field name="business_hours_only">True</field>
+            <field name="business_hours_start">7.0</field>
+            <field name="business_hours_end">19.0</field>
+            <field name="include_weekends">False</field>
+            <field name="include_holidays">False</field>
+            <field name="escalation_enabled">True</field>
+            <field name="max_escalation_level">3</field>
+            <field name="target_mttr_hours">8.0</field>
+            <field name="target_first_time_fix_rate">80.0</field>
+            <field name="target_response_compliance">95.0</field>
+            <field name="target_resolution_compliance">90.0</field>
+        </record>
+
+        <!-- Medium Priority Asset Corrective SLA -->
+        <record id="sla_medium_corrective" model="facilities.sla">
+            <field name="name">Medium Priority Asset - Corrective Maintenance</field>
+            <field name="description">Corrective maintenance SLA for medium priority assets</field>
+            <field name="active">True</field>
+            <field name="priority">70</field>
+            <field name="asset_criticality">medium</field>
+            <field name="maintenance_type">corrective</field>
+            <field name="response_time_hours">4.0</field>
+            <field name="resolution_time_hours">48.0</field>
+            <field name="warning_threshold">80.0</field>
+            <field name="critical_threshold">95.0</field>
+            <field name="business_hours_only">True</field>
+            <field name="business_hours_start">7.0</field>
+            <field name="business_hours_end">19.0</field>
+            <field name="include_weekends">False</field>
+            <field name="include_holidays">False</field>
+            <field name="escalation_enabled">True</field>
+            <field name="max_escalation_level">3</field>
+            <field name="target_mttr_hours">16.0</field>
+            <field name="target_first_time_fix_rate">75.0</field>
+            <field name="target_response_compliance">90.0</field>
+            <field name="target_resolution_compliance">85.0</field>
+        </record>
+
+        <!-- Low Priority Asset Corrective SLA -->
+        <record id="sla_low_corrective" model="facilities.sla">
+            <field name="name">Low Priority Asset - Corrective Maintenance</field>
+            <field name="description">Corrective maintenance SLA for low priority assets</field>
+            <field name="active">True</field>
+            <field name="priority">60</field>
+            <field name="asset_criticality">low</field>
+            <field name="maintenance_type">corrective</field>
+            <field name="response_time_hours">8.0</field>
+            <field name="resolution_time_hours">72.0</field>
+            <field name="warning_threshold">80.0</field>
+            <field name="critical_threshold">95.0</field>
+            <field name="business_hours_only">True</field>
+            <field name="business_hours_start">7.0</field>
+            <field name="business_hours_end">19.0</field>
+            <field name="include_weekends">False</field>
+            <field name="include_holidays">False</field>
+            <field name="escalation_enabled">True</field>
+            <field name="max_escalation_level">2</field>
+            <field name="target_mttr_hours">24.0</field>
+            <field name="target_first_time_fix_rate">70.0</field>
+            <field name="target_response_compliance">85.0</field>
+            <field name="target_resolution_compliance">80.0</field>
+        </record>
+
+        <!-- Preventive Maintenance SLA -->
+        <record id="sla_preventive_maintenance" model="facilities.sla">
+            <field name="name">Preventive Maintenance</field>
+            <field name="description">Scheduled preventive maintenance SLA</field>
+            <field name="active">True</field>
+            <field name="priority">50</field>
+            <field name="maintenance_type">preventive</field>
+            <field name="response_time_hours">24.0</field>
+            <field name="resolution_time_hours">48.0</field>
+            <field name="warning_threshold">80.0</field>
+            <field name="critical_threshold">95.0</field>
+            <field name="business_hours_only">True</field>
+            <field name="business_hours_start">7.0</field>
+            <field name="business_hours_end">19.0</field>
+            <field name="include_weekends">False</field>
+            <field name="include_holidays">False</field>
+            <field name="escalation_enabled">False</field>
+            <field name="max_escalation_level">2</field>
+            <field name="target_mttr_hours">8.0</field>
+            <field name="target_first_time_fix_rate">95.0</field>
+            <field name="target_response_compliance">98.0</field>
+            <field name="target_resolution_compliance">95.0</field>
+        </record>
+
+        <!-- Predictive Maintenance SLA -->
+        <record id="sla_predictive_maintenance" model="facilities.sla">
+            <field name="name">Predictive Maintenance</field>
+            <field name="description">Condition-based predictive maintenance SLA</field>
+            <field name="active">True</field>
+            <field name="priority">40</field>
+            <field name="maintenance_type">predictive</field>
+            <field name="response_time_hours">48.0</field>
+            <field name="resolution_time_hours">72.0</field>
+            <field name="warning_threshold">80.0</field>
+            <field name="critical_threshold">95.0</field>
+            <field name="business_hours_only">True</field>
+            <field name="business_hours_start">7.0</field>
+            <field name="business_hours_end">19.0</field>
+            <field name="include_weekends">False</field>
+            <field name="include_holidays">False</field>
+            <field name="escalation_enabled">True</field>
+            <field name="max_escalation_level">2</field>
+            <field name="target_mttr_hours">16.0</field>
+            <field name="target_first_time_fix_rate">80.0</field>
+            <field name="target_response_compliance">90.0</field>
+            <field name="target_resolution_compliance">85.0</field>
+        </record>
+
+        <!-- Inspection/Compliance SLA -->
+        <record id="sla_inspection_compliance" model="facilities.sla">
+            <field name="name">Inspection &amp; Compliance</field>
+            <field name="description">Inspection and compliance maintenance SLA</field>
+            <field name="active">True</field>
+            <field name="priority">30</field>
+            <field name="maintenance_type">inspection</field>
+            <field name="response_time_hours">72.0</field>
+            <field name="resolution_time_hours">168.0</field>
+            <field name="warning_threshold">80.0</field>
+            <field name="critical_threshold">95.0</field>
+            <field name="business_hours_only">True</field>
+            <field name="business_hours_start">7.0</field>
+            <field name="business_hours_end">19.0</field>
+            <field name="include_weekends">False</field>
+            <field name="include_holidays">False</field>
+            <field name="escalation_enabled">True</field>
+            <field name="max_escalation_level">2</field>
+            <field name="target_mttr_hours">32.0</field>
+            <field name="target_first_time_fix_rate">70.0</field>
+            <field name="target_response_compliance">85.0</field>
+            <field name="target_resolution_compliance">80.0</field>
+        </record>
+
+    </data>
+</odoo>

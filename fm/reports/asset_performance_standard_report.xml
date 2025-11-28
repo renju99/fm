@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Standard Asset Performance Report Action -->
+        <record id="action_report_asset_performance_standard" model="ir.actions.report">
+            <field name="name">Asset Performance Report</field>
+            <field name="model">facilities.asset.performance.dashboard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">facilities_management.asset_performance_standard</field>
+            <field name="report_file">facilities_management.asset_performance_standard</field>
+            <field name="print_report_name">'Asset Performance Report - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="facilities_management.model_facilities_asset_performance_dashboard"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- Standard Report Template -->
+        <template id="asset_performance_standard">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <!-- Report Header -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h2 class="text-center">Asset Performance Report</h2>
+                                    <h4 class="text-center text-muted" t-esc="o.name"/>
+                                </div>
+                            </div>
+
+                            <!-- Report Information -->
+                            <div class="row mb-4">
+                                <div class="col-6">
+                                    <table class="table table-sm table-borderless">
+                                        <tr>
+                                            <td><strong>Analysis Period:</strong></td>
+                                            <td><t t-esc="o.date_from"/> to <t t-esc="o.date_to"/></td>
+                                        </tr>
+                                        <tr t-if="o.facility_id">
+                                            <td><strong>Facility:</strong></td>
+                                            <td t-esc="o.facility_id.name"/>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Total Assets:</strong></td>
+                                            <td t-esc="o.total_assets"/>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-6">
+                                    <table class="table table-sm table-borderless">
+                                        <tr>
+                                            <td><strong>Generated:</strong></td>
+                                            <td t-esc="o.create_date.strftime('%Y-%m-%d %H:%M')"/>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Status:</strong></td>
+                                            <td>
+                                                <span class="badge badge-success" t-if="o.state == 'completed'">Completed</span>
+                                                <span class="badge badge-warning" t-else="">Processing</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Total Value:</strong></td>
+                                            <td>$<t t-esc="'{:,.2f}'.format(o.total_value or 0)"/></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Key Performance Indicators -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h4>Key Performance Indicators</h4>
+                                    <table class="table table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Metric</th>
+                                                <th class="text-end">Value</th>
+                                                <th>Metric</th>
+                                                <th class="text-end">Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Average ROI</td>
+                                                <td class="text-end"><t t-esc="'{:.1f}%'.format(o.avg_roi or 0)"/></td>
+                                                <td>Utilization Rate</td>
+                                                <td class="text-end"><t t-esc="'{:.1f}%'.format(o.utilization_rate or 0)"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Efficiency Score</td>
+                                                <td class="text-end"><t t-esc="'{:.1f}%'.format(o.efficiency_score or 0)"/></td>
+                                                <td>Uptime Percentage</td>
+                                                <td class="text-end"><t t-esc="'{:.1f}%'.format(o.uptime_percentage or 0)"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Asset Health Score</td>
+                                                <td class="text-end"><t t-esc="'{:.1f}%'.format(o.asset_health_score or 0)"/></td>
+                                                <td>Maintenance Efficiency</td>
+                                                <td class="text-end"><t t-esc="'{:.1f}%'.format(o.maintenance_efficiency or 0)"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Financial Performance -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h4>Financial Performance</h4>
+                                    <table class="table table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Financial Metric</th>
+                                                <th class="text-end">Amount</th>
+                                                <th>Operational Metric</th>
+                                                <th class="text-end">Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Revenue Generated</td>
+                                                <td class="text-end">$<t t-esc="'{:,.2f}'.format(o.revenue_generated or 0)"/></td>
+                                                <td>Downtime Hours</td>
+                                                <td class="text-end"><t t-esc="'{:.1f}'.format(o.downtime_hours or 0)"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Operating Cost</td>
+                                                <td class="text-end">$<t t-esc="'{:,.2f}'.format(o.operating_cost or 0)"/></td>
+                                                <td>Maintenance Cost</td>
+                                                <td class="text-end">$<t t-esc="'{:,.2f}'.format(o.maintenance_cost or 0)"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Net Profit</td>
+                                                <td class="text-end">$<t t-esc="'{:,.2f}'.format(o.net_profit or 0)"/></td>
+                                                <td>Profit Margin</td>
+                                                <td class="text-end"><t t-esc="'{:.1f}%'.format(o.profit_margin or 0)"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Work Order Performance -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h4>Work Order Performance</h4>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <table class="table table-bordered">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Work Order Metrics</th>
+                                                        <th class="text-end">Count</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Total Work Orders</td>
+                                                        <td class="text-end"><t t-esc="o.total_workorders or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Completed Work Orders</td>
+                                                        <td class="text-end"><t t-esc="o.completed_workorders or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Pending Work Orders</td>
+                                                        <td class="text-end"><t t-esc="o.pending_workorders or 0"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Overdue Work Orders</td>
+                                                        <td class="text-end"><t t-esc="o.overdue_workorders or 0"/></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-6">
+                                            <table class="table table-bordered">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Performance Metrics</th>
+                                                        <th class="text-end">Value</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Completion Rate</td>
+                                                        <td class="text-end"><t t-esc="'{:.1f}%'.format(o.workorder_completion_rate or 0)"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Average Duration</td>
+                                                        <td class="text-end"><t t-esc="'{:.1f} hours'.format(o.avg_workorder_duration or 0)"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total Labor Hours</td>
+                                                        <td class="text-end"><t t-esc="'{:.1f}'.format(o.total_labor_hours or 0)"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total Labor Cost</td>
+                                                        <td class="text-end">$<t t-esc="'{:,.2f}'.format(o.total_labor_cost or 0)"/></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Asset Breakdown -->
+                            <div class="row mb-4" t-if="o.asset_ids">
+                                <div class="col-12">
+                                    <h4>Asset Breakdown</h4>
+                                    <table class="table table-bordered table-sm">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Asset Name</th>
+                                                <th>Asset Code</th>
+                                                <th>Category</th>
+                                                <th>Location</th>
+                                                <th class="text-end">Purchase Cost</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="o.asset_ids" t-as="asset">
+                                                <tr>
+                                                    <td t-esc="asset.name"/>
+                                                    <td t-esc="asset.asset_code or '-'"/>
+                                                    <td t-esc="asset.category_id.name if asset.category_id else '-'"/>
+                                                    <td t-esc="asset.location_id.name if asset.location_id else '-'"/>
+                                                    <td class="text-end">$<t t-esc="'{:,.2f}'.format(asset.purchase_cost or 0)"/></td>
+                                                    <td>
+                                                        <span class="badge badge-success" t-if="asset.asset_status == 'operational'">Operational</span>
+                                                        <span class="badge badge-warning" t-elif="asset.asset_status == 'maintenance'">Maintenance</span>
+                                                        <span class="badge badge-secondary" t-else="" t-esc="asset.asset_status.title() if asset.asset_status else 'Unknown'"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Summary -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>Summary</h4>
+                                    <p class="text-muted">
+                                        This asset performance report was generated on <strong><t t-esc="o.create_date.strftime('%B %d, %Y')"/></strong> 
+                                        for the period from <strong><t t-esc="o.date_from"/></strong> to <strong><t t-esc="o.date_to"/></strong>.
+                                        <t t-if="o.facility_id">
+                                            The analysis focuses on assets within <strong><t t-esc="o.facility_id.name"/></strong>.
+                                        </t>
+                                        <t t-else="">
+                                            The analysis includes <strong><t t-esc="o.total_assets"/></strong> assets across all facilities.
+                                        </t>
+                                    </p>
+                                    <p class="text-muted">
+                                        Key findings show an average ROI of <strong><t t-esc="'{:.1f}%'.format(o.avg_roi or 0)"/></strong> 
+                                        with a utilization rate of <strong><t t-esc="'{:.1f}%'.format(o.utilization_rate or 0)"/></strong>. 
+                                        Work order completion rate stands at <strong><t t-esc="'{:.1f}%'.format(o.workorder_completion_rate or 0)"/></strong> 
+                                        with <strong><t t-esc="o.total_workorders or 0"/></strong> work orders processed during this period.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

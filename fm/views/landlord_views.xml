@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Landlord Directory Action -->
+    <record id="action_res_partner_landlord_directory" model="ir.actions.act_window">
+        <field name="name">Landlords</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('is_landlord', '=', True)]</field>
+        <field name="context">{'default_is_landlord': True, 'default_supplier_rank': 1, 'default_customer_rank': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first landlord!
+            </p>
+            <p>
+                Landlords are property owners who lease their facilities to tenants.
+            </p>
+        </field>
+    </record>
+
+    <!-- Clean Landlord Tree View -->
+    <record id="view_res_partner_landlord_tree" model="ir.ui.view">
+        <field name="name">res.partner.landlord.tree</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <list string="Landlords" create="false">
+                <field name="name"/>
+                <field name="landlord_type"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="city"/>
+                <field name="owned_facilities_count"/>
+                <field name="total_leases_count"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Clean Landlord Kanban View -->
+    <record id="view_res_partner_landlord_kanban" model="ir.ui.view">
+        <field name="name">res.partner.landlord.kanban</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="landlord_type"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="owned_facilities_count"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div class="o_kanban_record_subtitle">
+                                    <field name="landlord_type"/>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="phone" t-if="record.phone.raw_value"/>
+                                        <field name="email" t-if="record.email.raw_value"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <span class="badge badge-pill badge-primary" t-if="record.owned_facilities_count.raw_value">
+                                            <field name="owned_facilities_count"/> Properties
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Clean Landlord Form View -->
+    <record id="view_res_partner_landlord_form" model="ir.ui.view">
+        <field name="name">res.partner.landlord.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page name="landlord_info" string="Landlord Information" invisible="not is_landlord">
+                    <group>
+                        <group string="Landlord Details">
+                            <field name="is_landlord"/>
+                            <field name="landlord_type" required="is_landlord"/>
+                            <field name="resident_id_number" string="ID Number"/>
+                            <field name="license_number" invisible="landlord_type != 'company'"/>
+                        </group>
+                        <group string="Contact Information">
+                            <field name="phone"/>
+                            <field name="email"/>
+                            <field name="street"/>
+                            <field name="city"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Property Portfolio">
+                        <field name="facility_ids" nolabel="1">
+                            <list string="Owned Properties" create="false" delete="false">
+                                <field name="name"/>
+                                <field name="property_type"/>
+                                <field name="occupancy_status"/>
+                                <field name="area_sqm"/>
+                                <field name="tenant_partner_id"/>
+                            </list>
+                        </field>
+                    </group>
+                    
+                    <group string="Active Leases">
+                        <field name="landlord_lease_ids" nolabel="1">
+                            <list string="Lease Agreements" create="false" delete="false">
+                                <field name="name"/>
+                                <field name="tenant_name"/>
+                                <field name="location"/>
+                                <field name="state"/>
+                                <field name="annual_rent"/>
+                            </list>
+                        </field>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <!-- Simplified Landlord Search View -->
+    <record id="view_res_partner_landlord_filter" model="ir.ui.view">
+        <field name="name">res.partner.landlord.search</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <search string="Search Landlords">
+                <field name="name" string="Landlord Name"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="city"/>
+                <separator/>
+                <filter string="Individual" name="individual" domain="[('landlord_type', '=', 'individual')]"/>
+                <filter string="Company" name="company" domain="[('landlord_type', '=', 'company')]"/>
+                <filter string="Trust" name="trust" domain="[('landlord_type', '=', 'trust')]"/>
+                <separator/>
+                <filter string="Has Properties" name="has_properties" domain="[('owned_facilities_count', '>', 0)]"/>
+                <filter string="Has Leases" name="has_leases" domain="[('total_leases_count', '>', 0)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Type" name="group_type" context="{'group_by': 'landlord_type'}"/>
+                    <filter string="City" name="group_city" context="{'group_by': 'city'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

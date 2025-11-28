@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <!-- Facility Tree View -->
+    <record id="facility_tree_view" model="ir.ui.view">
+        <field name="name">facilities.facility.tree</field>
+        <field name="model">facilities.facility</field>
+        <field name="arch" type="xml">
+            <list string="Facilities" decoration-muted="not active">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="active" invisible="1"/>
+                <field name="full_hierarchy_path"/>
+                <field name="facility_level"/>
+                <field name="property_type"/>
+                <field name="area_sqm"/>
+                <field name="number_of_floors"/>
+                <field name="manager_id"/>
+                <field name="city"/>
+                <field name="state_id"/>
+                <field name="country_id"/>
+                <field name="occupancy_status"/>
+                <field name="building_count"/>
+                <field name="import_source"/>
+                <field name="last_import_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Facility Form View with Enhanced Features -->
+    <record id="facility_form_view" model="ir.ui.view">
+        <field name="name">facilities.facility.form</field>
+        <field name="model">facilities.facility</field>
+        <field name="arch" type="xml">
+            <form string="Facility">
+                <header>
+                    <button name="action_view_hierarchy" string="View Hierarchy" type="object" class="oe_highlight"/>
+                    <button name="action_generate_facility_report" string="📊 Generate Report" type="object"/>
+                    <button name="action_refresh_facility_data" string="🔄 Refresh Data" type="object" help="Refresh all computed fields and statistics"/>
+                    <button name="action_export_facilities_csv" string="Export CSV" type="object"/>
+                    <button name="action_import_facilities_csv" string="Import CSV" type="object"/>
+                    <field name="active" widget="boolean_toggle"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_leases"
+                                icon="fa-file-text-o" invisible="lease_count == 0">
+                            <field name="lease_count" widget="statinfo" string="Leases"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Facility Name"/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="code" readonly="1"/>
+                            <field name="import_source" widget="badge" decoration-info="import_source == 'manual'" decoration-warning="import_source == 'csv'" decoration-success="import_source == 'api'"/>
+                        </div>
+                    </div>
+                    
+                    <!-- Report Status Indicator -->
+                    <div style="margin: 10px 0; padding: 10px; background-color: #f8f9fa; border-radius: 5px; border-left: 4px solid #007bff;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-weight: bold; color: #007bff;">📊 Report Status:</span>
+                            <field name="workorder_count" readonly="1" nolabel="1" style="margin: 0 5px;"/>
+                            <span>work orders,</span>
+                            <field name="building_count" readonly="1" nolabel="1" style="margin: 0 5px;"/>
+                            <span>buildings,</span>
+                            <span>SLA compliance:</span>
+                            <field name="sla_compliance_rate" readonly="1" nolabel="1" style="margin: 0 5px;"/>
+                            <span>%</span>
+                        </div>
+                    </div>
+                    
+                    <group>
+                        <group string="Basic Information">
+                            <field name="manager_id"/>
+                            <field name="property_type"/>
+                            <field name="area_sqm"/>
+                            <field name="number_of_floors"/>
+                            <field name="year_built"/>
+                            <field name="last_renovation_date"/>
+                            <field name="occupancy_status"/>
+                            <field name="capacity"/>
+                        </group>
+                        
+                        <group string="Hierarchy">
+                            <field name="parent_facility_id"/>
+                            <field name="facility_level"/>
+                            <field name="full_hierarchy_path"/>
+                            <field name="child_facility_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Location" name="location">
+                            <group>
+                                <group string="Address">
+                                    <field name="address"/>
+                                    <field name="city"/>
+                                    <field name="state_id"/>
+                                    <field name="zip_code"/>
+                                    <field name="country_id"/>
+                                </group>
+                                
+                                <group string="Geo-location">
+                                    <field name="latitude"/>
+                                    <field name="longitude"/>
+                                    <field name="location_accuracy"/>
+                                    <field name="google_maps_embed_url"/>
+                                    <field name="map_link"/>
+                                </group>
+                            </group>
+                            
+                            <!-- Google Maps Widget -->
+                            <field name="google_maps_embed_url" widget="html" 
+                                   options="{'safe': True}" 
+                                   nolabel="1"
+                                   invisible="not google_maps_embed_url"/>
+                        </page>
+                        
+                        <page string="Contact &amp; Access" name="contact">
+                            <group>
+                                <group string="Contact Information">
+                                    <field name="contact_person_id"/>
+                                    <field name="phone"/>
+                                    <field name="email"/>
+                                    <field name="monthly_report_user_ids" widget="many2many_tags"/>
+                                </group>
+                                <group string="Ownership &amp; Tenancy">
+                                    <field name="landlord_partner_id"/>
+                                    <field name="tenant_partner_id"/>
+                                    <field name="current_lease_id"/>
+                                    <field name="lease_count"/>
+                                </group>
+                                
+                                <group string="Access">
+                                    <field name="access_instructions" nolabel="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Utilities &amp; Services" name="utilities">
+                            <group>
+                                <group string="Meters">
+                                    <field name="electricity_meter_id"/>
+                                    <field name="water_meter_id"/>
+                                    <field name="gas_meter_id"/>
+                                </group>
+                                
+                                <group string="Services">
+                                    <field name="internet_provider"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Documentation" name="documentation">
+                            <group>
+                                <group string="Documents">
+                                    <field name="documents_ids" widget="many2many_binary"/>
+                                </group>
+                            </group>
+                            
+                            <field name="notes" nolabel="1"/>
+                        </page>
+                        
+                        <page string="Buildings" name="buildings">
+                            <field name="building_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="number_of_floors"/>
+                                    <field name="year_constructed"/>
+                                    <field name="address"/>
+                                </list>
+                            </field>
+                        </page>
+                        
+                        <page string="Work Orders &amp; SLA" name="workorders">
+                            <div style="margin-bottom: 10px;">
+                                <button name="action_refresh_facility_data" string="🔄 Refresh Statistics" type="object" class="btn-secondary"/>
+                            </div>
+                            <group>
+                                <group string="Work Order Statistics">
+                                    <field name="workorder_count"/>
+                                    <field name="workorder_completed_count"/>
+                                    <field name="workorder_in_progress_count"/>
+                                    <field name="workorder_draft_count"/>
+                                    <field name="workorder_cancelled_count"/>
+                                </group>
+                                
+                                <group string="SLA Performance">
+                                    <field name="sla_compliance_rate" widget="percentage"/>
+                                    <field name="sla_compliant_count"/>
+                                    <field name="sla_at_risk_count"/>
+                                    <field name="sla_breached_count"/>
+                                </group>
+                                
+                                <group string="Cost Analysis">
+                                    <field name="total_workorder_cost"/>
+                                    <field name="avg_workorder_cost"/>
+                                    <field name="currency_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Import/Export" name="import_export">
+                            <group>
+                                <group string="Import Information">
+                                    <field name="import_batch_id"/>
+                                    <field name="last_import_date"/>
+                                    <field name="import_source"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Facility Search View -->
+    <record id="facility_search_view" model="ir.ui.view">
+        <field name="name">facilities.facility.search</field>
+        <field name="model">facilities.facility</field>
+        <field name="arch" type="xml">
+            <search string="Facility Search">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="manager_id"/>
+                <field name="city"/>
+                <field name="state_id"/>
+                <field name="country_id"/>
+                <field name="property_type"/>
+                <field name="occupancy_status"/>
+                <field name="import_source"/>
+                
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                
+                <separator/>
+                
+                <filter string="Commercial" name="commercial" domain="[('property_type', '=', 'commercial')]"/>
+                <filter string="Residential" name="residential" domain="[('property_type', '=', 'residential')]"/>
+                <filter string="Industrial" name="industrial" domain="[('property_type', '=', 'industrial')]"/>
+                
+                <separator/>
+                
+                <filter string="Occupied" name="occupied" domain="[('occupancy_status', '=', 'occupied')]"/>
+                <filter string="Vacant" name="vacant" domain="[('occupancy_status', '=', 'vacant')]"/>
+                <filter string="Under Renovation" name="renovation" domain="[('occupancy_status', '=', 'under_renovation')]"/>
+                
+                <separator/>
+                
+                <filter string="Manual Entry" name="manual" domain="[('import_source', '=', 'manual')]"/>
+                <filter string="CSV Import" name="csv" domain="[('import_source', '=', 'csv')]"/>
+                <filter string="API Import" name="api" domain="[('import_source', '=', 'api')]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Property Type" name="group_property_type" context="{'group_by': 'property_type'}"/>
+                    <filter string="Occupancy Status" name="group_occupancy" context="{'group_by': 'occupancy_status'}"/>
+                    <filter string="Manager" name="group_manager" context="{'group_by': 'manager_id'}"/>
+                    <filter string="City" name="group_city" context="{'group_by': 'city'}"/>
+                    <filter string="State" name="group_state" context="{'group_by': 'state_id'}"/>
+                    <filter string="Country" name="group_country" context="{'group_by': 'country_id'}"/>
+                    <filter string="Import Source" name="group_import_source" context="{'group_by': 'import_source'}"/>
+                    <filter string="Hierarchy Level" name="group_hierarchy" context="{'group_by': 'facility_level'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Facility Kanban View -->
+    <record id="facility_kanban_view" model="ir.ui.view">
+        <field name="name">facilities.facility.kanban</field>
+        <field name="model">facilities.facility</field>
+        <field name="arch" type="xml">
+            <kanban string="Facilities" class="o_kanban_small_column" default_group_by="property_type">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="property_type"/>
+                <field name="area_sqm"/>
+                <field name="number_of_floors"/>
+                <field name="manager_id"/>
+                <field name="city"/>
+                <field name="occupancy_status"/>
+                <field name="building_count"/>
+                <field name="import_source"/>
+                <field name="full_hierarchy_path"/>
+                
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div class="o_kanban_record_subtitle">
+                                    <field name="code"/>
+                                </div>
+                                <div class="o_kanban_tags_section">
+                                    <span class="badge badge-info">
+                                        <field name="property_type"/>
+                                    </span>
+                                    <span class="badge badge-success" invisible="occupancy_status != 'occupied'">
+                                        <field name="occupancy_status"/>
+                                    </span>
+                                    <span class="badge badge-warning" invisible="import_source == 'manual'">
+                                        <field name="import_source"/>
+                                    </span>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="manager_id" widget="many2one_avatar_user"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <span class="badge badge-secondary">
+                                            <field name="building_count"/> Buildings
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Facility Calendar View -->
+    <record id="facility_calendar_view" model="ir.ui.view">
+        <field name="name">facilities.facility.calendar</field>
+        <field name="model">facilities.facility</field>
+        <field name="arch" type="xml">
+            <calendar string="Facilities" date_start="create_date" color="property_type" event_limit="5">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="manager_id"/>
+                <field name="property_type"/>
+                <field name="occupancy_status"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Facility Graph View -->
+    <record id="facility_graph_view" model="ir.ui.view">
+        <field name="name">facilities.facility.graph</field>
+        <field name="model">facilities.facility</field>
+        <field name="arch" type="xml">
+            <graph string="Facilities Analysis" type="bar">
+                <field name="property_type"/>
+                <field name="area_sqm" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Facility Pivot View -->
+    <record id="facility_pivot_view" model="ir.ui.view">
+        <field name="name">facilities.facility.pivot</field>
+        <field name="model">facilities.facility</field>
+        <field name="arch" type="xml">
+            <pivot string="Facilities Analysis">
+                <field name="property_type" type="row"/>
+                <field name="occupancy_status" type="col"/>
+                <field name="area_sqm" type="measure"/>
+                <field name="building_count" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Facility Action -->
+    <record id="action_facility" model="ir.actions.act_window">
+        <field name="name">Facilities</field>
+        <field name="res_model">facilities.facility</field>
+        <field name="view_mode">kanban,list,form,calendar,graph,pivot</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first facility!
+            </p>
+            <p>
+                Manage your facilities, buildings, and properties with comprehensive tracking
+                including location, hierarchy, and import/export capabilities.
+            </p>
+        </field>
+    </record>
+
+    </data>
+</odoo>

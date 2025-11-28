@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Energy Management Root Menu - Main Left Sidebar Menu -->
+    <menuitem id="menu_energy_management_root" name="Energy Management" 
+              sequence="70" 
+              web_icon="stock,static/description/icon.png" 
+              groups="facilities_management.group_facilities_user"/>
+
+    <!-- ======================================== -->
+    <!-- DASHBOARD & MONITORING SECTION -->
+    <!-- ======================================== -->
+    <menuitem id="menu_energy_dashboard_monitoring" name="Dashboard &amp; Monitoring" 
+              parent="menu_energy_management_root" 
+              sequence="10" groups="facilities_management.group_facilities_user"/>
+
+    <!-- Interactive Energy Performance Dashboard -->
+    <menuitem id="menu_energy_performance_dashboard_interactive" name="Interactive Energy Performance Dashboard" 
+              parent="menu_energy_dashboard_monitoring" 
+              action="action_energy_performance_dashboard_interactive" 
+              sequence="10" groups="facilities_management.group_facilities_user"/>
+
+    <!-- ======================================== -->
+    <!-- DATA MANAGEMENT SECTION -->
+    <!-- ======================================== -->
+    <menuitem id="menu_energy_data_management" name="Data Management" 
+              parent="menu_energy_management_root" 
+              sequence="20" groups="facilities_management.group_facilities_user"/>
+
+    <!-- Utility Meters Menu -->
+    <menuitem id="menu_utility_meters" name="Utility Meters" 
+              parent="menu_energy_data_management" 
+              action="action_utility_meter" 
+              sequence="10" groups="facilities_management.group_facilities_user"/>
+
+    <!-- Energy Consumption Menu -->
+    <menuitem id="menu_energy_consumption" name="Energy Consumption" 
+              parent="menu_energy_data_management" 
+              action="action_energy_consumption" 
+              sequence="20" groups="facilities_management.group_facilities_user"/>
+
+    <!-- Meter Readings Menu (alias for energy consumption with different context) -->
+    <menuitem id="menu_meter_readings" name="Meter Readings" 
+              parent="menu_energy_data_management" 
+              action="action_energy_consumption" 
+              sequence="30" groups="facilities_management.group_facilities_user"/>
+
+    <!-- ======================================== -->
+    <!-- ALERTS & NOTIFICATIONS SECTION -->
+    <!-- ======================================== -->
+    <menuitem id="menu_energy_alerts_notifications" name="Alerts &amp; Notifications" 
+              parent="menu_energy_management_root" 
+              sequence="30" groups="facilities_management.group_facilities_user"/>
+
+    <!-- Active Energy Alerts Menu -->
+    <menuitem id="menu_energy_alerts_active" name="Active Alerts" 
+              parent="menu_energy_alerts_notifications" 
+              action="action_energy_alert" 
+              sequence="10" groups="facilities_management.group_facilities_user"/>
+
+    <!-- Energy Alert History Menu (placeholder for alert history) -->
+    <menuitem id="menu_energy_alerts_history" name="Alert History" 
+              parent="menu_energy_alerts_notifications" 
+              action="action_energy_alert" 
+              sequence="20" groups="facilities_management.group_facilities_user"/>
+
+    <!-- Energy Alert Rules Menu -->
+    <menuitem id="menu_energy_alert_rules" name="Alert Rules" 
+              parent="menu_energy_alerts_notifications" 
+              action="action_energy_alert_rule" 
+              sequence="30" groups="facilities_management.group_facilities_manager"/>
+
+    <!-- ======================================== -->
+    <!-- ANALYTICS & REPORTS SECTION -->
+    <!-- ======================================== -->
+    <menuitem id="menu_energy_analytics_reports" name="Analytics &amp; Reports" 
+              parent="menu_energy_management_root" 
+              sequence="40" groups="facilities_management.group_facilities_user"/>
+
+    <!-- Energy Reports Action -->
+    <record id="action_energy_reports" model="ir.actions.act_window">
+        <field name="name">Energy Reports</field>
+        <field name="res_model">facilities.energy.consumption</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="context">{
+            'search_default_this_month': 1,
+            'group_by': ['meter_id', 'reading_date:month']
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Generate your first energy report!
+            </p>
+            <p>
+                Create comprehensive energy reports with consumption trends, 
+                cost analysis, and performance metrics across your facilities.
+            </p>
+        </field>
+    </record>
+
+    <!-- Energy Reports Menu -->
+    <menuitem id="menu_energy_reports" name="Energy Reports" 
+              parent="menu_energy_analytics_reports" 
+              action="action_energy_reports" 
+              sequence="10" groups="facilities_management.group_facilities_user"/>
+
+    <!-- Energy Cost Analysis Menu -->
+    <menuitem id="menu_energy_cost_analysis" name="Cost Analysis" 
+              parent="menu_energy_analytics_reports" 
+              action="action_energy_cost_analysis"
+              sequence="20" groups="facilities_management.group_facilities_user"/>
+
+    <!-- Sustainability Reports Menu -->
+    <menuitem id="menu_sustainability_reports" name="Sustainability Reports" 
+              parent="menu_energy_analytics_reports" 
+              action="action_sustainability_report" 
+              sequence="30" groups="facilities_management.group_facilities_user"/>
+
+    <!-- Energy Benchmarking Menu -->
+    <menuitem id="menu_energy_benchmarking" name="Energy Benchmarking" 
+              parent="menu_energy_analytics_reports" 
+              action="action_energy_benchmark"
+              sequence="40" groups="facilities_management.group_facilities_user"/>
+
+    <!-- Energy Benchmark Reports Menu -->
+    <menuitem id="menu_energy_benchmark_reports" name="Benchmark Reports" 
+              parent="menu_energy_benchmarking" 
+              action="action_energy_benchmark_report"
+              sequence="10" groups="facilities_management.group_facilities_user"/>
+
+    <!-- ======================================== -->
+    <!-- CONFIGURATION SECTION -->
+    <!-- ======================================== -->
+    <menuitem id="menu_energy_configuration" name="Configuration" 
+              parent="menu_energy_management_root" 
+              sequence="50" groups="facilities_management.group_facilities_manager"/>
+
+    <!-- Energy Settings Menu -->
+    <menuitem id="menu_energy_settings" name="Energy Settings" 
+              parent="menu_energy_configuration" 
+              sequence="10" groups="facilities_management.group_facilities_manager"/>
+
+    <!-- Meter Configuration Menu -->
+    <menuitem id="menu_meter_configuration" name="Meter Configuration" 
+              parent="menu_energy_configuration" 
+              action="action_utility_meter" 
+              sequence="20" groups="facilities_management.group_facilities_manager"/>
+
+    <!-- Asset Energy Management Integration -->
+    <!-- Add energy management actions to asset form view -->
+    <record id="action_asset_energy_consumption" model="ir.actions.act_window">
+        <field name="name">Energy Consumption</field>
+        <field name="res_model">facilities.energy.consumption</field>
+        <field name="view_mode">list,form,graph,calendar</field>
+        <field name="context">{'search_default_group_by_meter_id': 1}</field>
+        <field name="domain">[]</field>
+    </record>
+
+    <record id="action_asset_utility_meters" model="ir.actions.act_window">
+        <field name="name">Utility Meters</field>
+        <field name="res_model">facilities.utility.meter</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+    </record>
+
+</odoo>

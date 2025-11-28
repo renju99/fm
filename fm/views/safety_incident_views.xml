@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Safety Incident Tree View -->
+    <record id="view_safety_incident_tree" model="ir.ui.view">
+        <field name="name">safety.incident.tree</field>
+        <field name="model">facilities.safety.incident</field>
+        <field name="arch" type="xml">
+            <list string="Safety Incidents" decoration-danger="severity=='critical'" 
+                  decoration-warning="severity=='high'" decoration-info="state=='reported'">
+                <field name="incident_number"/>
+                <field name="name"/>
+                <field name="incident_date"/>
+                <field name="incident_type" widget="badge"/>
+                <field name="severity" widget="priority"/>
+                <field name="facility_id"/>
+                <field name="reporter_id" widget="many2one_avatar_user"/>
+                <field name="investigator_id" widget="many2one_avatar_user"/>
+                <field name="state" widget="badge"/>
+                <field name="total_cost" sum="Total Cost" widget="monetary"/>
+                <field name="currency_id" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Safety Incident Kanban View -->
+    <record id="view_safety_incident_kanban" model="ir.ui.view">
+        <field name="name">safety.incident.kanban</field>
+        <field name="model">facilities.safety.incident</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="incident_number"/>
+                <field name="incident_date"/>
+                <field name="incident_type"/>
+                <field name="severity"/>
+                <field name="facility_id"/>
+                <field name="state"/>
+                <field name="total_cost"/>
+                <field name="currency_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="incident_number"/>
+                                        </strong>
+                                        <small class="o_kanban_record_subtitle">
+                                            <field name="name"/>
+                                        </small>
+                                    </div>
+                                    <div class="o_kanban_record_top_right">
+                                        <span t-att-class="record.severity.raw_value == 'critical' ? 'badge badge-danger' : record.severity.raw_value == 'high' ? 'badge badge-warning' : 'badge badge-secondary'">
+                                            <field name="severity"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <small>Type:</small><br/>
+                                            <strong><field name="incident_type"/></strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <small>Date:</small><br/>
+                                            <strong><field name="incident_date"/></strong>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-12">
+                                            <small>Facility:</small><br/>
+                                            <strong><field name="facility_id"/></strong>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2" t-if="record.total_cost.raw_value > 0">
+                                        <div class="col-12">
+                                            <small>Total Cost:</small><br/>
+                                            <strong><field name="total_cost" widget="monetary"/></strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Safety Incident Form View -->
+    <record id="view_safety_incident_form" model="ir.ui.view">
+        <field name="name">safety.incident.form</field>
+        <field name="model">facilities.safety.incident</field>
+        <field name="arch" type="xml">
+            <form string="Safety Incident">
+                <header>
+                    <button name="action_start_investigation" type="object" string="Start Investigation" 
+                            invisible="state != 'reported'" class="btn-primary"/>
+                    <button name="action_complete_investigation" type="object" string="Complete Investigation" 
+                            invisible="state != 'under_investigation'" class="btn-primary"/>
+                    <button name="action_close_incident" type="object" string="Close Incident" 
+                            invisible="state != 'pending_actions'" class="btn-success"/>
+                    <button name="action_regulatory_report" type="object" string="Report to Authorities" 
+                            invisible="regulatory_reporting_required == False or regulatory_report_date != False" 
+                            class="btn-warning"/>
+                    <field name="state" widget="statusbar" statusbar_visible="reported,under_investigation,pending_actions,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_create_corrective_action" 
+                                class="oe_stat_button" icon="fa-plus">
+                            <span>Add Action</span>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-money" invisible="total_cost == 0">
+                            <field name="total_cost" widget="statinfo" string="Total Cost"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-exclamation-triangle" invisible="severity != 'critical'">
+                            <span class="text-danger">Critical</span>
+                        </button>
+                    </div>
+                    
+                    <widget name="web_ribbon" title="Critical" bg_color="bg-danger" 
+                            invisible="severity != 'critical'"/>
+                    <widget name="web_ribbon" title="Under Investigation" bg_color="bg-info" 
+                            invisible="state != 'under_investigation'"/>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="incident_number" readonly="1"/>
+                        </h1>
+                        <h3>
+                            <field name="name" placeholder="Incident Title"/>
+                        </h3>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="incident_date"/>
+                            <field name="reported_date"/>
+                            <field name="incident_type"/>
+                            <field name="severity"/>
+                            <field name="injury_type" invisible="incident_type != 'injury'"/>
+                        </group>
+                        <group>
+                            <field name="facility_id"/>
+                            <field name="building_id"/>
+                            <field name="floor_id"/>
+                            <field name="room_id"/>
+                            <field name="reporter_id"/>
+                        </group>
+                    </group>
+                    
+                    <field name="description" placeholder="Detailed description of what happened..."/>
+                    
+                    <group string="Location Details">
+                        <field name="location_description" placeholder="Detailed location description..."/>
+                    </group>
+                    
+                    <notebook>
+                        <page string="People Involved">
+                            <group>
+                                <group string="Injured Persons">
+                                    <field name="injured_person_ids" widget="many2many_tags" nolabel="1"/>
+                                </group>
+                                <group string="Witnesses">
+                                    <field name="witness_ids" widget="many2many_tags" nolabel="1"/>
+                                </group>
+                            </group>
+                            <group string="Contractor Information" invisible="contractor_involved == False">
+                                <group>
+                                    <field name="contractor_involved"/>
+                                    <field name="contractor_name" invisible="contractor_involved == False"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Incident Details">
+                            <group string="Causes">
+                                <field name="immediate_cause" placeholder="Immediate cause of the incident..."/>
+                                <field name="contributing_factors" placeholder="Contributing factors..."/>
+                            </group>
+                            <group string="Conditions" col="4">
+                                <field name="weather_conditions"/>
+                                <field name="lighting_conditions"/>
+                            </group>
+                            <group string="Assets Involved">
+                                <field name="asset_ids" widget="many2many_tags" nolabel="1"/>
+                            </group>
+                        </page>
+                        
+                        <page string="Damage &amp; Costs">
+                            <group>
+                                <group>
+                                    <field name="equipment_damage"/>
+                                    <field name="damage_description" invisible="equipment_damage == False"/>
+                                    <field name="estimated_damage_cost" widget="monetary" invisible="equipment_damage == False"/>
+                                </group>
+                                <group>
+                                    <field name="medical_costs" widget="monetary"/>
+                                    <field name="lost_time_cost" widget="monetary"/>
+                                    <field name="repair_costs" widget="monetary"/>
+                                    <field name="currency_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Immediate Actions">
+                            <field name="immediate_actions" placeholder="Actions taken immediately after the incident..."/>
+                            <group col="4">
+                                <field name="emergency_services_called"/>
+                                <field name="medical_attention_given"/>
+                                <field name="area_secured"/>
+                            </group>
+                        </page>
+                        
+                        <page string="Investigation">
+                            <group>
+                                <group>
+                                    <field name="investigation_required"/>
+                                    <field name="investigator_id" invisible="investigation_required == False"/>
+                                    <field name="investigation_team_ids" widget="many2many_tags" invisible="investigation_required == False"/>
+                                </group>
+                                <group>
+                                    <field name="investigation_start_date" readonly="1"/>
+                                    <field name="investigation_completion_date" readonly="1"/>
+                                </group>
+                            </group>
+                            <field name="root_cause_analysis" placeholder="Root cause analysis findings..." 
+                                   invisible="investigation_required == False"/>
+                        </page>
+                        
+                        <page string="Corrective Actions">
+                            <field name="corrective_action_ids">
+                                <list decoration-success="state=='completed'" decoration-warning="state=='in_progress'" 
+                                      decoration-danger="state=='overdue'">
+                                    <field name="name"/>
+                                    <field name="action_type" widget="badge"/>
+                                    <field name="priority" widget="priority"/>
+                                    <field name="responsible_id" widget="many2one_avatar_user"/>
+                                    <field name="target_date"/>
+                                    <field name="completion_date"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="cost" sum="Total Cost"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        
+                        <page string="Regulatory Reporting">
+                            <group>
+                                <group>
+                                    <field name="regulatory_reporting_required"/>
+                                    <field name="regulatory_body" invisible="regulatory_reporting_required == False"/>
+                                </group>
+                                <group>
+                                    <field name="regulatory_report_date" readonly="1"/>
+                                    <field name="regulatory_reference"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Lessons Learned">
+                            <field name="lessons_learned" placeholder="Lessons learned from this incident..."/>
+                            <field name="preventive_measures" placeholder="Measures to prevent similar incidents..."/>
+                        </page>
+                        
+                        <page string="Documents">
+                            <field name="document_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Safety Incident Search View -->
+    <record id="view_safety_incident_search" model="ir.ui.view">
+        <field name="name">safety.incident.search</field>
+        <field name="model">facilities.safety.incident</field>
+        <field name="arch" type="xml">
+            <search string="Safety Incidents">
+                <field name="incident_number"/>
+                <field name="name"/>
+                <field name="facility_id"/>
+                <field name="incident_type"/>
+                <field name="severity"/>
+                <field name="reporter_id"/>
+                <field name="investigator_id"/>
+                <separator/>
+                <filter name="reported" string="Reported" 
+                        domain="[('state', '=', 'reported')]"/>
+                <filter name="under_investigation" string="Under Investigation" 
+                        domain="[('state', '=', 'under_investigation')]"/>
+                <filter name="pending_actions" string="Pending Actions" 
+                        domain="[('state', '=', 'pending_actions')]"/>
+                <filter name="closed" string="Closed" 
+                        domain="[('state', '=', 'closed')]"/>
+                <separator/>
+                <filter name="critical" string="Critical" 
+                        domain="[('severity', '=', 'critical')]"/>
+                <filter name="high_severity" string="High Severity" 
+                        domain="[('severity', '=', 'high')]"/>
+                <filter name="injury_incidents" string="Injury Incidents" 
+                        domain="[('incident_type', '=', 'injury')]"/>
+                <filter name="near_miss" string="Near Miss" 
+                        domain="[('incident_type', '=', 'near_miss')]"/>
+                <separator/>
+                <filter name="this_month" string="This Month" 
+                        domain="[('incident_date', '>=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01')), ('incident_date', '&lt;=', context_today())]"/>
+                <filter name="this_year" string="This Year" 
+                        domain="[('incident_date', '>=', context_today().strftime('%Y-01-01')), ('incident_date', '&lt;=', context_today())]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_by_severity" string="Severity" context="{'group_by': 'severity'}"/>
+                    <filter name="group_by_incident_type" string="Incident Type" context="{'group_by': 'incident_type'}"/>
+                    <filter name="group_by_facility" string="Facility" context="{'group_by': 'facility_id'}"/>
+                    <filter name="group_by_investigator" string="Investigator" context="{'group_by': 'investigator_id'}"/>
+                    <filter name="group_by_month" string="Month" context="{'group_by': 'incident_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Safety Incident Action -->
+    <record id="action_safety_incident" model="ir.actions.act_window">
+        <field name="name">Safety Incidents</field>
+        <field name="res_model">facilities.safety.incident</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_safety_incident_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No safety incidents reported yet!
+            </p>
+            <p>
+                Safety incident reporting helps track and investigate workplace incidents,
+                implement corrective actions, and prevent future occurrences.
+            </p>
+        </field>
+    </record>
+
+    <!-- Incident Corrective Action Tree View -->
+    <record id="view_incident_corrective_action_tree" model="ir.ui.view">
+        <field name="name">incident.corrective.action.tree</field>
+        <field name="model">facilities.incident.corrective.action</field>
+        <field name="arch" type="xml">
+            <list string="Corrective Actions" decoration-success="state=='completed'" 
+                  decoration-warning="state=='in_progress'" decoration-danger="state=='overdue'">
+                <field name="incident_id"/>
+                <field name="name"/>
+                <field name="action_type" widget="badge"/>
+                <field name="priority" widget="priority"/>
+                <field name="responsible_id" widget="many2one_avatar_user"/>
+                <field name="target_date"/>
+                <field name="completion_date"/>
+                <field name="state" widget="badge"/>
+                <field name="cost" sum="Total Cost"/>
+                <field name="currency_id" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Incident Corrective Action Form View -->
+    <record id="view_incident_corrective_action_form" model="ir.ui.view">
+        <field name="name">incident.corrective.action.form</field>
+        <field name="model">facilities.incident.corrective.action</field>
+        <field name="arch" type="xml">
+            <form string="Corrective Action">
+                <header>
+                    <button name="action_start_progress" type="object" string="Start Progress" 
+                            invisible="state != 'open'" class="btn-primary"/>
+                    <button name="action_complete" type="object" string="Complete" 
+                            invisible="state not in ['open', 'in_progress']" class="btn-success"/>
+                    <button name="action_verify" type="object" string="Verify" 
+                            invisible="state != 'completed' or verified_by != False" class="btn-info"/>
+                    <field name="state" widget="statusbar" statusbar_visible="open,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-calendar" invisible="target_date == False">
+                            <field name="target_date" widget="statinfo" string="Target Date"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-exclamation-triangle" invisible="state != 'overdue'">
+                            <span class="text-danger">Overdue</span>
+                        </button>
+                    </div>
+                    
+                    <widget name="web_ribbon" title="Overdue" bg_color="bg-danger" 
+                            invisible="state != 'overdue'"/>
+                    <widget name="web_ribbon" title="Completed" bg_color="bg-success" 
+                            invisible="state != 'completed'"/>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Action Description"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="incident_id"/>
+                            <field name="action_type"/>
+                            <field name="priority"/>
+                            <field name="responsible_id"/>
+                            <field name="department_id"/>
+                        </group>
+                        <group>
+                            <field name="target_date"/>
+                            <field name="completion_date" readonly="1"/>
+                            <field name="cost" widget="monetary"/>
+                            <field name="actual_cost" widget="monetary"/>
+                            <field name="currency_id"/>
+                        </group>
+                    </group>
+                    
+                    <field name="description" placeholder="Detailed description of the action..."/>
+                    
+                    <group string="Implementation" invisible="state == 'open'">
+                        <field name="implementation_notes" placeholder="Notes on how the action was implemented..."/>
+                    </group>
+                    
+                    <group string="Verification" invisible="verification_required == False">
+                        <group>
+                            <field name="verification_required"/>
+                            <field name="verified_by" readonly="1"/>
+                            <field name="verification_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="verification_notes" placeholder="Verification notes..."/>
+                        </group>
+                    </group>
+                    
+                    <field name="document_ids" widget="many2many_binary"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Incident Corrective Action Action -->
+    <record id="action_incident_corrective_action" model="ir.actions.act_window">
+        <field name="name">Corrective Actions</field>
+        <field name="res_model">facilities.incident.corrective.action</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No corrective actions defined yet!
+            </p>
+            <p>
+                Corrective actions help prevent similar incidents from occurring
+                by addressing root causes and implementing preventive measures.
+            </p>
+        </field>
+    </record>
+
+    <!-- Safety Statistics Views -->
+    <record id="view_safety_statistics_tree" model="ir.ui.view">
+        <field name="name">safety.statistics.tree</field>
+        <field name="model">facilities.safety.statistics</field>
+        <field name="arch" type="xml">
+            <list string="Safety Statistics">
+                <field name="name"/>
+                <field name="period_type"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="total_incidents"/>
+                <field name="injury_incidents"/>
+                <field name="near_miss_incidents"/>
+                <field name="critical_incidents"/>
+                <field name="total_incident_cost" sum="Total Cost"/>
+                <field name="ltir"/>
+                <field name="trir"/>
+                <field name="currency_id" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_safety_statistics_form" model="ir.ui.view">
+        <field name="name">safety.statistics.form</field>
+        <field name="model">facilities.safety.statistics</field>
+        <field name="arch" type="xml">
+            <form string="Safety Statistics">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="period_type"/>
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                            <field name="total_work_hours"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Incident Statistics" col="4">
+                        <field name="total_incidents"/>
+                        <field name="injury_incidents"/>
+                        <field name="near_miss_incidents"/>
+                        <field name="property_damage_incidents"/>
+                        <field name="critical_incidents"/>
+                        <field name="high_severity_incidents"/>
+                    </group>
+                    
+                    <group string="Cost Analysis" col="4">
+                        <field name="total_incident_cost" widget="monetary"/>
+                        <field name="average_incident_cost" widget="monetary"/>
+                    </group>
+                    
+                    <group string="Safety KPIs" col="4">
+                        <field name="ltir"/>
+                        <field name="trir"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_safety_statistics" model="ir.actions.act_window">
+        <field name="name">Safety Statistics</field>
+        <field name="res_model">facilities.safety.statistics</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No safety statistics available yet!
+            </p>
+            <p>
+                Safety statistics provide insights into incident trends,
+                performance indicators, and cost analysis.
+            </p>
+        </field>
+    </record>
+
+</odoo>

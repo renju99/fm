@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_facility_manager_check_wizard_form" model="ir.ui.view">
+        <field name="name">facility.manager.check.wizard.form</field>
+        <field name="model">facility.manager.check.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Facility Manager Status Check">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Facility Manager Status Check</h1>
+                        <p>This wizard helps diagnose issues with facility manager assignment for work order permits.</p>
+                    </div>
+                    
+                    <group>
+                        <group string="Current Status">
+                            <field name="facility_name"/>
+                            <field name="manager_name"/>
+                            <field name="has_user_account"/>
+                            <field name="user_name" invisible="not has_user_account"/>
+                        </group>
+                        
+                        <group string="Status Information">
+                            <field name="status_info" nolabel="1"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Recommendations">
+                        <field name="recommendations" nolabel="1"/>
+                    </group>
+                    
+                    <group string="Actions">
+                        <button name="action_open_facility" 
+                                type="object" 
+                                string="Open Facility" 
+                                class="btn-primary"
+                                invisible="not facility_name"/>
+                        
+                        <button name="action_open_manager" 
+                                type="object" 
+                                string="Open Manager" 
+                                class="btn-secondary"
+                                invisible="not manager_name"/>
+                        
+                        <button name="action_refresh_status" 
+                                type="object" 
+                                string="Refresh Status" 
+                                class="btn-secondary"/>
+                    </group>
+                </sheet>
+                
+                <footer>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_facility_manager_check_wizard" model="ir.actions.act_window">
+        <field name="name">Check Facility Manager Status</field>
+        <field name="res_model">facility.manager.check.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="help" type="html">
+            <p>
+                This wizard helps diagnose issues with facility manager assignment for work order permits.
+                Use it to check why permits cannot be sent to facility managers.
+            </p>
+        </field>
+    </record>
+</odoo>

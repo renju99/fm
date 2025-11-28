@@ -1,0 +1,138 @@
+/* Maintenance Message Widget Styles */
+
+.o_mail_thread_message_body {
+    /* Ensure HTML content is properly displayed */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+}
+
+.o_mail_thread_message_body strong {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.o_mail_thread_message_body em {
+    font-style: italic;
+    color: #7f8c8d;
+}
+
+.o_mail_thread_message_body p {
+    margin: 0.5em 0;
+}
+
+.o_mail_thread_message_body ul,
+.o_mail_thread_message_body ol {
+    margin: 0.5em 0;
+    padding-left: 1.5em;
+}
+
+.o_mail_thread_message_body li {
+    margin: 0.25em 0;
+}
+
+.o_mail_thread_message_body blockquote {
+    border-left: 3px solid #3498db;
+    margin: 0.5em 0;
+    padding-left: 1em;
+    color: #7f8c8d;
+}
+
+.o_mail_thread_message_body code {
+    background-color: #f8f9fa;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+.o_mail_thread_message_body pre {
+    background-color: #f8f9fa;
+    padding: 1em;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+.o_mail_thread_message_body table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0.5em 0;
+}
+
+.o_mail_thread_message_body th,
+.o_mail_thread_message_body td {
+    border: 1px solid #ddd;
+    padding: 0.5em;
+    text-align: left;
+}
+
+.o_mail_thread_message_body th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.o_mail_thread_message_body tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.o_mail_thread_message_body tr:hover {
+    background-color: #e9ecef;
+}
+
+/* Specific styles for escalation test messages */
+.o_mail_thread_message_body .escalation-test-info {
+    background-color: #e8f5e8;
+    border: 1px solid #c3e6c3;
+    border-radius: 5px;
+    padding: 1em;
+    margin: 0.5em 0;
+}
+
+.o_mail_thread_message_body .escalation-test-info strong {
+    color: #27ae60;
+}
+
+.o_mail_thread_message_body .escalation-test-info em {
+    color: #27ae60;
+    font-style: italic;
+}
+
+/* Icon styles for escalation test messages */
+.o_mail_thread_message_body .fa-check-circle {
+    color: #27ae60;
+}
+
+.o_mail_thread_message_body .fa-bar-chart {
+    color: #3498db;
+}
+
+.o_mail_thread_message_body .fa-refresh {
+    color: #f39c12;
+}
+
+.o_mail_thread_message_body .fa-id-card {
+    color: #9b59b6;
+}
+
+.o_mail_thread_message_body .fa-clock-o {
+    color: #e74c3c;
+}
+
+/* Responsive design for mobile devices */
+@media (max-width: 768px) {
+    .o_mail_thread_message_body {
+        font-size: 0.9em;
+    }
+    
+    .o_mail_thread_message_body table {
+        font-size: 0.8em;
+    }
+    
+    .o_mail_thread_message_body th,
+    .o_mail_thread_message_body td {
+        padding: 0.3em;
+    }
+}

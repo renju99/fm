@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="facilities_asset_performance_dashboard_template">
+        <div class="o_asset_performance_dashboard">
+            <style>
+                .o_asset_performance_dashboard {
+                    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                    padding: 2rem;
+                }
+                
+                .dashboard-header {
+                    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+                    color: white;
+                    border-radius: 16px;
+                    padding: 2rem;
+                    margin-bottom: 2rem;
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                .dashboard-header::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+                    opacity: 0.3;
+                }
+                
+                .dashboard-header h2 {
+                    font-size: 2.5rem;
+                    font-weight: 700;
+                    margin-bottom: 1rem;
+                    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    position: relative;
+                    z-index: 1;
+                }
+                
+                .dashboard-controls {
+                    display: flex;
+                    gap: 1rem;
+                    align-items: center;
+                    position: relative;
+                    z-index: 1;
+                    flex-wrap: wrap;
+                }
+                
+                .custom-date-controls {
+                    display: flex;
+                    gap: 0.5rem;
+                    align-items: center;
+                    background: rgba(255, 255, 255, 0.9);
+                    border-radius: 8px;
+                    padding: 0.5rem;
+                    backdrop-filter: blur(10px);
+                }
+                
+                .custom-date-controls label {
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    color: #1f2937;
+                    margin: 0;
+                }
+                
+                .custom-date-controls .date-input {
+                    background: rgba(255, 255, 255, 0.9);
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    padding: 0.5rem;
+                    font-size: 0.875rem;
+                    color: #1f2937;
+                    min-width: 140px;
+                }
+                
+                .dashboard-controls select {
+                    background: rgba(255, 255, 255, 0.9);
+                    border: none;
+                    border-radius: 8px;
+                    padding: 0.75rem 1rem;
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    color: #1f2937;
+                    backdrop-filter: blur(10px);
+                }
+                
+                .dashboard-controls .btn {
+                    background: rgba(255, 255, 255, 0.9);
+                    border: none;
+                    border-radius: 8px;
+                    padding: 0.75rem 1.5rem;
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    color: #1f2937;
+                    backdrop-filter: blur(10px);
+                    transition: all 0.3s ease;
+                }
+                
+                .dashboard-controls .btn:hover {
+                    background: rgba(255, 255, 255, 1);
+                    transform: translateY(-1px);
+                }
+                
+                .dashboard-controls .btn-primary {
+                    background: rgba(59, 130, 246, 0.9);
+                    color: white;
+                }
+                
+                .dashboard-controls .btn-primary:hover {
+                    background: rgba(59, 130, 246, 1);
+                }
+                
+                .dashboard-loading {
+                    text-align: center;
+                    padding: 4rem 2rem;
+                    background: white;
+                    border-radius: 16px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                }
+                
+                .dashboard-error {
+                    background: white;
+                    border-radius: 16px;
+                    padding: 2rem;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                }
+                
+                .summary-cards {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 1.5rem;
+                    margin-bottom: 2rem;
+                }
+                
+                .summary-cards .card {
+                    background: white;
+                    border-radius: 16px;
+                    border: none;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+                    transition: all 0.3s ease;
+                    overflow: hidden;
+                }
+                
+                .summary-cards .card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+                }
+                
+                .summary-cards .card-body {
+                    padding: 1.5rem;
+                    text-align: center;
+                }
+                
+                .summary-cards .card-title {
+                    font-size: 0.875rem;
+                    font-weight: 600;
+                    color: #6b7280;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    margin-bottom: 0.5rem;
+                }
+                
+                .summary-cards .card-text {
+                    font-size: 2rem;
+                    font-weight: 700;
+                    color: #1f2937;
+                    margin: 0;
+                }
+                
+                .metrics-section {
+                    background: white;
+                    border-radius: 16px;
+                    padding: 2rem;
+                    margin-bottom: 2rem;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+                }
+                
+                .metrics-section h3 {
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                    color: #1f2937;
+                    margin-bottom: 1.5rem;
+                    padding-bottom: 0.5rem;
+                    border-bottom: 2px solid #e5e7eb;
+                }
+                
+                .metrics-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 1.5rem;
+                }
+                
+                .metric-item {
+                    background: #f8fafc;
+                    border-radius: 12px;
+                    padding: 1.5rem;
+                    text-align: center;
+                    border: 1px solid #e2e8f0;
+                }
+                
+                .metric-item label {
+                    display: block;
+                    font-size: 0.875rem;
+                    font-weight: 600;
+                    color: #64748b;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    margin-bottom: 0.5rem;
+                }
+                
+                .metric-item span {
+                    display: block;
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                    color: #1f2937;
+                }
+                
+                .charts-section {
+                    background: white;
+                    border-radius: 16px;
+                    padding: 2rem;
+                    margin-bottom: 2rem;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+                }
+                
+                .charts-section h3 {
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                    color: #1f2937;
+                    margin-bottom: 1.5rem;
+                    padding-bottom: 0.5rem;
+                    border-bottom: 2px solid #e5e7eb;
+                }
+                
+                .charts-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                    gap: 2rem;
+                }
+                
+                .chart-container {
+                    background: #f8fafc;
+                    border-radius: 12px;
+                    padding: 1.5rem;
+                    border: 1px solid #e2e8f0;
+                }
+                
+                .chart-container h4 {
+                    font-size: 1.125rem;
+                    font-weight: 600;
+                    color: #1e293b;
+                    margin-bottom: 1rem;
+                }
+                
+                .chart {
+                    height: 200px;
+                    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+                    border: 2px dashed #cbd5e1;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #64748b;
+                    font-size: 0.875rem;
+                }
+                
+                .summary-section {
+                    background: white;
+                    border-radius: 16px;
+                    padding: 2rem;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+                }
+                
+                .summary-section h3 {
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                    color: #1f2937;
+                    margin-bottom: 1.5rem;
+                    padding-bottom: 0.5rem;
+                    border-bottom: 2px solid #e5e7eb;
+                }
+                
+                .summary-info {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 1rem;
+                }
+                
+                .summary-info p {
+                    margin: 0;
+                    padding: 1rem;
+                    background: #f8fafc;
+                    border-radius: 8px;
+                    border: 1px solid #e2e8f0;
+                }
+                
+                .summary-info strong {
+                    color: #64748b;
+                    font-weight: 600;
+                }
+            </style>
+
+            <!-- Header Section -->
+            <div class="dashboard-header">
+                <h2>Asset Performance Dashboard</h2>
+                <div class="dashboard-controls">
+                    <select t-on-change="(ev) => this.onPeriodChange(ev.target.value)" class="form-select">
+                        <option value="current_month">Current Month</option>
+                        <option value="current_quarter">Current Quarter</option>
+                        <option value="current_year" selected="selected">Current Year</option>
+                        <option value="last_year">Last Year</option>
+                        <option value="custom_range">Custom Date Range</option>
+                    </select>
+                    <select t-on-change="(ev) => this.onFacilityChange(ev.target.value)" class="form-select">
+                        <option value="">All Facilities</option>
+                        <t t-if="state.facilities and state.facilities.length">
+                            <option t-foreach="state.facilities" t-as="facility" t-key="facility.id" t-att-value="facility.id">
+                                <t t-esc="facility.name"/>
+                            </option>
+                        </t>
+                    </select>
+                    <div t-if="state.showCustomDates" class="custom-date-controls">
+                        <label>From:</label>
+                        <input type="date" 
+                               t-model="state.customDateFrom"
+                               t-on-change="(ev) => this.onCustomDateFromChange(ev.target.value)"
+                               class="form-control date-input" />
+                        <label>To:</label>
+                        <input type="date" 
+                               t-model="state.customDateTo"
+                               t-on-change="(ev) => this.onCustomDateToChange(ev.target.value)"
+                               class="form-control date-input" />
+                    </div>
+                    <button t-on-click="() => this.refreshData()" class="btn btn-secondary">
+                        <i class="fa fa-refresh"></i> Refresh
+                    </button>
+                    <button t-on-click="() => this.exportData()" class="btn btn-primary">
+                        <i class="fa fa-download"></i> Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div t-if="state.loading" class="dashboard-loading">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <p>Loading dashboard data...</p>
+            </div>
+
+            <!-- Error State -->
+            <div t-if="state.error" class="dashboard-error alert alert-danger">
+                <h4>Error Loading Dashboard</h4>
+                <p t-esc="state.error"></p>
+                <button t-on-click="() => this.refreshData()" class="btn btn-primary">
+                    Try Again
+                </button>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div t-if="!state.loading and !state.error and state.dashboardData" class="dashboard-content">
+                <!-- Summary Cards -->
+                <div class="summary-cards">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Assets</h5>
+                            <p class="card-text" t-esc="state.dashboardData.metrics.total_assets">0</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Value</h5>
+                            <p class="card-text" t-esc="this.formatCurrency(state.dashboardData.metrics.total_value)">$0.00</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Average ROI</h5>
+                            <p class="card-text" t-esc="this.formatPercentage(state.dashboardData.metrics.avg_roi)">0.00%</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Efficiency Score</h5>
+                            <p class="card-text" t-esc="this.formatPercentage(state.dashboardData.metrics.efficiency_score)">0.00%</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Work Orders</h5>
+                            <p class="card-text" t-esc="state.dashboardData.metrics.total_workorders">0</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Work Order Completion</h5>
+                            <p class="card-text" t-esc="this.formatPercentage(state.dashboardData.metrics.workorder_completion_rate)">0.00%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Metrics -->
+                <div class="metrics-section">
+                    <h3>Performance Metrics</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <label>Utilization Rate</label>
+                            <span t-esc="this.formatPercentage(state.dashboardData.metrics.utilization_rate)">0.00%</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Downtime Hours</label>
+                            <span t-esc="this.formatNumber(state.dashboardData.metrics.downtime_hours)">0</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Uptime Percentage</label>
+                            <span t-esc="this.formatPercentage(state.dashboardData.metrics.uptime_percentage)">0.00%</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Maintenance Efficiency</label>
+                            <span t-esc="this.formatPercentage(state.dashboardData.metrics.maintenance_efficiency)">0.00%</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Asset Health Score</label>
+                            <span t-esc="this.formatPercentage(state.dashboardData.metrics.asset_health_score)">0.00%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Metrics -->
+                <div class="metrics-section">
+                    <h3>Financial Metrics</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <label>Revenue Generated</label>
+                            <span t-esc="this.formatCurrency(state.dashboardData.metrics.revenue_generated)">$0.00</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Operating Cost</label>
+                            <span t-esc="this.formatCurrency(state.dashboardData.metrics.operating_cost)">$0.00</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Net Profit</label>
+                            <span t-esc="this.formatCurrency(state.dashboardData.metrics.net_profit)">$0.00</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Profit Margin</label>
+                            <span t-esc="this.formatPercentage(state.dashboardData.metrics.profit_margin)">0.00%</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Maintenance Cost</label>
+                            <span t-esc="this.formatCurrency(state.dashboardData.metrics.maintenance_cost)">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Order Metrics -->
+                <div class="metrics-section">
+                    <h3>Work Order Metrics</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <label>Total Work Orders</label>
+                            <span t-esc="this.formatNumber(state.dashboardData.metrics.total_workorders)">0</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Completed Work Orders</label>
+                            <span t-esc="this.formatNumber(state.dashboardData.metrics.completed_workorders)">0</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Pending Work Orders</label>
+                            <span t-esc="this.formatNumber(state.dashboardData.metrics.pending_workorders)">0</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Overdue Work Orders</label>
+                            <span t-esc="this.formatNumber(state.dashboardData.metrics.overdue_workorders)">0</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Completion Rate</label>
+                            <span t-esc="this.formatPercentage(state.dashboardData.metrics.workorder_completion_rate)">0.00%</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Avg Duration (hours)</label>
+                            <span t-esc="state.dashboardData.metrics.avg_workorder_duration.toFixed(1)">0.0</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Total Labor Hours</label>
+                            <span t-esc="this.formatNumber(state.dashboardData.metrics.total_labor_hours)">0</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Total Labor Cost</label>
+                            <span t-esc="this.formatCurrency(state.dashboardData.metrics.total_labor_cost)">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <h3>Performance Trends</h3>
+                    <div class="charts-grid">
+                        <div class="chart-container">
+                            <h4>ROI Trend</h4>
+                            <div id="roi-chart" class="chart">Interactive Chart Placeholder</div>
+                        </div>
+                        <div class="chart-container">
+                            <h4>Utilization Trend</h4>
+                            <div id="utilization-chart" class="chart">Interactive Chart Placeholder</div>
+                        </div>
+                        <div class="chart-container">
+                            <h4>Maintenance Cost Trend</h4>
+                            <div id="maintenance-cost-chart" class="chart">Interactive Chart Placeholder</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Information -->
+                <div class="summary-section">
+                    <h3>Summary</h3>
+                    <div class="summary-info">
+                        <p><strong>Total Assets:</strong> <span t-esc="state.dashboardData.summary.total_assets">0</span></p>
+                        <p><strong>Total Maintenance Requests:</strong> <span t-esc="state.dashboardData.summary.total_maintenance_requests">0</span></p>
+                        <p><strong>Completed Maintenance:</strong> <span t-esc="state.dashboardData.summary.completed_maintenance">0</span></p>
+                        <p><strong>Last Updated:</strong> <span t-esc="state.dashboardData.summary.last_updated">-</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Energy Management Demo Data -->
+        
+        <!-- Create additional facilities for energy management demo -->
+        <record id="demo_facility_energy_1" model="facilities.facility">
+            <field name="name">Tech Innovation Center</field>
+            <field name="area_sqm">50000</field>
+            <field name="address">Dubai, United Arab Emirates</field>
+            <field name="notes">Modern office complex with advanced energy management systems</field>
+        </record>
+
+        <record id="demo_facility_energy_2" model="facilities.facility">
+            <field name="name">Manufacturing Plant Alpha</field>
+            <field name="area_sqm">150000</field>
+            <field name="address">456 Industrial Boulevard, Manufacturing District, MD 67890</field>
+            <field name="notes">Large-scale manufacturing facility with heavy energy consumption</field>
+        </record>
+
+        <record id="demo_facility_energy_3" model="facilities.facility">
+            <field name="name">Research Laboratory Complex</field>
+            <field name="area_sqm">75000</field>
+            <field name="address">789 Research Avenue, Science Park, SP 54321</field>
+            <field name="notes">High-tech research facility with specialized energy requirements</field>
+        </record>
+
+        <!-- Create buildings for each facility -->
+        <record id="demo_building_energy_1" model="facilities.building">
+            <field name="name">Main Office Tower</field>
+            <field name="facility_id" ref="demo_facility_energy_1"/>
+            <field name="building_type">office</field>
+            <field name="total_area_sqm">30000</field>
+            <field name="number_of_floors">15</field>
+            <field name="year_constructed">2020</field>
+        </record>
+
+        <record id="demo_building_energy_2" model="facilities.building">
+            <field name="name">Innovation Wing</field>
+            <field name="facility_id" ref="demo_facility_energy_1"/>
+            <field name="building_type">office</field>
+            <field name="total_area_sqm">20000</field>
+            <field name="number_of_floors">10</field>
+            <field name="year_constructed">2022</field>
+        </record>
+
+        <record id="demo_building_energy_3" model="facilities.building">
+            <field name="name">Production Hall A</field>
+            <field name="facility_id" ref="demo_facility_energy_2"/>
+            <field name="building_type">warehouse</field>
+            <field name="total_area_sqm">75000</field>
+            <field name="number_of_floors">2</field>
+            <field name="year_constructed">2018</field>
+        </record>
+
+        <record id="demo_building_energy_4" model="facilities.building">
+            <field name="name">Production Hall B</field>
+            <field name="facility_id" ref="demo_facility_energy_2"/>
+            <field name="building_type">warehouse</field>
+            <field name="total_area_sqm">75000</field>
+            <field name="number_of_floors">2</field>
+            <field name="year_constructed">2019</field>
+        </record>
+
+        <record id="demo_building_energy_5" model="facilities.building">
+            <field name="name">Research Laboratory</field>
+            <field name="facility_id" ref="demo_facility_energy_3"/>
+            <field name="building_type">educational</field>
+            <field name="total_area_sqm">40000</field>
+            <field name="number_of_floors">8</field>
+            <field name="year_constructed">2021</field>
+        </record>
+
+        <record id="demo_building_energy_6" model="facilities.building">
+            <field name="name">Testing Facility</field>
+            <field name="facility_id" ref="demo_facility_energy_3"/>
+            <field name="building_type">educational</field>
+            <field name="total_area_sqm">35000</field>
+            <field name="number_of_floors">6</field>
+            <field name="year_constructed">2020</field>
+        </record>
+
+        <!-- Create utility meters for each facility -->
+        <!-- Tech Innovation Center Meters -->
+        <record id="demo_meter_electricity_1" model="facilities.utility.meter">
+            <field name="name">Main Office Tower - Electricity Main</field>
+            <field name="meter_type">electricity</field>
+            <field name="facility_id" ref="demo_facility_energy_1"/>
+            <field name="building_id" ref="demo_building_energy_1"/>
+            <field name="unit_of_measure">kwh</field>
+            <field name="cost_per_unit">0.12</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="reading_frequency">daily</field>
+            <field name="state">active</field>
+            <field name="notes">Main electrical meter for the office tower</field>
+        </record>
+
+        <record id="demo_meter_electricity_2" model="facilities.utility.meter">
+            <field name="name">Innovation Wing - Electricity</field>
+            <field name="meter_type">electricity</field>
+            <field name="facility_id" ref="demo_facility_energy_1"/>
+            <field name="building_id" ref="demo_building_energy_2"/>
+            <field name="unit_of_measure">kwh</field>
+            <field name="cost_per_unit">0.12</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="reading_frequency">daily</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="demo_meter_water_1" model="facilities.utility.meter">
+            <field name="name">Tech Innovation Center - Water Main</field>
+            <field name="meter_type">water</field>
+            <field name="facility_id" ref="demo_facility_energy_1"/>
+            <field name="building_id" ref="demo_building_energy_1"/>
+            <field name="unit_of_measure">cubic_meter</field>
+            <field name="cost_per_unit">2.50</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="reading_frequency">daily</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="demo_meter_gas_1" model="facilities.utility.meter">
+            <field name="name">Tech Innovation Center - Natural Gas</field>
+            <field name="meter_type">gas</field>
+            <field name="facility_id" ref="demo_facility_energy_1"/>
+            <field name="building_id" ref="demo_building_energy_1"/>
+            <field name="unit_of_measure">cubic_meter</field>
+            <field name="cost_per_unit">0.85</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="reading_frequency">daily</field>
+            <field name="state">active</field>
+        </record>
+
+        <!-- Manufacturing Plant Alpha Meters -->
+        <record id="demo_meter_electricity_3" model="facilities.utility.meter">
+            <field name="name">Production Hall A - Electricity Main</field>
+            <field name="meter_type">electricity</field>
+            <field name="facility_id" ref="demo_facility_energy_2"/>
+            <field name="building_id" ref="demo_building_energy_3"/>
+            <field name="unit_of_measure">kwh</field>
+            <field name="cost_per_unit">0.08</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="reading_frequency">daily</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="demo_meter_electricity_4" model="facilities.utility.meter">
+            <field name="name">Production Hall B - Electricity Main</field>
+            <field name="meter_type">electricity</field>
+            <field name="facility_id" ref="demo_facility_energy_2"/>
+            <field name="building_id" ref="demo_building_energy_4"/>
+            <field name="unit_of_measure">kwh</field>
+            <field name="cost_per_unit">0.08</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="reading_frequency">daily</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="demo_meter_water_2" model="facilities.utility.meter">
+            <field name="name">Manufacturing Plant - Water Main</field>
+            <field name="meter_type">water</field>
+            <field name="facility_id" ref="demo_facility_energy_2"/>
+            <field name="building_id" ref="demo_building_energy_3"/>
+            <field name="unit_of_measure">cubic_meter</field>
+            <field name="cost_per_unit">1.80</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="reading_frequency">daily</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="demo_meter_steam_1" model="facilities.utility.meter">
+            <field name="name">Manufacturing Plant - Steam Generation</field>
+            <field name="meter_type">steam</field>
+            <field name="facility_id" ref="demo_facility_energy_2"/>
+            <field name="building_id" ref="demo_building_energy_3"/>
+            <field name="unit_of_measure">ton_hour</field>
+            <field name="cost_per_unit">25.00</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="reading_frequency">daily</field>
+            <field name="state">active</field>
+        </record>
+
+        <!-- Research Laboratory Complex Meters -->
+        <record id="demo_meter_electricity_5" model="facilities.utility.meter">
+            <field name="name">Research Laboratory - Electricity Main</field>
+            <field name="meter_type">electricity</field>
+            <field name="facility_id" ref="demo_facility_energy_3"/>
+            <field name="building_id" ref="demo_building_energy_5"/>
+            <field name="unit_of_measure">kwh</field>
+            <field name="cost_per_unit">0.15</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="reading_frequency">daily</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="demo_meter_electricity_6" model="facilities.utility.meter">
+            <field name="name">Testing Facility - Electricity</field>
+            <field name="meter_type">electricity</field>
+            <field name="facility_id" ref="demo_facility_energy_3"/>
+            <field name="building_id" ref="demo_building_energy_6"/>
+            <field name="unit_of_measure">kwh</field>
+            <field name="cost_per_unit">0.15</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="reading_frequency">daily</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="demo_meter_water_3" model="facilities.utility.meter">
+            <field name="name">Research Complex - Water Main</field>
+            <field name="meter_type">water</field>
+            <field name="facility_id" ref="demo_facility_energy_3"/>
+            <field name="building_id" ref="demo_building_energy_5"/>
+            <field name="unit_of_measure">cubic_meter</field>
+            <field name="cost_per_unit">3.20</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="reading_frequency">daily</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="demo_meter_gas_2" model="facilities.utility.meter">
+            <field name="name">Research Complex - Natural Gas</field>
+            <field name="meter_type">gas</field>
+            <field name="facility_id" ref="demo_facility_energy_3"/>
+            <field name="building_id" ref="demo_building_energy_5"/>
+            <field name="unit_of_measure">cubic_meter</field>
+            <field name="cost_per_unit">1.20</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="reading_frequency">daily</field>
+            <field name="state">active</field>
+        </record>
+
+        <!-- Create energy consumption readings for the past 12 months -->
+        <!-- Tech Innovation Center - Electricity Readings -->
+        <record id="demo_consumption_elec_1_1" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_electricity_1"/>
+            <field name="reading_date">2024-08-28 08:00:00</field>
+            <field name="reading_value">125000.0</field>
+            <field name="consumption">8500.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">22.5</field>
+            <field name="humidity">45.0</field>
+            <field name="occupancy_factor">0.85</field>
+        </record>
+
+        <record id="demo_consumption_elec_1_2" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_electricity_1"/>
+            <field name="reading_date">2024-08-29 08:00:00</field>
+            <field name="reading_value">133500.0</field>
+            <field name="consumption">8500.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">23.1</field>
+            <field name="humidity">47.0</field>
+            <field name="occupancy_factor">0.90</field>
+        </record>
+
+        <record id="demo_consumption_elec_1_3" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_electricity_1"/>
+            <field name="reading_date">2024-08-30 08:00:00</field>
+            <field name="reading_value">142000.0</field>
+            <field name="consumption">8500.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">24.0</field>
+            <field name="humidity">50.0</field>
+            <field name="occupancy_factor">0.88</field>
+        </record>
+
+        <record id="demo_consumption_elec_1_4" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_electricity_1"/>
+            <field name="reading_date">2024-08-31 08:00:00</field>
+            <field name="reading_value">150500.0</field>
+            <field name="consumption">8500.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">25.2</field>
+            <field name="humidity">52.0</field>
+            <field name="occupancy_factor">0.92</field>
+        </record>
+
+        <record id="demo_consumption_elec_1_5" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_electricity_1"/>
+            <field name="reading_date">2024-09-01 08:00:00</field>
+            <field name="reading_value">159000.0</field>
+            <field name="consumption">8500.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">26.5</field>
+            <field name="humidity">48.0</field>
+            <field name="occupancy_factor">0.87</field>
+        </record>
+
+        <!-- Innovation Wing Electricity -->
+        <record id="demo_consumption_elec_2_1" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_electricity_2"/>
+            <field name="reading_date">2024-08-28 08:00:00</field>
+            <field name="reading_value">85000.0</field>
+            <field name="consumption">6200.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">22.8</field>
+            <field name="humidity">46.0</field>
+            <field name="occupancy_factor">0.80</field>
+        </record>
+
+        <record id="demo_consumption_elec_2_2" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_electricity_2"/>
+            <field name="reading_date">2024-08-29 08:00:00</field>
+            <field name="reading_value">91200.0</field>
+            <field name="consumption">6200.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">23.5</field>
+            <field name="humidity">48.0</field>
+            <field name="occupancy_factor">0.85</field>
+        </record>
+
+        <!-- Manufacturing Plant Electricity -->
+        <record id="demo_consumption_elec_3_1" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_electricity_3"/>
+            <field name="reading_date">2024-08-28 08:00:00</field>
+            <field name="reading_value">450000.0</field>
+            <field name="consumption">25000.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">28.0</field>
+            <field name="humidity">60.0</field>
+            <field name="occupancy_factor">0.95</field>
+        </record>
+
+        <record id="demo_consumption_elec_3_2" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_electricity_3"/>
+            <field name="reading_date">2024-08-29 08:00:00</field>
+            <field name="reading_value">475000.0</field>
+            <field name="consumption">25000.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">29.2</field>
+            <field name="humidity">62.0</field>
+            <field name="occupancy_factor">0.98</field>
+        </record>
+
+        <record id="demo_consumption_elec_3_3" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_electricity_3"/>
+            <field name="reading_date">2024-08-30 08:00:00</field>
+            <field name="reading_value">500000.0</field>
+            <field name="consumption">25000.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">30.5</field>
+            <field name="humidity">65.0</field>
+            <field name="occupancy_factor">0.92</field>
+        </record>
+
+        <!-- Production Hall B Electricity -->
+        <record id="demo_consumption_elec_4_1" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_electricity_4"/>
+            <field name="reading_date">2024-08-28 08:00:00</field>
+            <field name="reading_value">380000.0</field>
+            <field name="consumption">22000.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">27.8</field>
+            <field name="humidity">58.0</field>
+            <field name="occupancy_factor">0.90</field>
+        </record>
+
+        <record id="demo_consumption_elec_4_2" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_electricity_4"/>
+            <field name="reading_date">2024-08-29 08:00:00</field>
+            <field name="reading_value">402000.0</field>
+            <field name="consumption">22000.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">28.9</field>
+            <field name="humidity">61.0</field>
+            <field name="occupancy_factor">0.93</field>
+        </record>
+
+        <!-- Research Laboratory Electricity -->
+        <record id="demo_consumption_elec_5_1" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_electricity_5"/>
+            <field name="reading_date">2024-08-28 08:00:00</field>
+            <field name="reading_value">180000.0</field>
+            <field name="consumption">12000.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">21.5</field>
+            <field name="humidity">40.0</field>
+            <field name="occupancy_factor">0.75</field>
+        </record>
+
+        <record id="demo_consumption_elec_5_2" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_electricity_5"/>
+            <field name="reading_date">2024-08-29 08:00:00</field>
+            <field name="reading_value">192000.0</field>
+            <field name="consumption">12000.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">22.0</field>
+            <field name="humidity">42.0</field>
+            <field name="occupancy_factor">0.78</field>
+        </record>
+
+        <!-- Testing Facility Electricity -->
+        <record id="demo_consumption_elec_6_1" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_electricity_6"/>
+            <field name="reading_date">2024-08-28 08:00:00</field>
+            <field name="reading_value">95000.0</field>
+            <field name="consumption">8500.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">20.8</field>
+            <field name="humidity">38.0</field>
+            <field name="occupancy_factor">0.70</field>
+        </record>
+
+        <!-- Water Consumption Readings -->
+        <record id="demo_consumption_water_1_1" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_water_1"/>
+            <field name="reading_date">2024-08-28 08:00:00</field>
+            <field name="reading_value">12500.0</field>
+            <field name="consumption">850.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">22.5</field>
+            <field name="humidity">45.0</field>
+            <field name="occupancy_factor">0.85</field>
+        </record>
+
+        <record id="demo_consumption_water_1_2" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_water_1"/>
+            <field name="reading_date">2024-08-29 08:00:00</field>
+            <field name="reading_value">13350.0</field>
+            <field name="consumption">850.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">23.1</field>
+            <field name="humidity">47.0</field>
+            <field name="occupancy_factor">0.90</field>
+        </record>
+
+        <record id="demo_consumption_water_2_1" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_water_2"/>
+            <field name="reading_date">2024-08-28 08:00:00</field>
+            <field name="reading_value">45000.0</field>
+            <field name="consumption">2500.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">28.0</field>
+            <field name="humidity">60.0</field>
+            <field name="occupancy_factor">0.95</field>
+        </record>
+
+        <record id="demo_consumption_water_3_1" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_water_3"/>
+            <field name="reading_date">2024-08-28 08:00:00</field>
+            <field name="reading_value">18000.0</field>
+            <field name="consumption">1200.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">21.5</field>
+            <field name="humidity">40.0</field>
+            <field name="occupancy_factor">0.75</field>
+        </record>
+
+        <!-- Gas Consumption Readings -->
+        <record id="demo_consumption_gas_1_1" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_gas_1"/>
+            <field name="reading_date">2024-08-28 08:00:00</field>
+            <field name="reading_value">8500.0</field>
+            <field name="consumption">450.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">22.5</field>
+            <field name="humidity">45.0</field>
+            <field name="occupancy_factor">0.85</field>
+        </record>
+
+        <record id="demo_consumption_gas_1_2" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_gas_1"/>
+            <field name="reading_date">2024-08-29 08:00:00</field>
+            <field name="reading_value">8950.0</field>
+            <field name="consumption">450.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">23.1</field>
+            <field name="humidity">47.0</field>
+            <field name="occupancy_factor">0.90</field>
+        </record>
+
+        <record id="demo_consumption_gas_2_1" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_gas_2"/>
+            <field name="reading_date">2024-08-28 08:00:00</field>
+            <field name="reading_value">12000.0</field>
+            <field name="consumption">800.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">21.5</field>
+            <field name="humidity">40.0</field>
+            <field name="occupancy_factor">0.75</field>
+        </record>
+
+        <!-- Steam Consumption Readings -->
+        <record id="demo_consumption_steam_1_1" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_steam_1"/>
+            <field name="reading_date">2024-08-28 08:00:00</field>
+            <field name="reading_value">1500.0</field>
+            <field name="consumption">75.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">28.0</field>
+            <field name="humidity">60.0</field>
+            <field name="occupancy_factor">0.95</field>
+        </record>
+
+        <record id="demo_consumption_steam_1_2" model="facilities.energy.consumption">
+            <field name="meter_id" ref="demo_meter_steam_1"/>
+            <field name="reading_date">2024-08-29 08:00:00</field>
+            <field name="reading_value">1575.0</field>
+            <field name="consumption">75.0</field>
+            <field name="reading_type">automatic</field>
+            <field name="is_validated">True</field>
+            <field name="temperature">29.2</field>
+            <field name="humidity">62.0</field>
+            <field name="occupancy_factor">0.98</field>
+        </record>
+
+        <!-- Energy performance dashboard records removed - model not available -->
+
+    </data>
+</odoo>

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Asset Disposal Wizard Form View -->
+        <record id="asset_disposal_wizard_form_view" model="ir.ui.view">
+            <field name="name">facilities.asset.disposal.wizard.form</field>
+            <field name="model">facilities.asset.disposal.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Asset Disposal Wizard">
+                    <header>
+                        <button name="action_submit_for_approval" 
+                                string="Submit for Approval" 
+                                type="object" 
+                                class="btn-primary"
+                                invisible="approval_state != 'draft'"/>
+                        <button name="action_approve_disposal" 
+                                string="Approve" 
+                                type="object" 
+                                class="btn-success"
+                                invisible="approval_state != 'pending'"/>
+                        <button name="action_reject_disposal" 
+                                string="Reject" 
+                                type="object" 
+                                class="btn-danger"
+                                invisible="approval_state != 'pending'"/>
+                        <button name="action_complete_disposal" 
+                                string="Complete Disposal" 
+                                type="object" 
+                                class="btn-primary"
+                                invisible="approval_state != 'approved'"/>
+                        <button name="action_calculate_disposal_value" 
+                                string="Calculate Value" 
+                                type="object" 
+                                class="btn-secondary"/>
+                        <field name="approval_state" widget="statusbar" 
+                               statusbar_visible="draft,pending,approved,completed"/>
+                    </header>
+                    
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="asset_id" placeholder="Select Asset"/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <group string="Disposal Information">
+                                <field name="disposal_reason"/>
+                                <field name="disposal_method"/>
+                                <field name="disposal_date"/>
+                                <field name="disposal_value"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                            
+                            <group string="Financial Information">
+                                <field name="original_value"/>
+                                <field name="current_value"/>
+                                <field name="depreciation_amount"/>
+                                <field name="net_loss_gain"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <group string="Approval Workflow">
+                                <field name="requested_by_id"/>
+                                <field name="approval_request_date"/>
+                                <field name="approved_by_id"/>
+                                <field name="approval_date"/>
+                                <field name="approval_notes"/>
+                            </group>
+                            
+                            <group string="Disposal Company">
+                                <field name="disposal_company"/>
+                                <field name="disposal_contact"/>
+                                <field name="disposal_phone"/>
+                                <field name="disposal_email"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <group string="Environmental Compliance">
+                                <field name="environmental_impact"/>
+                                <field name="hazardous_materials"/>
+                                <field name="hazardous_materials_list" 
+                                       invisible="not hazardous_materials"/>
+                                <field name="environmental_compliance_notes"/>
+                            </group>
+                            
+                            <group string="Documentation">
+                                <field name="disposal_certificate" filename="disposal_certificate_filename"/>
+                                <field name="disposal_certificate_filename" invisible="1"/>
+                                <field name="disposal_receipt" filename="disposal_receipt_filename"/>
+                                <field name="disposal_receipt_filename" invisible="1"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <field name="disposal_notes" placeholder="Additional notes about the disposal process..."/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Asset Disposal Wizard Action -->
+        <record id="action_asset_disposal_wizard" model="ir.actions.act_window">
+            <field name="name">Asset Disposal</field>
+            <field name="res_model">facilities.asset.disposal.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_asset_id': active_id}</field>
+        </record>
+
+        <!-- Asset Disposal Records Tree View -->
+        <record id="asset_disposal_tree_view" model="ir.ui.view">
+            <field name="name">facilities.asset.disposal.tree</field>
+            <field name="model">facilities.asset.disposal</field>
+            <field name="arch" type="xml">
+                <list string="Asset Disposals">
+                    <field name="asset_id"/>
+                    <field name="disposal_date"/>
+                    <field name="disposal_reason"/>
+                    <field name="disposal_method"/>
+                    <field name="disposal_value"/>
+                    <field name="environmental_impact"/>
+                    <field name="hazardous_materials"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Asset Disposal Records Form View -->
+        <record id="asset_disposal_form_view" model="ir.ui.view">
+            <field name="name">facilities.asset.disposal.form</field>
+            <field name="model">facilities.asset.disposal</field>
+            <field name="arch" type="xml">
+                <form string="Asset Disposal Record">
+                    <sheet>
+                        <group>
+                            <group string="Disposal Information">
+                                <field name="asset_id"/>
+                                <field name="disposal_date"/>
+                                <field name="disposal_reason"/>
+                                <field name="disposal_method"/>
+                                <field name="disposal_value"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                            
+                            <group string="Financial Impact">
+                                <field name="original_value"/>
+                                <field name="net_loss_gain"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <group string="Disposal Company">
+                                <field name="disposal_company"/>
+                            </group>
+                            
+                            <group string="Environmental Impact">
+                                <field name="environmental_impact"/>
+                                <field name="hazardous_materials"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <field name="notes" placeholder="Additional notes..."/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Asset Disposal Records Search View -->
+        <record id="asset_disposal_search_view" model="ir.ui.view">
+            <field name="name">facilities.asset.disposal.search</field>
+            <field name="model">facilities.asset.disposal</field>
+            <field name="arch" type="xml">
+                <search string="Asset Disposals">
+                    <field name="asset_id"/>
+                    <field name="disposal_reason"/>
+                    <field name="disposal_method"/>
+                    <filter string="This Year" name="this_year" 
+                            domain="[('disposal_date', '&gt;=', datetime.datetime.now().strftime('%Y-01-01'))]"/>
+                    <filter string="Hazardous Materials" name="hazardous" 
+                            domain="[('hazardous_materials', '=', True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Disposal Reason" name="group_reason" 
+                                context="{'group_by': 'disposal_reason'}"/>
+                        <filter string="Disposal Method" name="group_method" 
+                                context="{'group_by': 'disposal_method'}"/>
+                        <filter string="Environmental Impact" name="group_impact" 
+                                context="{'group_by': 'environmental_impact'}"/>
+                        <filter string="Month" name="group_month" 
+                                context="{'group_by': 'disposal_date:month'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Asset Disposal Records Action -->
+        <record id="action_asset_disposal" model="ir.actions.act_window">
+            <field name="name">Asset Disposals</field>
+            <field name="res_model">facilities.asset.disposal</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="asset_disposal_search_view"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No asset disposals found
+                </p>
+                <p>
+                    Asset disposals will appear here once they are completed through the disposal wizard.
+                </p>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

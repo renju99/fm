@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Work Order Reopen Wizard Form View -->
+        <record id="view_workorder_reopen_wizard_form" model="ir.ui.view">
+            <field name="name">workorder.reopen.wizard.form</field>
+            <field name="model">workorder.reopen.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Reopen Work Order">
+                    <group>
+                        <group>
+                            <field name="workorder_id" readonly="1"/>
+                            <field name="reopen_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="affect_first_time_fix"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="reason" placeholder="Please provide a detailed reason for reopening this work order..." nolabel="1"/>
+                    </group>
+                    <footer>
+                        <button name="action_reopen_workorder" type="object" string="Reopen Work Order" 
+                                class="btn-primary" confirm="Are you sure you want to reopen this work order?"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Work Order Reopen Wizard Action -->
+        <record id="action_workorder_reopen_wizard" model="ir.actions.act_window">
+            <field name="name">Reopen Work Order</field>
+            <field name="res_model">workorder.reopen.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_workorder_reopen_wizard_form"/>
+        </record>
+    </data>
+</odoo>

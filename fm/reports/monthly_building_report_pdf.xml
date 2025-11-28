@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="monthly_building_report_pdf">
+        <t t-set="doc" t-value="data.get('doc')"/>
+        <t t-call="web.html_container">
+            <t t-set="o" t-value="res_company"/>
+            <t t-call="web.external_layout">
+                <style>
+                    @page {
+                        margin: 0.3in 0.5in;
+                        size: A4;
+                    }
+                    .page {
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                        margin: 0;
+                        padding: 12px;
+                        color: #111827 !important;
+                    }
+                    .section {
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                        margin-bottom: 24px;
+                        color: #111827 !important;
+                    }
+                    .chart-container {
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                        color: #111827 !important;
+                    }
+                    .dashboard-grid {
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                        color: #111827 !important;
+                    }
+                    .chart-panel {
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                        margin-bottom: 20px;
+                        color: #111827 !important;
+                    }
+                    .large-chart {
+                        max-height: 300px !important;
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                    }
+                    .large-table {
+                        font-size: 12px !important;
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                        color: #111827 !important;
+                    }
+                    .kpi-grid {
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                        color: #111827 !important;
+                    }
+                    .kpi-card {
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                        color: #111827 !important;
+                    }
+                    /* Global text color override */
+                    * {
+                        color: inherit !important;
+                    }
+                    td, th {
+                        color: #111827 !important;
+                    }
+                    h1, h2, h3, h4, h5, h6 {
+                        color: #111827 !important;
+                    }
+                    p, div, span {
+                        color: #111827 !important;
+                    }
+                </style>
+                <div class="page" style="padding:12px; page-break-inside:avoid; min-height:100vh;">
+                    <!-- Report Header -->
+                    <div style="border-bottom:3px solid #e5e7eb; padding-bottom:16px; margin-bottom:24px;">
+                        <!-- Top Row: Title and Logo -->
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                            <div>
+                                <h1 style="margin:0; color:#111827; font-size:32px; font-weight:700;">Monthly Facility Maintenance Report</h1>
+                                <div style="color:#6b7280; margin-top:6px; font-size:14px;">
+                                    <span t-if="o and o.name">Generated for <t t-esc="o.name"/></span>
+                                    <span t-if="doc and doc.get('generated_on')"> • <t t-esc="doc.get('generated_on')"/></span>
+                                </div>
+                            </div>
+                            <div t-if="o and o.logo" style="text-align:right;">
+                                <img t-att-src="'/web/image/res.company/%s/logo' % o.id" style="height:70px; object-fit:contain;"/>
+                            </div>
+                        </div>
+                        
+                        <!-- Information Row -->
+                        <div style="display:flex; gap:20px; flex-wrap:wrap; background:#f8fafc; padding:16px; border-radius:8px; font-size:14px;">
+                            <div style="flex:1 1 250px; border-right:1px solid #e5e7eb; padding-right:16px;">
+                                <div style="font-weight:600; color:#374151; margin-bottom:6px; font-size:13px;">Facility Information</div>
+                                <div style="color:#6b7280; font-size:13px;">
+                                    <div><b>Facility:</b> <t t-esc="(doc.get('facility_meta') or {}).get('name') or 'Not Specified'"/></div>
+                                    <div t-if="doc and doc.get('building_meta') and doc['building_meta'].get('name')">
+                                        <b>Building:</b> <t t-esc="doc['building_meta'].get('name') or 'Not Specified'"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="flex:1 1 250px; border-right:1px solid #e5e7eb; padding-right:16px;">
+                                <div style="font-weight:600; color:#374151; margin-bottom:6px; font-size:13px;">Report Period</div>
+                                <div style="color:#6b7280; font-size:13px;">
+                                    <div><b>Period:</b> <t t-esc="doc.get('report_period') or 'Not Specified'"/></div>
+                                    <div><b>Type:</b> Monthly Analysis</div>
+                                </div>
+                            </div>
+                            <div style="flex:1 1 250px; border-right:1px solid #e5e7eb; padding-right:16px;">
+                                <div style="font-weight:600; color:#374151; margin-bottom:6px; font-size:13px;">Key Metrics</div>
+                                <div style="color:#6b7280; font-size:13px;">
+                                    <div><b>Work Orders:</b> <t t-esc="doc and doc.get('kpis') and doc['kpis'].get('total_workorders') or 0"/></div>
+                                    <div><b>Uptime:</b> <t t-esc="doc and doc.get('kpis') and doc['kpis'].get('asset_uptime_pct') or 0"/>%</div>
+                                </div>
+                            </div>
+                            <div style="flex:1 1 250px;">
+                                <div style="font-weight:600; color:#374151; margin-bottom:6px; font-size:13px;">Performance</div>
+                                <div style="color:#6b7280; font-size:13px;">
+                                    <div><b>SLA Compliance:</b> <t t-esc="doc and doc.get('kpis') and doc['kpis'].get('sla_compliance_pct') or 0"/>%</div>
+                                    <div><b>Critical Issues:</b> <t t-esc="doc and doc.get('kpis') and doc['kpis'].get('critical_issues_count') or 0"/></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:20px; align-items:stretch; margin-bottom:24px;">
+                        <div style="flex:2 1 0; border:1px solid #e5e7eb; border-radius:10px; padding:20px;">
+                            <div style="font-weight:700; margin-bottom:16px; font-size:18px;">Facility Profile</div>
+                            <div style="display:flex; gap:20px; font-size:14px;">
+                                <div style="flex:1 1 0;">
+                                    <div><b>Facility:</b> <t t-esc="(doc.get('facility_meta') or {}).get('name') or '-'"/></div>
+                                    <div><b>Type:</b> <t t-esc="doc['building_meta'].get('building_type_label') or '-'"/></div>
+                                    <div><b>Address:</b> <t t-esc="doc['building_meta'].get('address') or '-'"/></div>
+                                    <div><b>Year Constructed:</b> <t t-esc="doc['building_meta'].get('year_constructed') or '-'"/></div>
+                                </div>
+                                <div style="flex:1 1 0;">
+                                    <div><b>Floors:</b> <t t-esc="doc['building_meta'].get('floor_count') or doc['building_meta'].get('number_of_floors') or 0"/></div>
+                                    <div><b>Total Area:</b> <t t-esc="doc['building_meta'].get('total_area_sqm') or 0"/> sqm</div>
+                                    <div><b>Manager:</b> <t t-esc="doc['building_meta'].get('manager') or '-'"/></div>
+                                    <div><b>Technician Hours (month):</b> <t t-esc="doc.get('resources') and doc['resources'].get('total_technician_hours') or 0"/></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="flex:1 1 0; border:1px dashed #e5e7eb; border-radius:10px; padding:20px; color:#6b7280;">
+                            <div style="font-weight:700; margin-bottom:16px; font-size:18px;">Highlights</div>
+                            <div style="font-size:14px;">Key events, incidents, or achievements for the period.</div>
+                        </div>
+                    </div>
+
+                    <div class="section" style="margin-top:32px;">
+                        <h2 style="color:#1e3a8a; margin:0 0 12px 0; font-size:28px;">Executive Summary Dashboard</h2>
+                        <!-- First Row: 3 KPIs -->
+                        <div class="kpi-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin-bottom:16px; page-break-inside:avoid !important;">
+                            <div class="kpi-card" style="background:#f1f5f9; padding:20px; border-radius:12px; text-align:center; border:2px solid #e2e8f0; page-break-inside:avoid !important;">
+                                <div style="font-size:14px; color:#64748b; text-transform:uppercase; font-weight:600; margin-bottom:8px;">Total Work Orders</div>
+                                <div style="font-size:36px; font-weight:700; color:#0f172a;" t-esc="doc and doc.get('kpis') and doc['kpis'].get('total_workorders') or 0"/>
+                            </div>
+                            <div class="kpi-card" style="background:#eff6ff; padding:20px; border-radius:12px; text-align:center; border:2px solid #dbeafe; page-break-inside:avoid !important;">
+                                <div style="font-size:14px; color:#1d4ed8; text-transform:uppercase; font-weight:600; margin-bottom:8px;">Asset Uptime</div>
+                                <div style="font-size:36px; font-weight:700; color:#1e40af;"><t t-esc="doc and doc.get('kpis') and doc['kpis'].get('asset_uptime_pct') or 0"/>%</div>
+                            </div>
+                            <div class="kpi-card" style="background:#f1f9f5; padding:20px; border-radius:12px; text-align:center; border:2px solid #dcfce7; page-break-inside:avoid !important;">
+                                <div style="font-size:14px; color:#166534; text-transform:uppercase; font-weight:600; margin-bottom:8px;">SLA Compliance</div>
+                                <div style="font-size:36px; font-weight:700; color:#065f46;"><t t-esc="doc and doc.get('kpis') and doc['kpis'].get('sla_compliance_pct') or 0"/>%</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Second Row: 3 KPIs -->
+                        <div class="kpi-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin-bottom:16px; page-break-inside:avoid !important;">
+                            <div class="kpi-card" style="background:#fff7ed; padding:20px; border-radius:12px; text-align:center; border:2px solid #fed7aa; page-break-inside:avoid !important;">
+                                <div style="font-size:14px; color:#9a3412; text-transform:uppercase; font-weight:600; margin-bottom:8px;">Avg Resolution</div>
+                                <div style="font-size:36px; font-weight:700; color:#7c2d12;"><t t-esc="doc and doc.get('kpis') and doc['kpis'].get('avg_resolution_hours') or 0"/> h</div>
+                            </div>
+                            <div class="kpi-card" style="background:#fef2f2; padding:20px; border-radius:12px; text-align:center; border:2px solid #fecaca; page-break-inside:avoid !important;">
+                                <div style="font-size:14px; color:#991b1b; text-transform:uppercase; font-weight:600; margin-bottom:8px;">Critical Issues</div>
+                                <div style="font-size:36px; font-weight:700; color:#7f1d1d;" t-esc="doc and doc.get('kpis') and doc['kpis'].get('critical_issues_count') or 0"/>
+                            </div>
+                            <div class="kpi-card" style="background:#f5f3ff; padding:20px; border-radius:12px; text-align:center; border:2px solid #e9d5ff; page-break-inside:avoid !important;">
+                                <div style="font-size:14px; color:#6d28d9; text-transform:uppercase; font-weight:600; margin-bottom:8px;">First-Time Fix</div>
+                                <div style="font-size:36px; font-weight:700; color:#5b21b6;"><t t-esc="doc and doc.get('kpis') and doc['kpis'].get('first_time_fix_rate_pct') or 0"/>%</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Third Row: 2 KPIs centered -->
+                        <div class="kpi-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin-bottom:20px; page-break-inside:avoid !important;">
+                            <div class="kpi-card" style="background:#fafafa; padding:20px; border-radius:12px; text-align:center; border:2px solid #e5e5e5; page-break-inside:avoid !important;">
+                                <div style="font-size:14px; color:#525252; text-transform:uppercase; font-weight:600; margin-bottom:8px;">Active Technicians</div>
+                                <div style="font-size:36px; font-weight:700; color:#171717;" t-esc="doc and doc.get('kpis') and doc['kpis'].get('active_technicians') or 0"/>
+                            </div>
+                            <div class="kpi-card" style="background:#ecfeff; padding:20px; border-radius:12px; text-align:center; border:2px solid #a5f3fc; page-break-inside:avoid !important;">
+                                <div style="font-size:14px; color:#155e75; text-transform:uppercase; font-weight:600; margin-bottom:8px;">Total Cost</div>
+                                <div style="font-size:36px; font-weight:700; color:#0e7490;">$<t t-esc="doc and doc.get('kpis') and doc['kpis'].get('total_cost') or 0"/></div>
+                            </div>
+                            <div style="padding:20px;"></div> <!-- Empty space for alignment -->
+                        </div>
+
+                        <div style="margin-top:20px;">
+                            <div style="font-size:16px; color:#6b7280; margin-bottom:12px; font-weight:600;">Month-over-Month Change</div>
+                            <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px;">
+                                <div style="background:#f9fafb; border:2px solid #e5e7eb; border-radius:8px; padding:12px; font-size:13px; font-weight:600;">
+                                    <b>Total WOs</b>: <t t-esc="doc and doc.get('kpis') and doc['kpis'].get('trends') and doc['kpis']['trends'].get('total_workorders_pct') or 0"/>%
+                                </div>
+                                <div style="background:#f9fafb; border:2px solid #e5e7eb; border-radius:8px; padding:12px; font-size:13px; font-weight:600;">
+                                    <b>SLA</b>: <t t-esc="doc and doc.get('kpis') and doc['kpis'].get('trends') and doc['kpis']['trends'].get('sla_compliance_pct_delta') or 0"/>%
+                                </div>
+                                <div style="background:#f9fafb; border:2px solid #e5e7eb; border-radius:8px; padding:12px; font-size:13px; font-weight:600;">
+                                    <b>Avg Resolution</b>: <t t-esc="doc and doc.get('kpis') and doc['kpis'].get('trends') and doc['kpis']['trends'].get('avg_resolution_hours_delta') or 0"/> h
+                                </div>
+                                <div style="background:#f9fafb; border:2px solid #e5e7eb; border-radius:8px; padding:12px; font-size:13px; font-weight:600;">
+                                    <b>Cost</b>: <t t-esc="doc and doc.get('kpis') and doc['kpis'].get('trends') and doc['kpis']['trends'].get('total_cost_pct') or 0"/>%
+                                </div>
+                                <div style="background:#f9fafb; border:2px solid #e5e7eb; border-radius:8px; padding:12px; font-size:13px; font-weight:600;">
+                                    <b>Technicians</b>: <t t-esc="doc and doc.get('kpis') and doc['kpis'].get('trends') and doc['kpis']['trends'].get('active_technicians_delta') or 0"/>
+                                </div>
+                                <div style="background:#f9fafb; border:2px solid #e5e7eb; border-radius:8px; padding:12px; font-size:13px; font-weight:600;">
+                                    <b>Uptime</b>: <t t-esc="doc and doc.get('kpis') and doc['kpis'].get('trends') and doc['kpis']['trends'].get('asset_uptime_pct_delta') or 0"/>%
+                                </div>
+                                <div style="background:#f9fafb; border:2px solid #e5e7eb; border-radius:8px; padding:12px; font-size:13px; font-weight:600;">
+                                    <b>Critical Issues</b>: <t t-esc="doc and doc.get('kpis') and doc['kpis'].get('trends') and doc['kpis']['trends'].get('critical_issues_delta') or 0"/>
+                                </div>
+                                <div style="background:#f9fafb; border:2px solid #e5e7eb; border-radius:8px; padding:12px; font-size:13px; font-weight:600;">
+                                    <b>FTF Rate</b>: <t t-esc="doc and doc.get('kpis') and doc['kpis'].get('trends') and doc['kpis']['trends'].get('first_time_fix_rate_pct_delta') or 0"/>%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="section" style="margin-top:32px; page-break-inside:avoid !important;">
+                        <h2 style="color:#111827; margin:0 0 20px 0; font-size:24px;">Response Time Analysis</h2>
+                        <div class="dashboard-grid" style="display:flex; gap:24px; flex-wrap:wrap; page-break-inside:avoid !important;">
+                            <div class="chart-panel" style="flex:1 1 450px; border:2px solid #e5e7eb; border-radius:12px; padding:20px; page-break-inside:avoid !important;">
+                                <div style="font-weight:600; margin-bottom:12px; font-size:18px;">Average Response Time</div>
+                                <div style="font-size:32px; font-weight:700; color:#0f172a; margin-bottom:16px;">
+                                    <t t-esc="doc and doc.get('charts') and doc['charts'].get('response_time') and doc['charts']['response_time'].get('avg_hours') or 0"/> hours
+                                </div>
+                                <div style="margin-top:16px;">
+                                    <div style="font-size:14px; font-weight:600; margin-bottom:8px; color:#374151;">Response Time Distribution</div>
+                                    <table class="large-table" style="width:100%; border-collapse:collapse; font-size:13px; page-break-inside:avoid !important;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align:left; padding:10px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600;">Time Bucket</th>
+                                                <th style="text-align:right; padding:10px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600;">Count</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-foreach="(doc and doc.get('charts') and doc['charts'].get('response_time') and doc['charts']['response_time'].get('distribution') and doc['charts']['response_time']['distribution'].items()) or []" t-as="rt">
+                                                <td style="padding:10px; border-bottom:1px solid #e5e7eb; font-weight:500;" t-esc="rt[0]"/>
+                                                <td style="padding:10px; border-bottom:1px solid #e5e7eb; text-align:right; font-weight:600;" t-esc="rt[1]"/>
+                                            </tr>
+                                            <tr t-if="not doc or not doc.get('charts') or not doc['charts'].get('response_time') or not doc['charts']['response_time'].get('distribution')">
+                                                <td colspan="2" style="padding:16px; text-align:center; color:#6b7280; font-style:italic;">No response time data available</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="chart-panel" style="flex:1 1 450px; border:2px dashed #e5e7eb; border-radius:12px; padding:20px; color:#6b7280; page-break-inside:avoid !important;">
+                                <div style="font-weight:600; margin-bottom:12px; font-size:18px;">Analysis Notes</div>
+                                <div style="font-size:14px; line-height:1.6;">Highlight bottlenecks and opportunities to reduce response times. Focus on areas where response times exceed targets and identify root causes for improvement.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section" style="margin-top:32px; page-break-inside:avoid !important;">
+                        <h2 style="color:#111827; margin:0 0 20px 0; font-size:24px;">SLA and Compliance Dashboard</h2>
+                        <div class="dashboard-grid" style="display:flex; gap:24px; flex-wrap:wrap; page-break-inside:avoid !important;">
+                            <div class="chart-panel" style="flex:1 1 450px; border:2px solid #e5e7eb; border-radius:12px; padding:20px; page-break-inside:avoid !important;">
+                                <div style="font-weight:600; margin-bottom:12px; font-size:18px;">SLA Performance Chart</div>
+                                <img t-if="doc.get('chart_sla')" t-att-src="'data:image/png;base64,%s' % doc.get('chart_sla')" class="large-chart" style="width:100%; max-height:300px; object-fit:contain; page-break-inside:avoid !important;"/>
+                                <div t-if="not doc.get('chart_sla')" style="color:#6b7280; font-style:italic; font-size:14px; text-align:center; padding:40px;">No SLA performance data available</div>
+                            </div>
+                            <div class="chart-panel" style="flex:1 1 450px; border:2px solid #e5e7eb; border-radius:12px; padding:20px; page-break-inside:avoid !important;">
+                                <div style="font-weight:600; margin-bottom:12px; font-size:18px;">SLA Status Breakdown</div>
+                                <table class="large-table" style="width:100%; border-collapse:collapse; font-size:13px; page-break-inside:avoid !important;">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align:left; padding:10px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600;">SLA Status</th>
+                                            <th style="text-align:right; padding:10px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600;">Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="(doc and doc.get('sla_status_counts') and doc['sla_status_counts'].items()) or []" t-as="item">
+                                            <td style="padding:10px; border-bottom:1px solid #e5e7eb; font-weight:500;" t-esc="item[0]"/>
+                                            <td style="padding:10px; border-bottom:1px solid #e5e7eb; text-align:right; font-weight:600;" t-esc="item[1]"/>
+                                        </tr>
+                                        <tr t-if="not doc or not doc.get('sla_status_counts')">
+                                            <td colspan="2" style="padding:16px; text-align:center; color:#6b7280; font-style:italic;">No SLA data available</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section" style="margin-top:32px; page-break-inside:avoid !important;">
+                        <h2 style="color:#111827; margin:0 0 20px 0; font-size:24px;">Work Order Analysis Dashboard</h2>
+                        <div class="dashboard-grid" style="display:flex; flex-wrap:wrap; gap:24px; page-break-inside:avoid !important;">
+                            <div class="chart-panel" style="flex:1 1 400px; border:2px solid #e5e7eb; border-radius:12px; padding:20px; page-break-inside:avoid !important;">
+                                <div style="font-weight:600; margin-bottom:16px; font-size:18px;">Status Distribution</div>
+                                <img t-if="doc.get('chart_status')" t-att-src="'data:image/png;base64,%s' % doc.get('chart_status')" class="large-chart" style="width:100%; max-height:300px; object-fit:contain; page-break-inside:avoid !important;"/>
+                                <div t-if="not doc.get('chart_status')" style="color:#6b7280; font-style:italic; font-size:14px; text-align:center; padding:40px;">No status data available</div>
+                            </div>
+                            <div class="chart-panel" style="flex:1 1 400px; border:2px solid #e5e7eb; border-radius:12px; padding:20px; page-break-inside:avoid !important;">
+                                <div style="font-weight:600; margin-bottom:16px; font-size:18px;">Work Orders by Type</div>
+                                <img t-if="doc.get('chart_type')" t-att-src="'data:image/png;base64,%s' % doc.get('chart_type')" class="large-chart" style="width:100%; max-height:300px; object-fit:contain; page-break-inside:avoid !important;"/>
+                                <div t-if="not doc.get('chart_type')" style="color:#6b7280; font-style:italic; font-size:14px; text-align:center; padding:40px;">No type data available</div>
+                            </div>
+                            <div class="chart-panel" style="flex:1 1 400px; border:2px solid #e5e7eb; border-radius:12px; padding:20px; page-break-inside:avoid !important;">
+                                <div style="font-weight:600; margin-bottom:16px; font-size:18px;">Priority Distribution</div>
+                                <img t-if="doc.get('chart_priority')" t-att-src="'data:image/png;base64,%s' % doc.get('chart_priority')" class="large-chart" style="width:100%; max-height:300px; object-fit:contain; page-break-inside:avoid !important;"/>
+                                <div t-if="not doc.get('chart_priority')" style="color:#6b7280; font-style:italic; font-size:14px; text-align:center; padding:40px;">No priority data available</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section" style="margin-top:32px; page-break-inside:avoid !important;">
+                        <h2 style="color:#111827; margin:0 0 20px 0; font-size:24px;">Trends and Distribution Analysis</h2>
+                        <div class="dashboard-grid" style="display:flex; flex-wrap:wrap; gap:24px; page-break-inside:avoid !important;">
+                            <div class="chart-panel" style="flex:1 1 500px; border:2px solid #e5e7eb; border-radius:12px; padding:20px; page-break-inside:avoid !important;">
+                                <div style="font-weight:600; margin-bottom:16px; font-size:18px;">Work Orders by Day</div>
+                                <img t-if="doc.get('chart_days')" t-att-src="'data:image/png;base64,%s' % doc.get('chart_days')" class="large-chart" style="width:100%; max-height:300px; object-fit:contain; page-break-inside:avoid !important;"/>
+                                <div t-if="not doc.get('chart_days')" style="color:#6b7280; font-style:italic; font-size:14px; text-align:center; padding:40px;">No daily trend data available</div>
+                            </div>
+                            <div class="chart-panel" style="flex:1 1 500px; border:2px solid #e5e7eb; border-radius:12px; padding:20px; page-break-inside:avoid !important;">
+                                <div style="font-weight:600; margin-bottom:16px; font-size:18px;">Top Assets by Work Orders</div>
+                                <img t-if="doc.get('chart_assets')" t-att-src="'data:image/png;base64,%s' % doc.get('chart_assets')" class="large-chart" style="width:100%; max-height:300px; object-fit:contain; page-break-inside:avoid !important;"/>
+                                <div t-if="not doc.get('chart_assets')" style="color:#6b7280; font-style:italic; font-size:14px; text-align:center; padding:40px;">No asset data available</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section" style="margin-top:32px; page-break-inside:avoid !important;">
+                        <h2 style="color:#111827; margin:0 0 20px 0; font-size:24px;">Locations and Inventory Analysis</h2>
+                        <div class="dashboard-grid" style="display:flex; flex-wrap:wrap; gap:24px; page-break-inside:avoid !important;">
+                            <div class="chart-panel" style="flex:1 1 500px; border:2px solid #e5e7eb; border-radius:12px; padding:20px; page-break-inside:avoid !important;">
+                                <div style="font-weight:600; margin-bottom:16px; font-size:18px;">Top Rooms by Work Orders</div>
+                                <img t-if="doc.get('chart_rooms')" t-att-src="'data:image/png;base64,%s' % doc.get('chart_rooms')" class="large-chart" style="width:100%; max-height:300px; object-fit:contain; page-break-inside:avoid !important;"/>
+                                <div t-if="not doc.get('chart_rooms')" style="color:#6b7280; font-style:italic; font-size:14px; text-align:center; padding:40px;">No room data available</div>
+                            </div>
+                            <div class="chart-panel" style="flex:1 1 500px; border:2px solid #e5e7eb; border-radius:12px; padding:20px; page-break-inside:avoid !important;">
+                                <div style="font-weight:600; margin-bottom:16px; font-size:18px;">Top Parts Used</div>
+                                <img t-if="doc.get('chart_parts')" t-att-src="'data:image/png;base64,%s' % doc.get('chart_parts')" class="large-chart" style="width:100%; max-height:300px; object-fit:contain; page-break-inside:avoid !important;"/>
+                                <div t-if="not doc.get('chart_parts')" style="color:#6b7280; font-style:italic; font-size:14px; text-align:center; padding:40px;">No parts data available</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:32px; page-break-inside:avoid;">
+                        <h2 style="color:#111827; margin:0 0 20px 0; font-size:24px;">Critical Assets Requiring Attention</h2>
+                        <table class="large-table" style="width:100%; border-collapse:collapse; font-size:13px; page-break-inside:avoid; border:2px solid #e5e7eb; border-radius:8px; overflow:hidden;">
+                            <thead>
+                                <tr style="background:#f8fafc;">
+                                    <th style="text-align:left; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Asset</th>
+                                    <th style="text-align:left; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Location</th>
+                                    <th style="text-align:left; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Health</th>
+                                    <th style="text-align:right; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">WOs</th>
+                                    <th style="text-align:right; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Downtime</th>
+                                    <th style="text-align:right; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Cost</th>
+                                    <th style="text-align:right; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">MTTR</th>
+                                    <th style="text-align:left; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Next Maint</th>
+                                    <th style="text-align:left; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="(doc and doc.get('critical_assets') or [])" t-as="ca" style="border-bottom:1px solid #e5e7eb;">
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; font-weight:600;">
+                                        <div t-esc="ca.get('asset_display') or ca.get('asset_name', '')"/>
+                                        <div t-if="ca.get('asset_code')" style="color:#6b7280; font-size:11px; font-weight:400;">(<t t-esc="ca.get('asset_code')"/>)</div>
+                                    </td>
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb;" t-esc="ca.get('location', '')"/>
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; font-weight:600;" t-esc="ca.get('health_label', '')"/>
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; text-align:right; font-weight:600;" t-esc="ca.get('work_orders', 0)"/>
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; text-align:right; font-weight:600;" t-esc="ca.get('downtime_hours', 0)"/>
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; text-align:right; font-weight:600;">$<t t-esc="'%.2f' % (ca.get('total_cost', 0) or 0)"/></td>
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; text-align:right; font-weight:600;" t-esc="ca.get('mttr_hours', 0)"/>
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb;" t-esc="ca.get('next_maintenance', '')"/>
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; font-weight:600;" t-esc="ca.get('priority_label', '')"/>
+                                </tr>
+                                <tr t-if="not doc or not doc.get('critical_assets')">
+                                    <td colspan="9" style="padding:24px; text-align:center; color:#6b7280; font-style:italic; font-size:14px;">No critical assets found for this period.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="margin-top:32px; page-break-inside:avoid;">
+                        <h2 style="color:#111827; margin:0 0 20px 0; font-size:24px;">Technician Utilization</h2>
+                        <table class="large-table" style="width:100%; border-collapse:collapse; font-size:13px; page-break-inside:avoid; border:2px solid #e5e7eb; border-radius:8px; overflow:hidden;">
+                            <thead>
+                                <tr style="background:#f8fafc;">
+                                    <th style="text-align:left; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Technician</th>
+                                    <th style="text-align:right; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Hours Worked</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="(doc and doc.get('charts') and doc['charts'].get('technician_utilization') or [])" t-as="tech" style="border-bottom:1px solid #e5e7eb;">
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; font-weight:600;" t-esc="tech.get('technician')"/>
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; text-align:right; font-weight:600;" t-esc="tech.get('hours')"/>
+                                </tr>
+                                <tr t-if="not doc or not doc.get('charts') or not doc['charts'].get('technician_utilization')">
+                                    <td colspan="2" style="padding:24px; text-align:center; color:#6b7280; font-style:italic; font-size:14px;">No technician data available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="margin-top:32px; page-break-inside:avoid;">
+                        <h2 style="color:#111827; margin:0 0 20px 0; font-size:24px;">Floor Performance Analysis</h2>
+                        <table class="large-table" style="width:100%; border-collapse:collapse; font-size:13px; page-break-inside:avoid; border:2px solid #e5e7eb; border-radius:8px; overflow:hidden;">
+                            <thead>
+                                <tr style="background:#f8fafc;">
+                                    <th style="text-align:left; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Floor</th>
+                                    <th style="text-align:right; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Uptime (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="(doc and doc.get('charts') and doc['charts'].get('floor_performance') or [])" t-as="fp" style="border-bottom:1px solid #e5e7eb;">
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; font-weight:600;" t-esc="fp.get('label')"/>
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; text-align:right; font-weight:600;" t-esc="fp.get('uptime')"/>
+                                </tr>
+                                <tr t-if="not doc or not doc.get('charts') or not doc['charts'].get('floor_performance')">
+                                    <td colspan="2" style="padding:24px; text-align:center; color:#6b7280; font-style:italic; font-size:14px;">No floor performance data available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="section" style="margin-top:32px; page-break-inside:avoid !important;">
+                        <h2 style="color:#111827; margin:0 0 20px 0; font-size:24px;">Cost Analysis</h2>
+                        <div style="display:flex; gap:24px; flex-wrap:wrap;">
+                            <div style="flex:1 1 400px; border:2px solid #e5e7eb; border-radius:12px; padding:20px; page-break-inside:avoid !important;">
+                                <div style="font-weight:600; margin-bottom:16px; font-size:18px; color:#111827;">Cost Breakdown</div>
+                                <table class="large-table" style="width:100%; border-collapse:collapse; font-size:13px; page-break-inside:avoid !important;">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align:left; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px; color:#111827;">Category</th>
+                                            <th style="text-align:right; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px; color:#111827;">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="(doc and doc.get('charts') and doc['charts'].get('cost_breakdown') and doc['charts']['cost_breakdown'].items()) or []" t-as="cb" style="border-bottom:1px solid #e5e7eb;">
+                                            <td style="padding:12px; border-bottom:1px solid #e5e7eb; font-weight:600; color:#111827;" t-esc="cb[0]"/>
+                                            <td style="padding:12px; border-bottom:1px solid #e5e7eb; text-align:right; font-weight:600; color:#111827;">$<t t-esc="'%.2f' % (cb[1] or 0)"/></td>
+                                        </tr>
+                                        <tr t-if="not doc or not doc.get('charts') or not doc['charts'].get('cost_breakdown')">
+                                            <td colspan="2" style="padding:24px; text-align:center; color:#6b7280; font-style:italic; font-size:14px;">No cost data available</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="flex:1 1 400px; border:2px dashed #e5e7eb; border-radius:12px; padding:20px; color:#6b7280; page-break-inside:avoid !important;">
+                                <div style="font-weight:600; margin-bottom:16px; font-size:18px; color:#6b7280;">Notes</div>
+                                <div style="font-size:14px; line-height:1.6;">Summarize key cost drivers, variances vs last month, and savings opportunities.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section" style="margin-top:32px; page-break-inside:avoid !important;">
+                        <h2 style="color:#111827; margin:0 0 20px 0; font-size:24px;">Issues and Text Analysis</h2>
+                        <div style="display:flex; gap:24px; flex-wrap:wrap;">
+                            <div style="flex:1 1 400px; border:2px solid #e5e7eb; border-radius:12px; padding:20px; page-break-inside:avoid !important;">
+                                <div style="font-weight:600; margin-bottom:16px; font-size:18px; color:#111827;">Issue Wordcloud</div>
+                                <img t-if="doc.get('chart_wordcloud')" t-att-src="'data:image/png;base64,%s' % doc.get('chart_wordcloud')" class="large-chart" style="width:100%; max-height:300px; object-fit:contain; page-break-inside:avoid !important;"/>
+                                <div t-if="not doc.get('chart_wordcloud')" style="color:#6b7280; font-style:italic; font-size:14px; text-align:center; padding:40px;">No wordcloud data available</div>
+                            </div>
+                            <div style="flex:1 1 400px; border:2px solid #e5e7eb; border-radius:12px; padding:20px; page-break-inside:avoid !important;">
+                                <div style="font-weight:600; margin-bottom:16px; font-size:18px; color:#111827;">Top Issues</div>
+                                <table class="large-table" style="width:100%; border-collapse:collapse; font-size:13px; page-break-inside:avoid !important;">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align:left; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px; color:#111827;">Term</th>
+                                            <th style="text-align:right; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px; color:#111827;">Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="(doc and doc.get('top_issues') or [])" t-as="ti" style="border-bottom:1px solid #e5e7eb;">
+                                            <td style="padding:12px; border-bottom:1px solid #e5e7eb; font-weight:600; color:#111827;" t-esc="ti[0]"/>
+                                            <td style="padding:12px; border-bottom:1px solid #e5e7eb; text-align:right; font-weight:600; color:#111827;" t-esc="ti[1]"/>
+                                        </tr>
+                                        <tr t-if="not doc or not doc.get('top_issues')">
+                                            <td colspan="2" style="padding:24px; text-align:center; color:#6b7280; font-style:italic; font-size:14px;">No issues found</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section" style="margin-top:32px; page-break-inside:avoid !important;">
+                        <h2 style="color:#111827; margin:0 0 20px 0; font-size:20px;">Appendix A: Top Rooms</h2>
+                        <table class="large-table" style="width:100%; border-collapse:collapse; font-size:13px; page-break-inside:avoid !important; border:2px solid #e5e7eb; border-radius:8px; overflow:hidden;">
+                            <thead>
+                                <tr style="background:#f8fafc;">
+                                    <th style="text-align:left; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Room</th>
+                                    <th style="text-align:right; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Work Orders</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="(doc and doc.get('top_rooms') or [])" t-as="trm" style="border-bottom:1px solid #e5e7eb;">
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; font-weight:600; color:#111827;" t-esc="trm[0]"/>
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; text-align:right; font-weight:600; color:#111827;" t-esc="trm[1]"/>
+                                </tr>
+                                <tr t-if="not doc or not doc.get('top_rooms')">
+                                    <td colspan="2" style="padding:24px; text-align:center; color:#6b7280; font-style:italic; font-size:14px;">No room data available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="section" style="margin-top:32px; page-break-inside:avoid !important;">
+                        <h2 style="color:#111827; margin:0 0 20px 0; font-size:20px;">Appendix B: Top Parts Used</h2>
+                        <table class="large-table" style="width:100%; border-collapse:collapse; font-size:13px; page-break-inside:avoid !important; border:2px solid #e5e7eb; border-radius:8px; overflow:hidden;">
+                            <thead>
+                                <tr style="background:#f8fafc;">
+                                    <th style="text-align:left; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Part</th>
+                                    <th style="text-align:right; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Qty Used</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="(doc and doc.get('top_parts') or [])" t-as="tp" style="border-bottom:1px solid #e5e7eb;">
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; font-weight:600; color:#111827;" t-esc="tp[0]"/>
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; text-align:right; font-weight:600; color:#111827;" t-esc="tp[1]"/>
+                                </tr>
+                                <tr t-if="not doc or not doc.get('top_parts')">
+                                    <td colspan="2" style="padding:24px; text-align:center; color:#6b7280; font-style:italic; font-size:14px;">No parts data available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="section" style="margin-top:32px; page-break-inside:avoid !important;">
+                        <h2 style="color:#111827; margin:0 0 20px 0; font-size:20px;">Appendix C: Maintenance Mix</h2>
+                        <table class="large-table" style="width:100%; border-collapse:collapse; font-size:13px; page-break-inside:avoid !important; border:2px solid #e5e7eb; border-radius:8px; overflow:hidden;">
+                            <thead>
+                                <tr style="background:#f8fafc;">
+                                    <th style="text-align:left; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Type</th>
+                                    <th style="text-align:right; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="(doc and doc.get('type_counts') and doc['type_counts'].items()) or []" t-as="mt" style="border-bottom:1px solid #e5e7eb;">
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; font-weight:600; color:#111827;" t-esc="mt[0]"/>
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; text-align:right; font-weight:600; color:#111827;" t-esc="mt[1]"/>
+                                </tr>
+                                <tr t-if="not doc or not doc.get('type_counts')">
+                                    <td colspan="2" style="padding:24px; text-align:center; color:#6b7280; font-style:italic; font-size:14px;">No maintenance type data available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="section" style="margin-top:32px; page-break-inside:avoid !important;">
+                        <h2 style="color:#111827; margin:0 0 20px 0; font-size:20px;">Appendix D: Priority Distribution</h2>
+                        <table class="large-table" style="width:100%; border-collapse:collapse; font-size:13px; page-break-inside:avoid !important; border:2px solid #e5e7eb; border-radius:8px; overflow:hidden;">
+                            <thead>
+                                <tr style="background:#f8fafc;">
+                                    <th style="text-align:left; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Priority</th>
+                                    <th style="text-align:right; padding:12px; background:#f3f4f6; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:14px;">Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="(doc and doc.get('priority_counts') and doc['priority_counts'].items()) or []" t-as="pc" style="border-bottom:1px solid #e5e7eb;">
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; font-weight:600; color:#111827;" t-esc="pc[0]"/>
+                                    <td style="padding:12px; border-bottom:1px solid #e5e7eb; text-align:right; font-weight:600; color:#111827;" t-esc="pc[1]"/>
+                                </tr>
+                                <tr t-if="not doc or not doc.get('priority_counts')">
+                                    <td colspan="2" style="padding:24px; text-align:center; color:#6b7280; font-style:italic; font-size:14px;">No priority data available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="margin-top:24px; padding-top:24px; border-top:1px solid #e5e7eb;">
+                        <div style="color:#6b7280; font-size:11px;">
+                            <div>Generated on: <t t-esc="doc and doc.get('generated_on') or ''"/></div>
+                            <div t-if="o and o.name">Company: <t t-esc="o.name"/></div>
+                        </div>
+                    </div>
+            </t>
+        </t>
+    </template>
+</odoo>

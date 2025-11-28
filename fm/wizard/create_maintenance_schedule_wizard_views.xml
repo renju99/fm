@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_create_maintenance_schedule_wizard_form" model="ir.ui.view">
+        <field name="name">create.maintenance.schedule.wizard.form</field>
+        <field name="model">create.maintenance.schedule.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Maintenance Schedules">
+                <sheet>
+                    <group>
+                        <group string="Maintenance Schedule Details">
+                            <field name="maintenance_type"/>
+                            <field name="interval_number"/>
+                            <field name="interval_type"/>
+                        </group>
+                        <group string="Asset Selection">
+                            <field name="create_for_all"/>
+                            <field name="asset_ids" invisible="create_for_all"/>
+                        </group>
+                    </group>
+                    
+                    <div class="alert alert-info" role="alert">
+                        <strong>Note:</strong> This will create maintenance schedules for the selected assets. 
+                        If an asset already has a schedule of the selected type, it will be skipped.
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_create_schedules" string="Create Schedules" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_create_maintenance_schedule_wizard" model="ir.actions.act_window">
+        <field name="name">Create Maintenance Schedules</field>
+        <field name="res_model">create.maintenance.schedule.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create maintenance schedules for multiple assets at once!
+            </p>
+            <p>
+                Select the maintenance type, interval, and assets to create maintenance schedules.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,75 @@
+<odoo>
+    <!-- Maintenance Job Plan Form View -->
+    <record id="maintenance_job_plan_view_form" model="ir.ui.view">
+        <field name="name">maintenance.job.plan.form</field>
+        <field name="model">maintenance.job.plan</field>
+        <field name="arch" type="xml">
+            <form string="Maintenance Job Plan">
+                <header>
+                    <button name="toggle_active" type="object" string="Archive"
+                            confirm="Are you sure you want to archive this Job Plan?"/>
+                    <button name="toggle_active" type="object" string="Unarchive"
+                            confirm="Are you sure you want to unarchive this Job Plan?"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="e.g., FCU Monthly Maintenance"/></h1>
+                        <field name="code" readonly="1"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="asset_category_ids" widget="many2many_tags"
+                                   options="{'no_create_edit': True}"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Sections &amp; Tasks" name="sections_tasks">
+                            <field name="section_ids">
+                                <list>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="name"/>
+                                        <field name="sequence"/>
+                                    </group>
+                                    <field name="task_ids">
+                                        <list editable="bottom">
+                                            <field name="sequence" widget="handle"/>
+                                            <field name="name"/>
+                                            <field name="description"/>
+                                            <field name="is_checklist_item"/>
+                                        </list>
+                                        <form>
+                                            <group>
+                                                <field name="name"/>
+                                                <field name="description"/>
+                                                <field name="sequence"/>
+                                                <field name="is_checklist_item"/>
+                                            </group>
+                                        </form>
+                                    </field>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Guidelines" name="guidelines">
+                            <field name="description" widget="html"/>
+                        </page>
+                        <page string="Other Information" name="other_info">
+                            <group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Booking Template Tree View -->
+    <record id="view_booking_template_tree" model="ir.ui.view">
+        <field name="name">facilities.booking.template.tree</field>
+        <field name="model">facilities.booking.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="booking_type"/>
+                <field name="department_id"/>
+                <field name="required_capacity"/>
+                <field name="priority"/>
+                <field name="usage_count"/>
+                <field name="last_used"/>
+                <field name="created_by"/>
+                <field name="active"/>
+                <button name="action_use_template" type="object" icon="fa-play" 
+                        title="Use Template" class="btn-primary"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Booking Template Form View -->
+    <record id="view_booking_template_form" model="ir.ui.view">
+        <field name="name">facilities.booking.template.form</field>
+        <field name="model">facilities.booking.template</field>
+        <field name="arch" type="xml">
+            <form string="Booking Template">
+                <header>
+                    <button name="action_use_template" type="object" string="Use Template"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-calendar" name="usage_count">
+                            <field name="usage_count" widget="statinfo" string="Times Used"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Template Name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group name="basic_info">
+                            <field name="booking_type"/>
+                            <field name="department_id"/>
+                            <field name="priority"/>
+                            <field name="required_capacity"/>
+                            <field name="is_external_guest"/>
+                        </group>
+                        <group name="settings">
+                            <field name="auto_check_in"/>
+                            <field name="auto_check_out"/>
+                            <field name="usage_count" readonly="1"/>
+                            <field name="last_used" readonly="1"/>
+                            <field name="created_by" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Details" name="details">
+                            <group>
+                                <field name="purpose" placeholder="Default purpose..."/>
+                                <field name="attendees"/>
+                            </group>
+                            <group>
+                                <field name="notes" nolabel="1" placeholder="Default notes..."/>
+                            </group>
+                        </page>
+
+                        <page string="Equipment" name="equipment">
+                            <field name="required_equipment_ids" widget="many2many_tags"/>
+                        </page>
+
+                        <page string="Notifications" name="notifications">
+                            <group>
+                                <field name="notification_settings" widget="ace" 
+                                       options="{'mode': 'json'}" string="Notification Settings (JSON)"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Booking Template Kanban View -->
+    <record id="view_booking_template_kanban" model="ir.ui.view">
+        <field name="name">facilities.booking.template.kanban</field>
+        <field name="model">facilities.booking.template</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="booking_type"/>
+                <field name="usage_count"/>
+                <field name="last_used"/>
+                <field name="priority"/>
+                <field name="required_capacity"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <strong><field name="name"/></strong>
+                                <span t-if="record.booking_type.raw_value" class="badge badge-info">
+                                    <field name="booking_type"/>
+                                </span>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div t-if="record.priority.raw_value != 'normal'">
+                                    Priority: <field name="priority"/>
+                                </div>
+                                <div t-if="record.required_capacity.raw_value">
+                                    Capacity: <field name="required_capacity"/> people
+                                </div>
+                                <div class="text-muted">
+                                    Used <field name="usage_count"/> times
+                                </div>
+                                <div t-if="record.last_used.raw_value" class="text-muted">
+                                    Last used: <field name="last_used"/>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <button name="action_use_template" type="object" class="btn btn-primary btn-sm">
+                                    Use Template
+                                </button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+</odoo>

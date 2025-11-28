@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Escalation Log Tree View -->
+    <record id="view_maintenance_escalation_log_tree" model="ir.ui.view">
+        <field name="name">facilities.escalation.log.tree</field>
+        <field name="model">facilities.escalation.log</field>
+        <field name="arch" type="xml">
+            <list string="Escalation History" create="false" delete="false">
+                <field name="escalation_level" string="Level"/>
+                <field name="escalation_type" string="Type"/>
+                <field name="escalation_date" string="Triggered At"/>
+                <field name="status" string="Status"/>
+                <field name="workorder_id" string="Work Order"/>
+                <!-- Optional fields - hidden by default but available in view options -->
+                <field name="escalation_reason" string="Reason" widget="html" optional="hide"/>
+                <field name="escalated_to_id" string="Escalated To" optional="hide"/>
+                <field name="resolution_date" string="Resolved At" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Escalation Log Form View -->
+    <record id="view_maintenance_escalation_log_form" model="ir.ui.view">
+        <field name="name">facilities.escalation.log.form</field>
+        <field name="model">facilities.escalation.log</field>
+        <field name="arch" type="xml">
+            <form string="Escalation Log Entry" create="false" delete="false">
+                <header>
+                    <button name="action_resolve" string="Resolve" type="object" 
+                            class="oe_highlight" invisible="status != 'open'"/>
+                    <button name="action_close" string="Close" type="object" 
+                            invisible="status not in ['resolved', 'in_progress']"/>
+                    <field name="status" widget="statusbar" 
+                           statusbar_visible="open,in_progress,resolved,closed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Escalation Details" col="2">
+                            <field name="workorder_id" readonly="1"/>
+                            <field name="escalation_level" readonly="1"/>
+                            <field name="escalation_type" readonly="1"/>
+                            <field name="escalation_date" readonly="1"/>
+                            <field name="escalation_reason" readonly="1" widget="html"/>
+                            <field name="escalated_to_id" readonly="1"/>
+                        </group>
+                        <group string="Resolution Details" col="2">
+                            <field name="resolution_notes" readonly="1"/>
+                            <field name="escalated_to_id" readonly="1"/>
+                            <field name="resolution_date" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Escalation Log Search View -->
+    <record id="view_maintenance_escalation_log_search" model="ir.ui.view">
+        <field name="name">facilities.escalation.log.search</field>
+        <field name="model">facilities.escalation.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="workorder_id"/>
+                <field name="escalation_level"/>
+                <field name="escalation_type"/>
+                <field name="escalation_reason"/>
+                <field name="escalated_to_id"/>
+                <field name="status"/>
+                
+                <separator/>
+                
+                <filter string="Level 1 Escalations" name="level_1" domain="[('escalation_level','=','level_1')]"/>
+                <filter string="Level 2 Escalations" name="level_2" domain="[('escalation_level','=','level_2')]"/>
+                <filter string="Level 3 Escalations" name="level_3" domain="[('escalation_level','=','level_3')]"/>
+                
+                <separator/>
+                
+                <filter string="SLA Breach" name="sla_breach" domain="[('escalation_type','=','sla_breach')]"/>
+                <filter string="Priority Increase" name="priority_increase" domain="[('escalation_type','=','priority_increase')]"/>
+                <filter string="Technician Unavailable" name="technician_unavailable" domain="[('escalation_type','=','technician_unavailable')]"/>
+                <filter string="Resource Shortage" name="resource_shortage" domain="[('escalation_type','=','resource_shortage')]"/>
+                
+                <separator/>
+                
+                <filter string="Open" name="open" domain="[('status','=','open')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('status','=','in_progress')]"/>
+                <filter string="Resolved" name="resolved" domain="[('status','=','resolved')]"/>
+                <filter string="Closed" name="closed" domain="[('status','=','closed')]"/>
+                
+                <separator/>
+                
+                <filter string="Unresolved" name="unresolved" domain="[('resolution_date','=',False)]"/>
+                <filter string="Resolved" name="resolved_time" domain="[('resolution_date','!=',False)]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Work Order" name="group_workorder" context="{'group_by': 'workorder_id'}"/>
+                    <filter string="Escalation Level" name="group_level" context="{'group_by': 'escalation_level'}"/>
+                    <filter string="Escalation Type" name="group_type" context="{'group_by': 'escalation_type'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                    <filter string="Resolved By" name="group_resolved_by" context="{'group_by': 'escalated_to_id'}"/>
+                    <filter string="Month" name="group_month" context="{'group_by': 'escalation_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Escalation Log Kanban View -->
+    <record id="view_maintenance_escalation_log_kanban" model="ir.ui.view">
+        <field name="name">facilities.escalation.log.kanban</field>
+        <field name="model">facilities.escalation.log</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="status" class="o_kanban_small_column">
+                <field name="escalation_level"/>
+                <field name="escalation_date"/>
+                <field name="escalation_reason"/>
+                <field name="status"/>
+                <field name="workorder_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <t t-esc="record.escalation_reason.value"/>
+                                        </strong>
+                                    </div>
+                                    <div class="o_kanban_record_top_right">
+                                        <span class="badge badge-pill">
+                                            Level <t t-esc="record.escalation_level.value"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left text-muted">
+                                        <i class="fa fa-clock-o"/> <t t-esc="record.escalation_date.value"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <span class="badge badge-pill">
+                                            <t t-esc="record.status.value"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Visitor Deny Wizard Form View -->
+    <record id="view_visitor_deny_wizard_form" model="ir.ui.view">
+        <field name="name">visitor.deny.wizard.form</field>
+        <field name="model">visitor.deny.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Deny Visitor Access">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            Deny Access for: <field name="visitor_name" readonly="1" class="oe_inline"/>
+                        </h1>
+                    </div>
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Warning:</strong> You are about to deny access to this visitor. 
+                        This action will be logged and documented.
+                    </div>
+                    <group>
+                        <group string="Visitor Information">
+                            <field name="visitor_id" invisible="1"/>
+                            <field name="visitor_number"/>
+                            <field name="host_id"/>
+                        </group>
+                        <group string="Denial Information">
+                            <field name="denied_by_id"/>
+                            <field name="denial_date"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Denial Reason">
+                            <field name="denial_reason" required="1"/>
+                            <field name="denial_category" readonly="1"/>
+                            <field name="denial_details" nolabel="1" 
+                                   placeholder="Provide detailed explanation for denial..." required="1"/>
+                        </group>
+                        <group string="Security Assessment">
+                            <field name="security_risk_level"/>
+                            <field name="requires_investigation"/>
+                            <field name="create_incident_report"/>
+                        </group>
+                    </group>
+                    <group invisible="not add_to_blacklist">
+                        <group string="Blacklist" colspan="2">
+                            <field name="add_to_blacklist"/>
+                            <field name="blacklist_duration" invisible="not add_to_blacklist"/>
+                            <field name="blacklist_reason" nolabel="1" 
+                                   invisible="not add_to_blacklist"
+                                   placeholder="Reason for adding to blacklist..."/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Notifications">
+                            <field name="notify_host"/>
+                            <field name="notify_visitor"/>
+                            <field name="notify_security"/>
+                            <field name="notify_management"/>
+                        </group>
+                        <group string="Witnesses">
+                            <field name="witness_ids" widget="many2many_tags" nolabel="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Evidence">
+                            <group>
+                                <group string="Photo Evidence">
+                                    <field name="photo_evidence" widget="image" 
+                                           filename="photo_evidence_filename"/>
+                                    <field name="photo_evidence_filename" invisible="1"/>
+                                </group>
+                                <group string="Video Evidence">
+                                    <field name="video_evidence" 
+                                           filename="video_evidence_filename"/>
+                                    <field name="video_evidence_filename" invisible="1"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Supporting Documents">
+                                    <field name="supporting_documents" 
+                                           filename="supporting_documents_filename"/>
+                                    <field name="supporting_documents_filename" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Alternative &amp; Follow-up">
+                            <group>
+                                <group string="Alternative Solution">
+                                    <field name="alternative_offered"/>
+                                    <field name="alternative_description" nolabel="1" 
+                                           invisible="not alternative_offered"
+                                           placeholder="Describe alternative solution offered..."/>
+                                </group>
+                                <group string="Follow-up">
+                                    <field name="follow_up_required"/>
+                                    <field name="follow_up_notes" nolabel="1" 
+                                           invisible="not follow_up_required"
+                                           placeholder="Describe required follow-up actions..."/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button string="Confirm Denial" name="action_confirm_denial" 
+                            type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Visitor Deny Wizard Action -->
+    <record id="action_visitor_deny_wizard" model="ir.actions.act_window">
+        <field name="name">Deny Visitor Access</field>
+        <field name="res_model">visitor.deny.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
+
+
+
+
+
+
+
+
+
+

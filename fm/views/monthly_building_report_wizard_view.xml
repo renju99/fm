@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_monthly_building_report_wizard_form" model="ir.ui.view">
+        <field name="name">monthly.building.report.wizard.form</field>
+        <field name="model">monthly.building.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Monthly Facility Maintenance Report Wizard">
+                <group>
+                    <field name="facility_id"/>
+                    <field name="building_id" domain="[('facility_id','=',facility_id)]"/>
+                </group>
+                <group string="Filters">
+                    <field name="facility_ids" widget="many2many_tags"/>
+                    <field name="floor_ids" widget="many2many_tags" domain="['|',('building_id','=',building_id),('facility_id','=',facility_id)]"/>
+                    <field name="room_ids" widget="many2many_tags" domain="['|',('building_id','=',building_id),('facility_id','=',facility_id)]"/>
+                </group>
+                <group string="Custom Date Range">
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </group>
+                <footer>
+                    <button string="Generate PDF Report" type="object" name="action_generate_pdf_report" class="btn-primary"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

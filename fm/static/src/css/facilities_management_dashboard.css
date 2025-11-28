@@ -1,0 +1,437 @@
+/* Facilities Management Dashboard Styles */
+
+.o_facilities_dashboard_view {
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* ==================== HEADER ==================== */
+
+.o_dashboard_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.o_dashboard_title h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 24px;
+}
+
+.o_dashboard_title h2 i {
+    color: #3498db;
+    margin-right: 10px;
+}
+
+.o_dashboard_controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.o_dashboard_controls select {
+    padding: 8px 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+    min-width: 150px;
+}
+
+.o_dashboard_controls select:hover {
+    border-color: #3498db;
+}
+
+.o_dashboard_controls button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+
+.o_dashboard_controls button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ==================== LOADING & ERROR STATES ==================== */
+
+.o_dashboard_loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    background: white;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.o_dashboard_loading i {
+    color: #3498db;
+}
+
+.o_dashboard_error {
+    margin: 20px 0;
+}
+
+/* ==================== KPI CARDS ==================== */
+
+.o_dashboard_kpis {
+    margin-bottom: 30px;
+}
+
+.o_kpi_card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.o_kpi_card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.o_kpi_card .card-body {
+    padding: 20px;
+}
+
+.o_kpi_icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.o_kpi_content {
+    min-width: 0;
+}
+
+.o_kpi_name {
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.o_kpi_value {
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 0;
+    font-size: 28px;
+}
+
+.o_kpi_variance {
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.o_kpi_variance i {
+    font-size: 12px;
+}
+
+/* ==================== CHARTS ==================== */
+
+.o_dashboard_charts {
+    margin-bottom: 30px;
+}
+
+.o_chart_widget {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.o_chart_widget:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.o_chart_widget .card-header {
+    border-bottom: 2px solid #e9ecef;
+    padding: 15px 20px;
+}
+
+.o_chart_widget .card-header h5 {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.o_chart_widget .card-header i {
+    color: #3498db;
+}
+
+.o_chart_widget .card-body {
+    padding: 20px;
+}
+
+.o_chart_container {
+    position: relative;
+    width: 100%;
+}
+
+/* ==================== TABLE WIDGET ==================== */
+
+.o_table_widget {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+    margin-bottom: 30px;
+}
+
+.o_table_widget .card-header {
+    border-bottom: 2px solid #e9ecef;
+    padding: 15px 20px;
+}
+
+.o_table_widget .card-header h5 {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.o_table_widget .card-header i {
+    color: #3498db;
+}
+
+.o_table_widget table {
+    font-size: 14px;
+}
+
+.o_table_widget thead th {
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+    padding: 12px 15px;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.o_table_widget tbody td {
+    padding: 12px 15px;
+    vertical-align: middle;
+}
+
+.o_table_widget tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.o_table_widget tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+/* ==================== FOOTER ==================== */
+
+.o_dashboard_footer {
+    text-align: center;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.o_dashboard_footer small {
+    font-size: 13px;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+
+@media (max-width: 1200px) {
+    .o_dashboard_kpis .col-xl-3 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 768px) {
+    .o_facilities_dashboard_view {
+        padding: 10px;
+    }
+
+    .o_dashboard_header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .o_dashboard_controls {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .o_dashboard_controls select,
+    .o_dashboard_controls button {
+        width: 100%;
+    }
+
+    .o_dashboard_title h2 {
+        font-size: 20px;
+    }
+
+    .o_dashboard_kpis .col-xl-3,
+    .o_dashboard_kpis .col-lg-4,
+    .o_dashboard_kpis .col-md-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .o_dashboard_charts .col-xl-6,
+    .o_dashboard_charts .col-lg-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .o_kpi_card .card-body {
+        padding: 15px;
+    }
+
+    .o_kpi_icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .o_kpi_icon i {
+        font-size: 2em !important;
+    }
+
+    .o_kpi_value {
+        font-size: 24px;
+    }
+
+    .o_chart_widget .card-body {
+        padding: 15px;
+    }
+
+    .o_chart_container {
+        height: 250px !important;
+    }
+
+    .o_table_widget {
+        overflow-x: auto;
+    }
+
+    .o_table_widget table {
+        font-size: 12px;
+    }
+
+    .o_table_widget thead th,
+    .o_table_widget tbody td {
+        padding: 8px 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .o_dashboard_title h2 {
+        font-size: 18px;
+    }
+
+    .o_kpi_value {
+        font-size: 20px;
+    }
+
+    .o_chart_container {
+        height: 200px !important;
+    }
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Color utilities for KPI cards */
+.text-primary {
+    color: #3498db !important;
+}
+
+.text-success {
+    color: #27ae60 !important;
+}
+
+.text-info {
+    color: #2980b9 !important;
+}
+
+.text-warning {
+    color: #f39c12 !important;
+}
+
+.text-danger {
+    color: #e74c3c !important;
+}
+
+/* ==================== ANIMATIONS ==================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.o_dashboard_content > * {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.o_kpi_card,
+.o_chart_widget,
+.o_table_widget {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* ==================== PRINT STYLES ==================== */
+
+@media print {
+    .o_dashboard_header {
+        box-shadow: none;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .o_dashboard_controls {
+        display: none;
+    }
+
+    .o_kpi_card,
+    .o_chart_widget,
+    .o_table_widget {
+        page-break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #dee2e6;
+    }
+
+    .o_dashboard_charts .col-xl-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+}
+
+

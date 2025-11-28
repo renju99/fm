@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_workorder_onhold_wizard_form" model="ir.ui.view">
+        <field name="name">workorder.onhold.wizard.form</field>
+        <field name="model">workorder.onhold.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Request On-Hold Approval">
+                <div class="alert alert-info" role="alert">
+                    <h4><i class="fa fa-pause-circle me-2"></i>Request Work Order On-Hold</h4>
+                    <p>This request will be sent to the facilities manager for approval. 
+                       Please provide a clear reason and detailed comments.</p>
+                </div>
+                
+                <group>
+                    <field name="workorder_id"/>
+                    <field name="onhold_reason"/>
+                    <field name="estimated_delay_days"/>
+                </group>
+                
+                <group string="Comments">
+                    <field name="onhold_comment" nolabel="1" placeholder="Provide detailed explanation for the on-hold request. Include what needs to be resolved before work can continue..."/>
+                </group>
+                
+                <footer>
+                    <button name="action_submit_onhold_request" type="object" 
+                            string="Submit Request" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_workorder_onhold_wizard" model="ir.actions.act_window">
+        <field name="name">Request On-Hold Approval</field>
+        <field name="res_model">workorder.onhold.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

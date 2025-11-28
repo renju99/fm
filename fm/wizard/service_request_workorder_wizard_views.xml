@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Service Request to Work Order Wizard Form View -->
+    <record id="view_service_request_workorder_wizard_form" model="ir.ui.view">
+        <field name="name">service.request.workorder.wizard.form</field>
+        <field name="model">service.request.workorder.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Work Order from Service Request">
+                <div class="alert alert-info" role="alert">
+                    <strong>Facilities Management Work Order</strong><br/>
+                    For equipment repairs, select the specific asset. For cleaning, security, landscaping, or general maintenance, specify the location.
+                </div>
+                
+                <group>
+                    <group string="Service Request">
+                        <field name="service_request_id"/>
+                    </group>
+                </group>
+                
+                <group string="Work Target (Choose Asset OR Location)">
+                    <group string="Equipment/Asset Specific">
+                        <field name="asset_id" 
+                               options="{'no_create': False, 'no_open': False}"
+                               placeholder="For equipment repairs, maintenance, etc."/>
+                    </group>
+                    <group string="Location-Based Services">
+                        <div class="text-muted small">For cleaning, security, landscaping, general maintenance</div>
+                        <field name="facility_id" placeholder="Select facility"/>
+                        <field name="building_id" placeholder="Select building"/>
+                        <field name="floor_id" placeholder="Select floor"/>
+                        <field name="room_id" placeholder="Select room"/>
+                    </group>
+                </group>
+                
+                <group>
+                    <group string="Work Order Details">
+                        <field name="priority" widget="priority"/>
+                        <field name="work_order_type"/>
+                        <field name="maintenance_type"/>
+                        <field name="estimated_duration"/>
+                    </group>
+                    <group string="Assignment">
+                        <field name="team_id"/>
+                        <field name="technician_ids" widget="many2many_tags"/>
+                        <field name="sla_id"/>
+                        <field name="job_plan_id"/>
+                    </group>
+                </group>
+                
+                <group string="Description">
+                    <field name="description" widget="html" nolabel="1"/>
+                </group>
+                
+                <group string="Inspection Notes">
+                    <field name="inspection_notes" widget="html" nolabel="1" 
+                           placeholder="Add any notes from the site inspection..."/>
+                </group>
+                
+                <footer>
+                    <button name="action_create_workorder" type="object" string="Create Work Order" class="btn-primary"/>
+                    <button name="action_cancel" type="object" string="Cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Action for the wizard -->
+    <record id="action_service_request_workorder_wizard" model="ir.actions.act_window">
+        <field name="name">Create Work Order</field>
+        <field name="res_model">service.request.workorder.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

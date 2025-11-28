@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Asset Performance Dashboard View -->
+        <record id="view_asset_performance_dashboard" model="ir.ui.view">
+            <field name="name">facilities.asset.performance.dashboard</field>
+            <field name="model">facilities.asset.performance.dashboard</field>
+            <field name="arch" type="xml">
+                <form string="Asset Performance Dashboard">
+                    <header>
+                        <button name="action_process" string="Process Analysis" type="object" class="btn-primary"/>
+                        <button name="action_reset" string="Reset" type="object" class="btn-secondary"/>
+                        <button name="%(facilities_management.action_report_asset_performance_standard)d" string="Generate Report" type="action" class="btn-success" invisible="state != 'completed'"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Performance Analysis Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                                <field name="facility_id"/>
+                                <field name="asset_ids" widget="many2many_tags"/>
+                            </group>
+                            <group>
+                                <field name="total_assets"/>
+                                <field name="total_value"/>
+                                <field name="avg_roi"/>
+                                <field name="efficiency_score"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Performance Metrics">
+                                <group>
+                                    <group>
+                                        <field name="utilization_rate"/>
+                                        <field name="downtime_hours"/>
+                                        <field name="uptime_percentage"/>
+                                    </group>
+                                    <group>
+                                        <field name="maintenance_cost"/>
+                                        <field name="maintenance_efficiency"/>
+                                        <field name="asset_health_score"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Financial Metrics">
+                                <group>
+                                    <group>
+                                        <field name="revenue_generated"/>
+                                        <field name="operating_cost"/>
+                                        <field name="net_profit"/>
+                                    </group>
+                                    <group>
+                                        <field name="profit_margin"/>
+                                        <field name="avg_roi"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Work Order Metrics">
+                                <group>
+                                    <group>
+                                        <field name="total_workorders"/>
+                                        <field name="completed_workorders"/>
+                                        <field name="pending_workorders"/>
+                                        <field name="overdue_workorders"/>
+                                    </group>
+                                    <group>
+                                        <field name="workorder_completion_rate"/>
+                                        <field name="avg_workorder_duration"/>
+                                        <field name="total_labor_hours"/>
+                                        <field name="total_labor_cost"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Results">
+                                <field name="performance_data" readonly="1" widget="ace" options="{'mode': 'json'}"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Asset Performance Dashboard Action -->
+        <record id="action_asset_performance_dashboard" model="ir.actions.act_window">
+            <field name="name">Asset Performance Dashboard</field>
+            <field name="res_model">facilities.asset.performance.dashboard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_asset_performance_dashboard"/>
+            <field name="target">current</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first asset performance analysis!
+                </p>
+                <p>
+                    Analyze asset performance metrics, track ROI, and monitor operational efficiency.
+                </p>
+            </field>
+        </record>
+
+        <!-- Asset Performance Dashboard Client Action - KPI Cards -->
+        <record id="action_asset_performance_dashboard_client" model="ir.actions.client">
+            <field name="name">Asset Performance Dashboard</field>
+            <field name="tag">facilities_asset_performance_dashboard_kpi</field>
+            <field name="target">current</field>
+        </record>
+    </data>
+</odoo>

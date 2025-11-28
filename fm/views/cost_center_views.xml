@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Cost Center Tree View -->
+    <record id="view_cost_center_tree" model="ir.ui.view">
+        <field name="name">cost.center.tree</field>
+        <field name="model">facilities.cost.center</field>
+        <field name="arch" type="xml">
+            <list string="Cost Centers">
+                <field name="complete_name"/>
+                <field name="code"/>
+                <field name="analytic_account_id"/>
+                <field name="type" widget="badge"/>
+                <field name="manager_id" widget="many2one_avatar_user"/>
+                <field name="budget_allocated" sum="Total Allocated"/>
+                <field name="budget_spent" sum="Total Spent"/>
+                <field name="budget_remaining" sum="Total Remaining"/>
+                <field name="budget_utilization" widget="percentage"/>
+                <field name="total_workorders"/>
+                <field name="active_workorders"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="currency_id" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Cost Center Form View -->
+    <record id="view_cost_center_form" model="ir.ui.view">
+        <field name="name">cost.center.form</field>
+        <field name="model">facilities.cost.center</field>
+        <field name="arch" type="xml">
+            <form string="Cost Center">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_view_budget_lines" 
+                                class="oe_stat_button" icon="fa-money">
+                            <field name="budget_allocated" widget="statinfo" string="Budget Lines"/>
+                        </button>
+                        <button type="object" name="action_view_expenses" 
+                                class="oe_stat_button" icon="fa-credit-card">
+                            <field name="budget_spent" widget="statinfo" string="Expenses"/>
+                        </button>
+                        <button type="object" name="action_view_workorders" 
+                                class="oe_stat_button" icon="fa-wrench">
+                            <field name="total_workorders" widget="statinfo" string="Work Orders"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" 
+                            invisible="active == True"/>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Cost Center Name"/>
+                        </h1>
+                        <h3>
+                            <field name="code" placeholder="Cost Center Code"/>
+                        </h3>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="parent_id"/>
+                            <field name="type"/>
+                            <field name="manager_id" widget="many2one_avatar_user"/>
+                            <field name="level" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="analytic_account_id" required="1"/>
+                            <field name="active"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Budget Summary" col="4">
+                        <field name="budget_allocated" widget="monetary"/>
+                        <field name="budget_spent" widget="monetary"/>
+                        <field name="budget_remaining" widget="monetary"/>
+                        <field name="budget_utilization" widget="percentage"/>
+                    </group>
+                    
+                    <group string="Related Records" col="4" invisible="type == 'department'">
+                        <field name="facility_id" invisible="type not in ['facility', 'building', 'floor', 'room']"/>
+                        <field name="building_id" invisible="type not in ['building', 'floor', 'room']"/>
+                        <field name="floor_id" invisible="type not in ['floor', 'room']"/>
+                        <field name="room_id" invisible="type != 'room'"/>
+                        <field name="asset_id" invisible="type != 'asset'"/>
+                    </group>
+                    
+                    <field name="description" placeholder="Cost center description..."/>
+                    
+                    <notebook>
+                        <page string="Child Cost Centers">
+                            <field name="child_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="type" widget="badge"/>
+                                    <field name="manager_id" widget="many2one_avatar_user"/>
+                                    <field name="budget_allocated"/>
+                                    <field name="budget_spent"/>
+                                    <field name="budget_utilization" widget="percentage"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Budget Lines">
+                            <field name="budget_line_ids">
+                                <list>
+                                    <field name="budget_id"/>
+                                    <field name="category_id"/>
+                                    <field name="allocated_amount"/>
+                                    <field name="spent_amount"/>
+                                    <field name="remaining_amount"/>
+                                    <field name="utilization_percentage" widget="percentage"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Expenses">
+                            <field name="expense_ids">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="budget_id"/>
+                                    <field name="category_id"/>
+                                    <field name="description"/>
+                                    <field name="amount"/>
+                                    <field name="vendor_id"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Work Orders">
+                            <field name="workorder_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="asset_id"/>
+                                    <field name="priority" widget="priority"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="technician_id"/>
+                                    <field name="start_date"/>
+                                    <field name="actual_end_date"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Cost Center Hierarchy View -->
+    <record id="view_cost_center_tree_hierarchy" model="ir.ui.view">
+        <field name="name">cost.center.tree.hierarchy</field>
+        <field name="model">facilities.cost.center</field>
+        <field name="arch" type="xml">
+            <list string="Cost Center Hierarchy" expand="1">
+                <field name="complete_name"/>
+                <field name="code"/>
+                <field name="type" widget="badge"/>
+                <field name="manager_id" widget="many2one_avatar_user"/>
+                <field name="budget_allocated"/>
+                <field name="budget_spent"/>
+                <field name="budget_utilization" widget="percentage"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="currency_id" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Cost Center Search View -->
+    <record id="view_cost_center_search" model="ir.ui.view">
+        <field name="name">cost.center.search</field>
+        <field name="model">facilities.cost.center</field>
+        <field name="arch" type="xml">
+            <search string="Cost Centers">
+                <field name="name" string="Cost Center Name"/>
+                <field name="code" string="Cost Center Code"/>
+                <field name="complete_name" string="Complete Name"/>
+                <field name="manager_id" string="Manager"/>
+                <field name="parent_id" string="Parent Cost Center"/>
+                <separator/>
+                <filter name="my_cost_centers" string="My Cost Centers" 
+                        domain="[('manager_id', '=', uid)]"/>
+                <filter name="active_cost_centers" string="Active" 
+                        domain="[('active', '=', True)]"/>
+                <filter name="inactive_cost_centers" string="Archived" 
+                        domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter name="over_budget" string="Over Budget" 
+                        domain="[('budget_utilization', '&gt;', 100)]"/>
+                <filter name="near_limit" string="Near Budget Limit" 
+                        domain="[('budget_utilization', '&gt;', 90), ('budget_utilization', '&lt;=', 100)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_type" string="Type" context="{'group_by': 'type'}"/>
+                    <filter name="group_by_parent" string="Parent Cost Center" context="{'group_by': 'parent_id'}"/>
+                    <filter name="group_by_manager" string="Manager" context="{'group_by': 'manager_id'}"/>
+                    <filter name="group_by_level" string="Level" context="{'group_by': 'level'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Cost Center Action -->
+    <record id="action_cost_center" model="ir.actions.act_window">
+        <field name="name">Cost Centers</field>
+        <field name="res_model">facilities.cost.center</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_cost_center_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first cost center!
+            </p>
+            <p>
+                Cost centers help you organize and track expenses across different departments, 
+                projects, facilities, or assets. You can create hierarchical structures and 
+                monitor budget utilization at each level.
+            </p>
+        </field>
+    </record>
+
+    <!-- Cost Center Hierarchy Action -->
+    <record id="action_cost_center_hierarchy" model="ir.actions.act_window">
+        <field name="name">Cost Center Hierarchy</field>
+        <field name="res_model">facilities.cost.center</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_cost_center_tree_hierarchy"/>
+        <field name="domain">[('parent_id', '=', False)]</field>
+        <field name="context">{'expand': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                View your cost center hierarchy!
+            </p>
+            <p>
+                This hierarchical view shows how your cost centers are organized, 
+                making it easy to understand the structure and relationships between 
+                different cost centers in your organization.
+            </p>
+        </field>
+    </record>
+
+    <!-- Expense Category Tree View -->
+    <record id="view_expense_category_tree" model="ir.ui.view">
+        <field name="name">expense.category.tree</field>
+        <field name="model">facilities.expense.category</field>
+        <field name="arch" type="xml">
+            <list string="Expense Categories">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="parent_id"/>
+                <field name="total_budget" sum="Total Budget"/>
+                <field name="total_spent" sum="Total Spent"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="currency_id" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Expense Category Form View -->
+    <record id="view_expense_category_form" model="ir.ui.view">
+        <field name="name">expense.category.form</field>
+        <field name="model">facilities.expense.category</field>
+        <field name="arch" type="xml">
+            <form string="Expense Category">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_view_budget_lines" 
+                                class="oe_stat_button" icon="fa-money">
+                            <field name="total_budget" widget="statinfo" string="Total Budget"/>
+                        </button>
+                        <button type="object" name="action_view_expenses" 
+                                class="oe_stat_button" icon="fa-credit-card">
+                            <field name="total_spent" widget="statinfo" string="Total Spent"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" 
+                            invisible="active == True"/>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Category Name"/>
+                        </h1>
+                        <h3>
+                            <field name="code" placeholder="Category Code"/>
+                        </h3>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="parent_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    
+                    <field name="description" placeholder="Category description..."/>
+                    
+                    <notebook>
+                        <page string="Sub Categories">
+                            <field name="child_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="total_budget"/>
+                                    <field name="total_spent"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Budget Lines">
+                            <field name="budget_line_ids">
+                                <list>
+                                    <field name="budget_id"/>
+                                    <field name="cost_center_id"/>
+                                    <field name="allocated_amount"/>
+                                    <field name="spent_amount"/>
+                                    <field name="utilization_percentage" widget="percentage"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Expenses">
+                            <field name="expense_ids">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="budget_id"/>
+                                    <field name="cost_center_id"/>
+                                    <field name="description"/>
+                                    <field name="amount"/>
+                                    <field name="vendor_id"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Expense Category Action -->
+    <record id="action_expense_category" model="ir.actions.act_window">
+        <field name="name">Expense Categories</field>
+        <field name="res_model">facilities.expense.category</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first expense category!
+            </p>
+            <p>
+                Expense categories help you classify and organize different types of 
+                expenses in your budgets. You can create hierarchical categories 
+                for better organization and reporting.
+            </p>
+        </field>
+    </record>
+
+</odoo>

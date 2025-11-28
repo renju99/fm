@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Package Management Sequence -->
+    <record id="seq_package_management" model="ir.sequence">
+        <field name="name">Package Management Sequence</field>
+        <field name="code">package.management</field>
+        <field name="prefix">PKG-</field>
+        <field name="padding">5</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="implementation">standard</field>
+    </record>
+
+    <!-- Visitor Management Sequence -->
+    <record id="seq_visitor_management" model="ir.sequence">
+        <field name="name">Visitor Management Sequence</field>
+        <field name="code">visitor.management</field>
+        <field name="prefix">VIS-</field>
+        <field name="padding">5</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="implementation">standard</field>
+    </record>
+
+    <!-- Visitor Badge Sequence -->
+    <record id="seq_visitor_badge" model="ir.sequence">
+        <field name="name">Visitor Badge Sequence</field>
+        <field name="code">visitor.badge</field>
+        <field name="prefix">BADGE-</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="implementation">standard</field>
+    </record>
+
+</odoo>
+
+
+
+
+
+
+
+
+
+

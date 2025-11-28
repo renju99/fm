@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Energy Alert List View -->
+    <record id="view_energy_alert_list" model="ir.ui.view">
+        <field name="name">facilities.energy.alert.list</field>
+        <field name="model">facilities.energy.alert</field>
+        <field name="arch" type="xml">
+            <list string="Energy Alerts" 
+                  decoration-info="state == 'new'"
+                  decoration-warning="priority == 'high'"
+                  decoration-danger="priority == 'critical'"
+                  create="false" edit="true" delete="true">
+                <field name="name"/>
+                <field name="alert_type"/>
+                <field name="priority" widget="priority"/>
+                <field name="state" widget="statusbar"/>
+                <field name="meter_id"/>
+                <field name="facility_id"/>
+                <field name="alert_date"/>
+                <field name="detected_value"/>
+                <field name="threshold_value"/>
+                <field name="variance_percentage"/>
+                <field name="assigned_to_id" optional="hide"/>
+                <field name="escalation_level" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Energy Alert Form View -->
+    <record id="view_energy_alert_form" model="ir.ui.view">
+        <field name="name">facilities.energy.alert.form</field>
+        <field name="model">facilities.energy.alert</field>
+        <field name="arch" type="xml">
+            <form string="Energy Alert">
+                <header>
+                    <button name="action_acknowledge" type="object" string="Acknowledge" 
+                            invisible="state != 'new'" class="btn-primary"/>
+                    <button name="action_investigate" type="object" string="Start Investigation" 
+                            invisible="state not in ['new', 'acknowledged']" class="btn-info"/>
+                    <button name="action_resolve" type="object" string="Resolve" 
+                            invisible="state not in ['acknowledged', 'investigating']" class="btn-success"/>
+                    <button name="action_close" type="object" string="Close" 
+                            invisible="state != 'resolved'" class="btn-secondary"/>
+                    <button name="action_false_positive" type="object" string="Mark as False Positive" 
+                            invisible="state in ['resolved', 'closed', 'false_positive']" class="btn-warning"/>
+                    <button name="action_escalate" type="object" string="Escalate" 
+                            invisible="state in ['resolved', 'closed', 'false_positive']" class="btn-danger"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,acknowledged,investigating,resolved,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group name="alert_info" string="Alert Information">
+                            <field name="alert_code"/>
+                            <field name="alert_type"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="alert_date"/>
+                            <field name="description"/>
+                        </group>
+                        <group name="related_objects" string="Related Objects">
+                            <field name="meter_id"/>
+                            <field name="facility_id"/>
+                            <field name="consumption_reading_id"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="values" string="Values">
+                            <field name="detected_value"/>
+                            <field name="threshold_value"/>
+                            <field name="variance_percentage"/>
+                        </group>
+                        <group name="assignment" string="Assignment">
+                            <field name="assigned_to_id"/>
+                            <field name="escalation_level"/>
+                            <field name="escalated_to_id"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Investigation" name="investigation">
+                            <group>
+                                <field name="investigation_notes" nolabel="1" placeholder="Enter investigation notes..."/>
+                            </group>
+                        </page>
+                        <page string="Resolution" name="resolution">
+                            <group>
+                                <group name="resolution_info">
+                                    <field name="resolution_notes" nolabel="1" placeholder="Enter resolution notes..."/>
+                                    <field name="resolution_date"/>
+                                    <field name="resolved_by_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Performance Impact" name="impact">
+                            <group>
+                                <field name="estimated_cost_impact"/>
+                                <field name="estimated_efficiency_loss"/>
+                            </group>
+                        </page>
+                        <page string="Recurrence" name="recurrence">
+                            <group>
+                                <field name="is_recurring"/>
+                                <field name="recurrence_pattern"/>
+                                <field name="last_occurrence"/>
+                                <field name="occurrence_count"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Energy Alert Kanban View -->
+    <record id="view_energy_alert_kanban" model="ir.ui.view">
+        <field name="name">facilities.energy.alert.kanban</field>
+        <field name="model">facilities.energy.alert</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="alert_type"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="meter_id"/>
+                <field name="facility_id"/>
+                <field name="alert_date"/>
+                <field name="detected_value"/>
+                <field name="threshold_value"/>
+                <field name="variance_percentage"/>
+                <field name="assigned_to_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                        <div class="o_kanban_record_subtitle">
+                                            <field name="meter_id"/>
+                                            <field name="facility_id"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_dropdown_kanban dropdown">
+                                        <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                            <span class="fa fa-ellipsis-v"/>
+                                        </a>
+                                        <div class="dropdown-menu" role="menu">
+                                            <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                            <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div class="o_kanban_tags_section">
+                                        <span t-if="record.priority.raw_value == 'critical'" class="badge badge-danger">Critical</span>
+                                        <span t-if="record.priority.raw_value == 'high'" class="badge badge-warning">High</span>
+                                        <span t-if="record.priority.raw_value == 'medium'" class="badge badge-info">Medium</span>
+                                        <span t-if="record.priority.raw_value == 'low'" class="badge badge-secondary">Low</span>
+                                        <span t-if="record.state.raw_value == 'new'" class="badge badge-primary">New</span>
+                                        <span t-if="record.state.raw_value == 'acknowledged'" class="badge badge-info">Acknowledged</span>
+                                        <span t-if="record.state.raw_value == 'investigating'" class="badge badge-warning">Investigating</span>
+                                        <span t-if="record.state.raw_value == 'resolved'" class="badge badge-success">Resolved</span>
+                                    </div>
+                                    <div class="o_kanban_record_details">
+                                        <div>
+                                            <strong>Detected:</strong> <field name="detected_value"/>
+                                        </div>
+                                        <div>
+                                            <strong>Threshold:</strong> <field name="threshold_value"/>
+                                        </div>
+                                        <div>
+                                            <strong>Variance:</strong> <field name="variance_percentage"/>%
+                                        </div>
+                                        <div>
+                                            <strong>Date:</strong> <field name="alert_date"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Energy Alert Search View -->
+    <record id="view_energy_alert_search" model="ir.ui.view">
+        <field name="name">facilities.energy.alert.search</field>
+        <field name="model">facilities.energy.alert</field>
+        <field name="arch" type="xml">
+            <search string="Search Energy Alerts">
+                <field name="name"/>
+                <field name="alert_type"/>
+                <field name="meter_id"/>
+                <field name="facility_id"/>
+                <field name="assigned_to_id"/>
+                <field name="alert_date"/>
+                <field name="detected_value"/>
+                <field name="threshold_value"/>
+                
+                <filter string="New Alerts" name="new" domain="[('state', '=', 'new')]"/>
+                <filter string="Critical Priority" name="critical" domain="[('priority', '=', 'critical')]"/>
+                <filter string="High Priority" name="high" domain="[('priority', '=', 'high')]"/>
+                <filter string="Unassigned" name="unassigned" domain="[('assigned_to_id', '=', False)]"/>
+                <filter string="This Week" name="this_week" domain="[('alert_date', '>=', (context_today() - relativedelta(days=7)))]"/>
+                <filter string="This Month" name="this_month" domain="[('alert_date', '>=', (context_today().replace(day=1)))]"/>
+                
+                <separator/>
+                <filter string="My Alerts" name="my_alerts" domain="[('assigned_to_id', '=', uid)]"/>
+                <filter string="Unresolved" name="unresolved" domain="[('state', 'in', ['new', 'acknowledged', 'investigating'])]"/>
+                <filter string="Resolved" name="resolved" domain="[('state', 'in', ['resolved', 'closed'])]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Alert Type" name="group_alert_type" context="{'group_by': 'alert_type'}"/>
+                    <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+                    <filter string="Assigned To" name="group_assigned" context="{'group_by': 'assigned_to_id'}"/>
+                    <filter string="Alert Date" name="group_date" context="{'group_by': 'alert_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Energy Alert Actions -->
+    <record id="action_energy_alert" model="ir.actions.act_window">
+        <field name="name">Energy Alerts</field>
+        <field name="res_model">facilities.energy.alert</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No energy alerts found!
+            </p>
+            <p>
+                Energy alerts are automatically generated when consumption thresholds are exceeded,
+                meters malfunction, or other energy-related issues are detected.
+            </p>
+        </field>
+    </record>
+
+    <!-- Energy Alert Rule List View -->
+    <record id="view_energy_alert_rule_list" model="ir.ui.view">
+        <field name="name">facilities.energy.alert.rule.list</field>
+        <field name="model">facilities.energy.alert.rule</field>
+        <field name="arch" type="xml">
+            <list string="Energy Alert Rules" create="true" edit="true" delete="true">
+                <field name="name"/>
+                <field name="rule_type"/>
+                <field name="meter_type"/>
+                <field name="facility_id"/>
+                <field name="threshold_value"/>
+                <field name="threshold_operator"/>
+                <field name="alert_priority" widget="priority"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="check_frequency"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Energy Alert Rule Form View -->
+    <record id="view_energy_alert_rule_form" model="ir.ui.view">
+        <field name="name">facilities.energy.alert.rule.form</field>
+        <field name="model">facilities.energy.alert.rule</field>
+        <field name="arch" type="xml">
+            <form string="Energy Alert Rule">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group name="rule_config" string="Rule Configuration">
+                            <field name="rule_type"/>
+                            <field name="active"/>
+                            <field name="description"/>
+                        </group>
+                        <group name="scope" string="Scope">
+                            <field name="meter_type"/>
+                            <field name="facility_id"/>
+                            <field name="meter_id"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="thresholds" string="Thresholds">
+                            <field name="threshold_value"/>
+                            <field name="threshold_operator"/>
+                            <field name="alert_priority" widget="priority"/>
+                        </group>
+                        <group name="notification" string="Notification">
+                            <field name="email_notification"/>
+                            <field name="notify_users" widget="many2many_tags"/>
+                            <field name="notify_groups" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="frequency" string="Check Frequency">
+                            <field name="check_frequency"/>
+                            <field name="auto_resolve_after_hours"/>
+                        </group>
+                        <group name="template" string="Alert Template">
+                            <field name="alert_template" nolabel="1" placeholder="Alert: {rule_name}&#10;Value: {detected_value}&#10;Threshold: {threshold_value}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Energy Alert Rule Search View -->
+    <record id="view_energy_alert_rule_search" model="ir.ui.view">
+        <field name="name">facilities.energy.alert.rule.search</field>
+        <field name="model">facilities.energy.alert.rule</field>
+        <field name="arch" type="xml">
+            <search string="Search Energy Alert Rules">
+                <field name="name"/>
+                <field name="rule_type"/>
+                <field name="meter_type"/>
+                <field name="facility_id"/>
+                
+                <filter string="Active Rules" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive Rules" name="inactive" domain="[('active', '=', False)]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Rule Type" name="group_rule_type" context="{'group_by': 'rule_type'}"/>
+                    <filter string="Meter Type" name="group_meter_type" context="{'group_by': 'meter_type'}"/>
+                    <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Energy Alert Rule Actions -->
+    <record id="action_energy_alert_rule" model="ir.actions.act_window">
+        <field name="name">Energy Alert Rules</field>
+        <field name="res_model">facilities.energy.alert.rule</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first energy alert rule!
+            </p>
+            <p>
+                Alert rules automatically monitor energy consumption and generate alerts
+                when thresholds are exceeded or anomalies are detected.
+            </p>
+        </field>
+    </record>
+
+</odoo>

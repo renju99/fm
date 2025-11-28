@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Financial Budget Tree View -->
+    <record id="view_financial_budget_tree" model="ir.ui.view">
+        <field name="name">financial.budget.tree</field>
+        <field name="model">facilities.financial.budget</field>
+        <field name="arch" type="xml">
+            <list string="Financial Budgets" decoration-info="state=='draft'" decoration-warning="state=='confirmed'" decoration-success="state=='active'" decoration-muted="state=='closed'">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="fiscal_year"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="total_budget" sum="Total Budget"/>
+                <field name="total_spent" sum="Total Spent"/>
+                <field name="remaining_budget" sum="Remaining"/>
+                <field name="utilization_percentage" widget="percentage"/>
+                <field name="state" widget="badge"/>
+                <field name="manager_id" widget="many2one_avatar_user"/>
+                <field name="currency_id" groups="base.group_multi_currency"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Financial Budget Form View -->
+    <record id="view_financial_budget_form" model="ir.ui.view">
+        <field name="name">financial.budget.form</field>
+        <field name="model">facilities.financial.budget</field>
+        <field name="arch" type="xml">
+            <form string="Financial Budget">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" 
+                            invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_approve" type="object" string="Approve" 
+                            invisible="state != 'confirmed'" class="btn-primary" 
+                            groups="facilities_management.group_facilities_manager"/>
+                    <button name="action_activate" type="object" string="Activate" 
+                            invisible="state != 'approved'" class="btn-primary"/>
+                    <button name="action_close" type="object" string="Close" 
+                            invisible="state != 'active'" class="btn-secondary"/>
+                    <button name="action_cancel" type="object" string="Cancel" 
+                            invisible="state not in ['draft', 'confirmed', 'approved']" class="btn-danger"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" 
+                            invisible="state != 'cancelled'" class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,approved,active,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_view_budget_lines" 
+                                class="oe_stat_button" icon="fa-list-alt">
+                            <field name="total_allocated" widget="statinfo" string="Budget Lines"/>
+                        </button>
+                        <button type="object" name="action_view_expenses" 
+                                class="oe_stat_button" icon="fa-money">
+                            <field name="total_spent" widget="statinfo" string="Expenses"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Closed" bg_color="bg-danger" 
+                            invisible="state != 'closed'"/>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="bg-warning" 
+                            invisible="state != 'cancelled'"/>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Budget Name"/>
+                        </h1>
+                        <h3>
+                            <field name="code" placeholder="Budget Code"/>
+                        </h3>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="fiscal_year"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                        <group>
+                            <field name="manager_id" widget="many2one_avatar_user"/>
+                            <field name="analytic_account_id" required="1"/>
+                            <field name="cost_center_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="approval_required"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Budget Summary" col="4">
+                        <field name="total_budget" widget="monetary"/>
+                        <field name="total_spent" widget="monetary"/>
+                        <field name="remaining_budget" widget="monetary"/>
+                        <field name="utilization_percentage" widget="percentage"/>
+                    </group>
+                    
+                    <group string="Approval Information" invisible="state not in ['approved', 'active', 'closed']">
+                        <field name="approved_by" readonly="1"/>
+                        <field name="approved_date" readonly="1"/>
+                    </group>
+                    
+                    <field name="description" placeholder="Budget description and notes..."/>
+                    
+                    <notebook>
+                        <page string="Budget Lines">
+                            <field name="budget_line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="analytic_account_id" required="1"/>
+                                    <field name="cost_center_id"/>
+                                    <field name="category_id" required="1"/>
+                                    <field name="allocated_amount" sum="Total Allocated"/>
+                                    <field name="spent_amount" sum="Total Spent"/>
+                                    <field name="remaining_amount" sum="Total Remaining"/>
+                                    <field name="utilization_percentage" widget="percentage"/>
+                                    <field name="description"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Expenses">
+                            <field name="expense_line_ids">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="analytic_account_id"/>
+                                    <field name="cost_center_id"/>
+                                    <field name="category_id"/>
+                                    <field name="description"/>
+                                    <field name="amount" sum="Total Amount"/>
+                                    <field name="vendor_id"/>
+                                    <field name="reference"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Financial Budget Kanban View -->
+    <record id="view_financial_budget_kanban" model="ir.ui.view">
+        <field name="name">financial.budget.kanban</field>
+        <field name="model">facilities.financial.budget</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="total_budget"/>
+                <field name="total_spent"/>
+                <field name="utilization_percentage"/>
+                <field name="state"/>
+                <field name="manager_id"/>
+                <field name="currency_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                        <small class="o_kanban_record_subtitle">
+                                            <field name="code"/>
+                                        </small>
+                                    </div>
+                                    <div class="o_kanban_record_top_right">
+                                        <field name="manager_id" widget="many2one_avatar_user"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div class="o_kanban_tags_section">
+                                        <field name="state" widget="badge"/>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <small>Budget:</small><br/>
+                                            <strong><field name="total_budget" widget="monetary"/></strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <small>Spent:</small><br/>
+                                            <strong><field name="total_spent" widget="monetary"/></strong>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" 
+                                                 t-att-style="'width: ' + record.utilization_percentage.raw_value + '%'"
+                                                 t-att-aria-valuenow="record.utilization_percentage.raw_value"
+                                                 aria-valuemin="0" aria-valuemax="100">
+                                                <t t-esc="record.utilization_percentage.raw_value"/>%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Financial Budget Search View -->
+    <record id="view_financial_budget_search" model="ir.ui.view">
+        <field name="name">financial.budget.search</field>
+        <field name="model">facilities.financial.budget</field>
+        <field name="arch" type="xml">
+            <search string="Financial Budgets">
+                <field name="name" string="Budget Name"/>
+                <field name="code" string="Budget Code"/>
+                <field name="fiscal_year"/>
+                <field name="manager_id" string="Manager"/>
+                <field name="cost_center_id" string="Cost Center"/>
+                <separator/>
+                <filter name="my_budgets" string="My Budgets" 
+                        domain="[('manager_id', '=', uid)]"/>
+                <filter name="active_budgets" string="Active" 
+                        domain="[('state', '=', 'active')]"/>
+                <filter name="draft_budgets" string="Draft" 
+                        domain="[('state', '=', 'draft')]"/>
+                <separator/>
+                <filter name="over_budget" string="Over Budget" 
+                        domain="[('utilization_percentage', '&gt;', 100)]"/>
+                <filter name="near_limit" string="Near Budget Limit" 
+                        domain="[('utilization_percentage', '&gt;', 90), ('utilization_percentage', '&lt;=', 100)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_by_fiscal_year" string="Fiscal Year" context="{'group_by': 'fiscal_year'}"/>
+                    <filter name="group_by_manager" string="Manager" context="{'group_by': 'manager_id'}"/>
+                    <filter name="group_by_cost_center" string="Cost Center" context="{'group_by': 'cost_center_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Financial Budget Action -->
+    <record id="action_financial_budget" model="ir.actions.act_window">
+        <field name="name">Financial Budgets</field>
+        <field name="res_model">facilities.financial.budget</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_financial_budget_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first financial budget!
+            </p>
+            <p>
+                Financial budgets help you plan and track expenses across different cost centers and categories.
+                You can allocate budgets, track spending, and monitor utilization in real-time.
+            </p>
+        </field>
+    </record>
+
+    <!-- Budget Expenses Action -->
+    <record id="action_budget_expenses" model="ir.actions.act_window">
+        <field name="name">Budget Expenses</field>
+        <field name="res_model">facilities.budget.expense</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="context">{'search_default_confirmed': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No budget expenses found
+            </p>
+            <p>
+                Budget expenses are automatically created when work orders are completed
+                and are linked to specific budget lines and analytical accounts.
+            </p>
+        </field>
+    </record>
+
+</odoo>

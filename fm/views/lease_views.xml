@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Enhanced Lease Kanban View for Unified Management -->
+    <record id="view_facilities_lease_kanban" model="ir.ui.view">
+        <field name="name">facilities.lease.kanban</field>
+        <field name="model">facilities.lease</field>
+        <field name="type">kanban</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column" records_draggable="false" 
+                    quick_create="false" create_text="New Lease">
+                <field name="state"/>
+                <field name="name"/>
+                <field name="tenant_name"/>
+                <field name="location"/>
+                <field name="contract_end_date"/>
+                <field name="annual_rent"/>
+                <field name="currency_id"/>
+                <field name="days_remaining"/>
+                <field name="property_usage"/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click 
+                             #{record.state.raw_value == 'expired' ? 'border-danger' : ''}
+                             #{record.state.raw_value == 'expiring' ? 'border-warning' : ''}
+                             #{record.state.raw_value == 'active' ? 'border-success' : ''}">
+                            
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <div class="o_kanban_record_subtitle text-muted">
+                                        <i class="fa fa-user" title="Tenant"/> <field name="tenant_name"/>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="o_kanban_record_body">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div><i class="fa fa-map-marker" title="Location"/> <field name="location"/></div>
+                                        <div class="text-muted">
+                                            <i class="fa fa-calendar"/> Ends: <field name="contract_end_date"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="o_kanban_record_title">
+                                            <field name="annual_rent" widget="monetary"/>
+                                        </div>
+                                        <div t-if="record.days_remaining.raw_value > 0 and record.state.raw_value == 'active'">
+                                            <span class="badge bg-info">
+                                                <field name="days_remaining"/> days left
+                                            </span>
+                                        </div>
+                                        <div t-if="record.state.raw_value == 'expired'">
+                                            <span class="badge bg-danger">Expired</span>
+                                        </div>
+                                        <div t-if="record.state.raw_value == 'expiring'">
+                                            <span class="badge bg-warning">Expiring Soon</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Lease Tree View -->
+    <record id="view_facilities_lease_list" model="ir.ui.view">
+        <field name="name">facilities.lease.list</field>
+        <field name="model">facilities.lease</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="tenant_partner_id"/>
+                <field name="landlord_partner_id"/>
+                <field name="tenant_name"/>
+                <field name="lessor_name"/>
+                <field name="location"/>
+                <field name="contract_start_date"/>
+                <field name="contract_end_date"/>
+                <field name="annual_rent"/>
+                <field name="state"/>
+                <field name="days_remaining"/>
+                <field name="expiring_soon_badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Lease Form View -->
+    <record id="view_facilities_lease_form" model="ir.ui.view">
+        <field name="name">facilities.lease.form</field>
+        <field name="model">facilities.lease</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_send_lease_by_email" string="Send by Email" type="object"
+                            invisible="state != 'draft' or tenant_partner_id == False"/>
+                    <button name="action_request_signature" string="Request Signature" type="object"
+                            invisible="state != 'draft' or tenant_partner_id == False or signature_request_id != False"/>
+                    <button name="action_download_pdf" string="Download PDF" type="object"
+                            invisible="contract_pdf"/>
+                    <button name="action_activate_contract" string="Activate" type="object"
+                            invisible="state != 'draft'" class="oe_highlight"/>
+                    <button name="action_expire_contract" string="Expire" type="object"
+                            invisible="state != 'active'"/>
+                    <button name="action_terminate_contract" string="Terminate" type="object"
+                            invisible="state not in ('draft', 'active')"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object"
+                            invisible="state not in ('active') and signature == False"/>
+                    <button name="action_renew_contract" string="Renew Contract" type="object"
+                            invisible="state != 'active'" class="oe_highlight"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,expiring,expired"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Contract Number" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="tenant_partner_id" readonly="state == 'active'"/>
+                            <field name="building_id" readonly="state == 'active'"/>
+                            <field name="facility_id" readonly="state == 'active'"/>
+                        </group>
+                        <group>
+                            <field name="contract_start_date" readonly="state == 'active'"/>
+                            <field name="contract_end_date" readonly="state == 'active'"/>
+                            <field name="payment_term_id" readonly="state == 'active'"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Lessor">
+                            <group string="Owner/Lessor Information">
+                                <group>
+                                    <field name="landlord_partner_id" readonly="state == 'active'"/>
+                                    <field name="owner_name" readonly="state == 'active'"/>
+                                    <field name="owner_license_no" readonly="state == 'active'"/>
+                                    <field name="owner_licensing_authority" readonly="state == 'active'"/>
+                                </group>
+                                <group>
+                                    <field name="lessor_partner_id" readonly="state == 'active'"/>
+                                    <field name="lessor_name" readonly="state == 'active'"/>
+                                    <field name="lessor_resident_id" readonly="state == 'active'"/>
+                                    <field name="lessor_email" readonly="state == 'active'"/>
+                                </group>
+                            </group>
+
+                            <group string="Lessor Details">
+                                <group>
+                                    <field name="lessor_phone" readonly="state == 'active'"/>
+                                    <field name="lessor_license_no" readonly="state == 'active'"/>
+                                    <field name="lessor_licensing_authority" readonly="state == 'active'"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Tenant">
+                            <group string="Tenant Information">
+                                <group>
+                                    <field name="tenant_name" readonly="state == 'active'"/>
+                                    <field name="tenant_resident_id" readonly="state == 'active'"/>
+                                    <field name="tenant_email" readonly="state == 'active'"/>
+                                </group>
+                                <group>
+                                    <field name="tenant_phone" readonly="state == 'active'"/>
+                                    <field name="tenant_license_no" readonly="state == 'active'"/>
+                                    <field name="tenant_licensing_authority" readonly="state == 'active'"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Property">
+                            <group string="Property Information">
+                                <group>
+                                    <field name="plot_no" readonly="state == 'active'"/>
+                                    <field name="makani_no" readonly="state == 'active'"/>
+                                    <field name="location" readonly="state == 'active'"/>
+                                    <field name="building_name" readonly="state == 'active'"/>
+                                </group>
+                                <group>
+                                    <field name="unit_type_id" readonly="state == 'active'"/>
+                                    <field name="property_usage" readonly="state == 'active'"/>
+                                    <field name="property_no" readonly="state == 'active'"/>
+                                    <field name="property_area" readonly="state == 'active'"/>
+                                </group>
+                            </group>
+
+                            <group string="Property Details">
+                                <group>
+                                    <field name="premises_no_dewa" readonly="state == 'active'"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Contract">
+                            <group string="Contract Information">
+                                <group>
+                                    <field name="contract_date" readonly="state == 'active'"/>
+                                </group>
+                                <group>
+                                    <field name="contract_duration"/>
+                                    <field name="days_remaining"/>
+                                    <field name="is_expiring_soon"/>
+                                    <field name="contract_status_color"/>
+                                </group>
+                            </group>
+
+                            <group string="Financial Terms">
+                                <group>
+                                    <field name="annual_rent" readonly="state == 'active'"/>
+                                    <field name="contract_value"/>
+                                    <field name="currency_id" readonly="state == 'active'"/>
+                                </group>
+                                <group>
+                                    <field name="security_deposit" readonly="state == 'active'"/>
+                                    <field name="payment_mode" readonly="state == 'active'"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- Maintenance tab removed - lease doesn't need workorder integration -->
+
+                        <page string="Signature &amp; Documents">
+                            <group string="Responsible User">
+                                <field name="user_id" readonly="state == 'active'"/>
+                            </group>
+
+                            <group string="Signature Information" invisible="signature == False">
+                                <field name="signature" widget="image" readonly="1"/>
+                                <field name="signed_on" readonly="1"/>
+                                <field name="signed_by" readonly="1"/>
+                            </group>
+
+                            <group string="Detailed Terms">
+                                <group>
+                                    <field name="additional_terms_1" readonly="state == 'active'"/>
+                                    <field name="additional_terms_2" readonly="state == 'active'"/>
+                                    <field name="additional_terms_3" readonly="state == 'active'"/>
+                                </group>
+                                <group>
+                                    <field name="additional_terms_4" readonly="state == 'active'"/>
+                                    <field name="additional_terms_5" readonly="state == 'active'"/>
+                                </group>
+                            </group>
+
+                            <group string="PDF Document" invisible="contract_pdf == False">
+                                <field name="contract_pdf" filename="contract_pdf_filename" readonly="1"/>
+                                <field name="contract_pdf_filename" invisible="1"/>
+                            </group>
+
+                            <group string="System Information" groups="base.group_no_one">
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Enhanced Lease Search View for Unified Interface -->
+    <record id="view_facilities_lease_search" model="ir.ui.view">
+        <field name="name">facilities.lease.search</field>
+        <field name="model">facilities.lease</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Contract Number"/>
+                <field name="tenant_name" string="Tenant"/>
+                <field name="location" string="Property Location"/>
+                <field name="landlord_partner_id" string="Landlord"/>
+                <separator/>
+                <!-- Quick Status Filters -->
+                <filter string="📝 Draft" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="✅ Active" name="filter_active" domain="[('state', '=', 'active')]"/>
+                <filter string="⚠️ Expiring Soon" name="filter_expiring" domain="[('is_expiring_soon', '=', True)]"/>
+                <filter string="🔴 Expired" name="filter_expired" domain="[('state', '=', 'expired')]"/>
+                <separator/>
+                <!-- Property Type Filters -->
+                <filter string="🏢 Commercial" name="filter_commercial" domain="[('property_usage', '=', 'commercial')]"/>
+                <filter string="🏠 Residential" name="filter_residential" domain="[('property_usage', '=', 'residential')]"/>
+                <filter string="🏭 Industrial" name="filter_industrial" domain="[('property_usage', '=', 'industrial')]"/>
+                <separator/>
+                <!-- Date Filters -->
+                <filter string="This Month" name="filter_this_month" 
+                        domain="[('contract_start_date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                ('contract_start_date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Year" name="filter_this_year" 
+                        domain="[('contract_start_date', '&gt;=', context_today().strftime('%Y-01-01')),
+                                ('contract_start_date', '&lt;=', context_today().strftime('%Y-12-31'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Property Type" name="group_property_usage" context="{'group_by': 'property_usage'}"/>
+                    <filter string="Landlord" name="group_landlord" context="{'group_by': 'landlord_partner_id'}"/>
+                    <filter string="Month" name="group_month" context="{'group_by': 'contract_start_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Lease Action -->
+    <record id="action_facilities_lease" model="ir.actions.act_window">
+        <field name="name">Leases</field>
+        <field name="res_model">facilities.lease</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_facilities_lease_search"/>
+        <field name="context">{'group_by': 'state'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first lease!
+            </p>
+            <p>
+                Create a new lease agreement for your property.
+            </p>
+        </field>
+    </record>
+
+    <!-- Payment Term Tree View -->
+    <record id="view_facilities_payment_term_list" model="ir.ui.view">
+        <field name="name">facilities.payment.term.list</field>
+        <field name="model">facilities.payment.term</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Payment Term Form View -->
+    <record id="view_facilities_payment_term_form" model="ir.ui.view">
+        <field name="name">facilities.payment.term.form</field>
+        <field name="model">facilities.payment.term</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Payment Term Action -->
+    <record id="action_facilities_payment_term" model="ir.actions.act_window">
+        <field name="name">Payment Terms</field>
+        <field name="res_model">facilities.payment.term</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first payment term!
+            </p>
+        </field>
+    </record>
+
+    <!-- Landlord Contract Tree View -->
+    <record id="view_facilities_landlord_contract_list" model="ir.ui.view">
+        <field name="name">facilities.landlord.contract.list</field>
+        <field name="model">facilities.landlord.contract</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="landlord_partner_id"/>
+                <field name="contract_type"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="contract_value"/>
+                <field name="vendor_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Landlord Contract Form View -->
+    <record id="view_facilities_landlord_contract_form" model="ir.ui.view">
+        <field name="name">facilities.landlord.contract.form</field>
+        <field name="model">facilities.landlord.contract</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Contract Reference"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="landlord_partner_id"/>
+                            <field name="contract_type"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                        <group>
+                            <field name="contract_value"/>
+                            <field name="currency_id"/>
+                            <field name="state"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Vendor Information">
+                            <field name="vendor_id"/>
+                            <field name="vendor_contact"/>
+                            <field name="vendor_phone"/>
+                            <field name="vendor_email"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Contract Details">
+                            <field name="description"/>
+                            <field name="terms_conditions"/>
+                            <field name="notes"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Landlord Contract Action -->
+    <record id="action_facilities_landlord_contract" model="ir.actions.act_window">
+        <field name="name">Landlord Contracts</field>
+        <field name="res_model">facilities.landlord.contract</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first landlord contract!
+            </p>
+        </field>
+    </record>
+
+    <!-- Room Type Tree View -->
+    <record id="view_facilities_room_type_list" model="ir.ui.view">
+        <field name="name">facilities.room.type.list</field>
+        <field name="model">facilities.room.type</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="description"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Room Type Form View -->
+    <record id="view_facilities_room_type_form" model="ir.ui.view">
+        <field name="name">facilities.room.type.form</field>
+        <field name="model">facilities.room.type</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Room Type Action -->
+    <record id="action_facilities_room_type" model="ir.actions.act_window">
+        <field name="name">Room Types</field>
+        <field name="res_model">facilities.room.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first room type!
+            </p>
+        </field>
+    </record>
+
+</odoo>

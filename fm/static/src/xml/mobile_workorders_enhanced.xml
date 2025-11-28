@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<t t-name="facilities_management.MobileWorkordersEnhanced">
+  <div class="o_mobile_workorders_enhanced p-3">
+    <div class="mb-3">
+      <h4 class="text-primary">Assigned to Me</h4>
+      <t t-if="state.myWorkorders.length">
+        <div class="list-group">
+          <t t-foreach="state.myWorkorders" t-as="wo" t-key="wo.id">
+            <a t-att-data-id="wo.id" t-on-click="openWorkorder" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center js-workorder-item">
+              <div>
+                <div class="fw-bold" t-esc="wo.name"/>
+                <small class="text-muted">
+                  <t t-esc="wo.asset_id ? wo.asset_id[1] : ''"/>
+                  <t t-if="wo.building_id"> • <t t-esc="wo.building_id[1]"/></t>
+                </small>
+                <div class="mt-1">
+                  <span class="badge" t-attf-class="badge bg-{{ wo.status === 'completed' ? 'success' : (wo.status === 'in_progress' ? 'warning' : (wo.status === 'cancelled' ? 'danger' : 'secondary')) }}" t-esc="wo.status"/>
+                  <t t-if="wo.work_order_type === 'preventive'">
+                    <span class="badge bg-info ms-1">Preventive</span>
+                  </t>
+                </div>
+              </div>
+              <div class="text-end">
+                <span class="badge bg-secondary me-1" t-esc="wo.priority"/>
+                <span class="badge" t-attf-class="badge bg-{{ wo.sla_response_status === 'breached' ? 'danger' : (wo.sla_response_status === 'at_risk' ? 'warning' : 'success') }}">Resp</span>
+                <span class="badge" t-attf-class="badge bg-{{ wo.sla_resolution_status === 'breached' ? 'danger' : (wo.sla_resolution_status === 'at_risk' ? 'warning' : 'success') }}">Reso</span>
+              </div>
+            </a>
+          </t>
+        </div>
+      </t>
+      <t t-else="">
+        <div class="text-muted">No work orders assigned to you.</div>
+      </t>
+    </div>
+
+    <div>
+      <h4 class="text-dark">All Work Orders</h4>
+      <t t-if="state.allWorkorders.length">
+        <div class="list-group">
+          <t t-foreach="state.allWorkorders" t-as="wo" t-key="wo.id">
+            <a t-att-data-id="wo.id" t-on-click="openWorkorder" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center js-workorder-item">
+              <div>
+                <div class="fw-bold" t-esc="wo.name"/>
+                <small class="text-muted">
+                  <t t-esc="wo.asset_id ? wo.asset_id[1] : ''"/>
+                  <t t-if="wo.building_id"> • <t t-esc="wo.building_id[1]"/></t>
+                </small>
+                <div class="mt-1">
+                  <span class="badge" t-attf-class="badge bg-{{ wo.status === 'completed' ? 'success' : (wo.status === 'in_progress' ? 'warning' : (wo.status === 'cancelled' ? 'danger' : 'secondary')) }}" t-esc="wo.status"/>
+                  <t t-if="wo.work_order_type === 'preventive'">
+                    <span class="badge bg-info ms-1">Preventive</span>
+                  </t>
+                </div>
+              </div>
+              <div class="text-end">
+                <span class="badge bg-secondary me-1" t-esc="wo.priority"/>
+                <span class="badge" t-attf-class="badge bg-{{ wo.sla_response_status === 'breached' ? 'danger' : (wo.sla_response_status === 'at_risk' ? 'warning' : 'success') }}">Resp</span>
+                <span class="badge" t-attf-class="badge bg-{{ wo.sla_resolution_status === 'breached' ? 'danger' : (wo.sla_resolution_status === 'at_risk' ? 'warning' : 'success') }}">Reso</span>
+              </div>
+            </a>
+          </t>
+        </div>
+      </t>
+      <t t-else="">
+        <div class="text-muted">No work orders found.</div>
+      </t>
+    </div>
+  </div>
+</t>

@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Monthly Facility Report Email Template -->
+        <record id="email_template_monthly_facility_report" model="mail.template">
+            <field name="name">Monthly Facility Report</field>
+            <field name="model_id" ref="facilities_management.model_facilities_facility"/>
+            <field name="subject">Monthly Facility Maintenance Report - ${object.name} - ${ctx.get('report_period') or ''}</field>
+            <field name="email_from">${user.email_formatted}</field>
+            <field name="email_to">${object.email or (object.manager_id.user_id.email or '')}</field>
+            <field name="body_html" type="html">
+                <div style="margin:0;padding:0;font-family:Arial, sans-serif;">
+                    <div style="background:#1f2937;color:#fff;padding:16px 20px;">
+                        <h2 style="margin:0;">Monthly Facility Maintenance Report</h2>
+                        <div style="opacity:.9;">${object.name}</div>
+                        <div style="opacity:.8;">${ctx.get('report_period') or ''}</div>
+                    </div>
+                    <div style="padding:20px;color:#111827;">
+                        <p>Hello,</p>
+                        <p>Please find attached the monthly maintenance report for <strong><t t-out="object.name"/></strong> covering the period <strong>${ctx.get('report_period') or ''}</strong>.</p>
+                        <ul>
+                            <li>Total Work Orders: <t t-esc="object.workorder_count or 0"/></li>
+                            <li>SLA Compliance: <t t-esc="'%.1f' % (object.sla_compliance_rate or 0.0)"/>%</li>
+                            <li>Buildings: <t t-esc="object.building_count or 0"/></li>
+                        </ul>
+                        <p>Regards,<br/>Facilities Management System</p>
+                    </div>
+                </div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+        
+        <!-- Asset Lifecycle Email Templates -->
+        
+        <!-- Asset Created Notification -->
+        <record id="email_template_asset_created" model="mail.template">
+            <field name="name">Asset Created Notification</field>
+            <field name="model_id" ref="facilities_management.model_facilities_asset"/>
+            <field name="subject">New Asset Created: ${object.name} (${object.asset_code})</field>
+            <field name="email_from">${user.email_formatted}</field>
+            <field name="email_to">${(object.facility_id.manager_id.user_id.email_formatted or '')}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
+                    <div style="background-color: #007bff; padding: 20px; color: white;">
+                        <h2 style="color: white; margin-bottom: 20px;">New Asset Created</h2>
+                    </div>
+                    
+                    <div style="padding: 20px;">
+                        <p>Dear <t t-out="object.facility_id.manager_id.name or 'Facility Manager'"/>,</p>
+                        <p>A new asset has been created in your facility.</p>
+                        
+                        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Asset Name:</td>
+                                    <td style="padding: 8px;"><t t-out="object.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Asset Code:</td>
+                                    <td style="padding: 8px;"><t t-out="object.asset_code"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Category:</td>
+                                    <td style="padding: 8px;"><t t-out="object.category_id.name or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Location:</td>
+                                    <td style="padding: 8px;"><t t-out="object.location"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Purchase Date:</td>
+                                    <td style="padding: 8px;"><t t-out="object.purchase_date or 'N/A'"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <p>Please review the asset details and ensure all necessary documentation is attached.</p>
+                        <p>Best regards,<br/>Facilities Management System</p>
+                    </div>
+                </div>
+            </field>
+            <field name="lang">${object.facility_id.manager_id.user_id.lang}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+        
+        
+        <!-- Asset Warranty Expiration Warning -->
+        <record id="email_template_asset_warranty_expiring" model="mail.template">
+            <field name="name">Asset Warranty Expiration Warning</field>
+            <field name="model_id" ref="facilities_management.model_facilities_asset"/>
+            <field name="subject">Warranty Expiring Soon: ${object.name}</field>
+            <field name="email_from">${user.email_formatted}</field>
+            <field name="email_to">${(object.facility_id.manager_id.user_id.email_formatted or '')}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
+                    <div style="background-color: #dc3545; padding: 20px; color: white;">
+                        <h2 style="color: white; margin-bottom: 20px;">Warranty Expiration Warning</h2>
+                    </div>
+                    
+                    <div style="padding: 20px;">
+                        <p>Dear <t t-out="object.facility_id.manager_id.name or 'Facility Manager'"/>,</p>
+                        <p>The warranty for the following asset is expiring soon:</p>
+                        
+                        <div style="background-color: #f8d7da; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #dc3545;">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Asset Name:</td>
+                                    <td style="padding: 8px;"><t t-out="object.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Asset Code:</td>
+                                    <td style="padding: 8px;"><t t-out="object.asset_code"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Warranty Expiration:</td>
+                                    <td style="padding: 8px;"><t t-out="object.warranty_expires_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Days Remaining:</td>
+                                    <td style="padding: 8px;"><t t-out="object.warranty_days_remaining"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Supplier:</td>
+                                    <td style="padding: 8px;"><t t-out="object.supplier_id.name or 'N/A'"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <p>Please review the asset condition and consider extending the warranty if necessary.</p>
+                        <p>Best regards,<br/>Facilities Management System</p>
+                    </div>
+                </div>
+            </field>
+            <field name="lang">${object.facility_id.manager_id.user_id.lang}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+        
+        <!-- Work Order Assignment Notification -->
+        <record id="email_template_workorder_assigned" model="mail.template">
+            <field name="name">Work Order Assignment Notification</field>
+            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="subject">Work Order Assigned: ${object.name} - ${object.asset_id.name}</field>
+            <field name="email_from">${user.email_formatted}</field>
+            <field name="email_to">${(object.technician_ids[0].user_id.email_formatted if object.technician_ids else '')}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
+                    <div style="background-color: #28a745; padding: 20px; color: white;">
+                        <h2 style="color: white; margin-bottom: 20px;">Work Order Assigned</h2>
+                    </div>
+                    
+                    <div style="padding: 20px;">
+                        <p>Dear <t t-out="object.technician_ids[0].name if object.technician_ids else 'Technician'"/>,</p>
+                        <p>A new work order has been assigned to you:</p>
+                        
+                        <div style="background-color: #d4edda; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Work Order:</td>
+                                    <td style="padding: 8px;"><t t-out="object.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Asset:</td>
+                                    <td style="padding: 8px;"><t t-out="object.asset_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Type:</td>
+                                    <td style="padding: 8px;"><t t-out="object.maintenance_type"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Priority:</td>
+                                    <td style="padding: 8px;"><t t-out="object.priority"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">SLA Deadline:</td>
+                                    <td style="padding: 8px;"><t t-out="object.sla_deadline"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Location:</td>
+                                    <td style="padding: 8px;"><t t-out="object.asset_id.location"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <p>Please review the work order details and begin work as soon as possible.</p>
+                        <p>Best regards,<br/>Facilities Management System</p>
+                    </div>
+                </div>
+            </field>
+            <field name="lang">${object.technician_ids[0].user_id.lang if object.technician_ids else 'en_US'}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+        
+        <!-- SLA Breach Alert -->
+        <record id="email_template_sla_breach_alert" model="mail.template">
+            <field name="name">SLA Breach Alert</field>
+            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="subject">URGENT: SLA Breached - ${object.name}</field>
+            <field name="email_from">${user.email_formatted}</field>
+            <field name="email_to">${(object.facility_id.manager_id.user_id.email_formatted or '')}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
+                    <div style="background-color: #dc3545; padding: 20px; color: white;">
+                        <h2 style="color: white; margin-bottom: 20px;">SLA BREACH ALERT</h2>
+                    </div>
+                    
+                    <div style="padding: 20px;">
+                        <p>Dear <t t-out="object.facility_id.manager_id.name or 'Facility Manager'"/>,</p>
+                        <p><strong>URGENT:</strong> An SLA has been breached for the following work order:</p>
+                        
+                        <div style="background-color: #f8d7da; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #dc3545;">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Work Order:</td>
+                                    <td style="padding: 8px;"><t t-out="object.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Asset:</td>
+                                    <td style="padding: 8px;"><t t-out="object.asset_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">SLA Deadline:</td>
+                                    <td style="padding: 8px;"><t t-out="object.sla_deadline"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Breach Time:</td>
+                                    <td style="padding: 8px;"><t t-out="object.sla_breach_time"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Assigned Technicians:</td>
+                                    <td style="padding: 8px;">
+                                        <t t-if="object.technician_ids">
+                                            <t t-foreach="object.technician_ids" t-as="tech">
+                                                <t t-out="tech.name"/><t t-if="tech != object.technician_ids[-1]">, </t>
+                                            </t>
+                                        </t>
+                                        <t t-else="">None</t>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <p>Immediate action is required. Please escalate this work order and ensure completion.</p>
+                        <p>Best regards,<br/>Facilities Management System</p>
+                    </div>
+                </div>
+            </field>
+            <field name="lang">${object.facility_id.manager_id.user_id.lang}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+        
+        <!-- SLA Escalation Notification Template -->
+        <record id="email_template_sla_escalation" model="mail.template">
+            <field name="name">SLA Escalation Notification</field>
+            <field name="model_id" ref="facilities_management.model_facilities_escalation_log"/>
+            <field name="subject">🚨 SLA Escalation Level ${object.escalation_level} - ${object.workorder_id.name}</field>
+            <field name="email_from">${user.email_formatted}</field>
+            <field name="email_to">${(object.escalated_to_id.user_id.email_formatted if object.escalated_to_id and object.escalated_to_id.user_id else '')}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: #f8f9fa;">
+                    <div style="background-color: #dc3545; color: white; padding: 20px; border-radius: 8px 8px 0 0;">
+                        <h2 style="margin: 0; color: white;">🚨 SLA Escalation Alert</h2>
+                        <p style="margin: 10px 0 0 0; opacity: 0.9;">Immediate Action Required - Level <t t-out="object.escalation_level"/></p>
+                    </div>
+                    
+                    <div style="background-color: white; padding: 20px; border-radius: 0 0 8px 8px; border-left: 4px solid #dc3545;">
+                        <p>Dear <t t-out="object.escalated_to_id.name or 'Manager'"/>,</p>
+                        <p>An SLA escalation has been triggered for the following work order:</p>
+                        
+                        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold; color: #495057; width: 200px;">Work Order:</td>
+                                <td style="padding: 8px 0; color: #212529;"><t t-out="object.workorder_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold; color: #495057;">Asset:</td>
+                                <td style="padding: 8px 0; color: #212529;"><t t-out="object.workorder_id.asset_id.name or 'N/A'"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold; color: #495057;">Escalation Level:</td>
+                                <td style="padding: 8px 0; color: #212529;">Level <t t-out="object.escalation_level"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold; color: #495057;">Escalation Type:</td>
+                                <td style="padding: 8px 0; color: #212529;"><t t-out="object.escalation_type.replace('_', ' ').title() if object.escalation_type else 'SLA Breach'"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold; color: #495057;">Current Status:</td>
+                                <td style="padding: 8px 0; color: #212529;"><t t-out="object.workorder_id.state.title()"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold; color: #495057;">Priority:</td>
+                                <td style="padding: 8px 0; color: #212529;"><t t-out="dict(object.workorder_id._fields['priority'].selection).get(object.workorder_id.priority, 'N/A')"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold; color: #495057;">Response Deadline:</td>
+                                <td style="padding: 8px 0; color: #212529;"><t t-out="object.workorder_id.sla_response_deadline or 'N/A'"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold; color: #495057;">Resolution Deadline:</td>
+                                <td style="padding: 8px 0; color: #212529;"><t t-out="object.workorder_id.sla_resolution_deadline or 'N/A'"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold; color: #495057;">Triggered At:</td>
+                                <td style="padding: 8px 0; color: #212529;"><t t-out="object.escalation_date"/></td>
+                            </tr>
+                        </table>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px;">
+                            <p style="margin: 0; color: #856404; font-weight: bold;">⚠️ Action Required:</p>
+                            <p style="margin: 5px 0 0 0; color: #856404;">This escalation was automatically triggered due to SLA breach. Please review and take immediate action to resolve this work order.</p>
+                        </div>
+                        
+                        <div style="margin-top: 20px; text-align: center;">
+                            <a href="/web#id=${object.workorder_id.id}&amp;view_type=form&amp;model=facilities.workorder" 
+                               style="display: inline-block; padding: 12px 24px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+                                View Work Order
+                            </a>
+                        </div>
+                        
+                        <p style="margin-top: 20px;">Best regards,<br/>Facilities Management System</p>
+                    </div>
+                </div>
+            </field>
+            <field name="lang">en_US</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+        
+        <!-- Work Order Completion Notification -->
+        <record id="email_template_workorder_completed" model="mail.template">
+            <field name="name">Work Order Completion Notification</field>
+            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="subject">Work Order Completed: ${object.name}</field>
+            <field name="email_from">${user.email_formatted}</field>
+            <field name="email_to">${(object.facility_id.manager_id.user_id.email_formatted or '')}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
+                    <div style="background-color: #28a745; padding: 20px; color: white;">
+                        <h2 style="color: white; margin-bottom: 20px;">Work Order Completed</h2>
+                    </div>
+                    
+                    <div style="padding: 20px;">
+                        <p>Dear <t t-out="object.facility_id.manager_id.name or 'Facility Manager'"/>,</p>
+                        <p>The following work order has been completed:</p>
+                        
+                        <div style="background-color: #d4edda; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Work Order:</td>
+                                    <td style="padding: 8px;"><t t-out="object.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Asset:</td>
+                                    <td style="padding: 8px;"><t t-out="object.asset_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Completion Date:</td>
+                                    <td style="padding: 8px;"><t t-out="object.actual_end_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Actual Duration:</td>
+                                    <td style="padding: 8px;"><t t-out="object.actual_duration"/> hours</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Total Cost:</td>
+                                    <td style="padding: 8px;"><t t-out="object.total_cost"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Technicians:</td>
+                                    <td style="padding: 8px;">
+                                        <t t-if="object.technician_ids">
+                                            <t t-foreach="object.technician_ids" t-as="tech">
+                                                <t t-out="tech.name"/><t t-if="tech != object.technician_ids[-1]">, </t>
+                                            </t>
+                                        </t>
+                                        <t t-else="">None</t>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <p>The work order has been successfully completed. Please review and approve if necessary.</p>
+                        <p>Best regards,<br/>Facilities Management System</p>
+                    </div>
+                </div>
+            </field>
+            <field name="lang">${object.facility_id.manager_id.user_id.lang}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+        
+        <!-- Asset Disposal Notification -->
+        <record id="email_template_asset_disposal" model="mail.template">
+            <field name="name">Asset Disposal Notification</field>
+            <field name="model_id" ref="facilities_management.model_facilities_asset"/>
+            <field name="subject">Asset Disposal Request: ${object.name}</field>
+            <field name="email_from">${user.email_formatted}</field>
+            <field name="email_to">${(object.facility_id.manager_id.user_id.email_formatted or '')}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
+                    <div style="background-color: #6c757d; padding: 20px; color: white;">
+                        <h2 style="color: white; margin-bottom: 20px;">Asset Disposal Request</h2>
+                    </div>
+                    
+                    <div style="padding: 20px;">
+                        <p>Dear <t t-out="object.facility_id.manager_id.name or 'Facility Manager'"/>,</p>
+                        <p>A request has been made to dispose of the following asset:</p>
+                        
+                        <div style="background-color: #e9ecef; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Asset Name:</td>
+                                    <td style="padding: 8px;"><t t-out="object.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Asset Code:</td>
+                                    <td style="padding: 8px;"><t t-out="object.asset_code"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Current Value:</td>
+                                    <td style="padding: 8px;"><t t-out="object.current_value"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Disposal Reason:</td>
+                                    <td style="padding: 8px;"><t t-out="object.disposal_reason or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; font-weight: bold;">Requested By:</td>
+                                    <td style="padding: 8px;"><t t-out="user.name"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <p>Please review this disposal request and approve or reject accordingly.</p>
+                        <p>Best regards,<br/>Facilities Management System</p>
+                    </div>
+                </div>
+            </field>
+            <field name="lang">${object.facility_id.manager_id.user_id.lang}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+        
+        <!-- System Maintenance Notification -->
+        <record id="email_template_system_maintenance" model="mail.template">
+            <field name="name">System Maintenance Notification</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="subject">Facilities Management System Maintenance</field>
+            <field name="email_from">${user.email_formatted}</field>
+            <field name="email_to">${object.email_formatted}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
+                    <div style="background-color: #17a2b8; padding: 20px; color: white;">
+                        <h2 style="color: white; margin-bottom: 20px;">System Maintenance Notice</h2>
+                    </div>
+                    
+                    <div style="padding: 20px;">
+                        <p>Dear <t t-out="object.name"/>,</p>
+                        <p>This is a notification about scheduled maintenance for the Facilities Management System.</p>
+                        
+                        <div style="background-color: #e7f3ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                            <h3 style="margin-top: 0;">Maintenance Details:</h3>
+                            <ul>
+                                <li><strong>Date:</strong> <t t-out="context.get('maintenance_date', 'TBD')"/></li>
+                                <li><strong>Duration:</strong> <t t-out="context.get('maintenance_duration', '2-4 hours')"/></li>
+                                <li><strong>Impact:</strong> <t t-out="context.get('maintenance_impact', 'Minimal - read-only access')"/></li>
+                            </ul>
+                        </div>
+                        
+                        <p>During this time, the system may have limited functionality. We apologize for any inconvenience.</p>
+                        <p>Best regards,<br/>IT Support Team</p>
+                    </div>
+                </div>
+            </field>
+            <field name="lang">${object.lang}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+        
+    </data>
+</odoo>
