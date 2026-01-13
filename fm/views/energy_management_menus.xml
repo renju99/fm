@@ -4,77 +4,77 @@
     <menuitem id="menu_energy_management_root" name="Energy Management" 
               sequence="70" 
               web_icon="stock,static/description/icon.png" 
-              groups="facilities_management.group_facilities_user"/>
+              groups="fm.group_facilities_user"/>
 
     <!-- ======================================== -->
     <!-- DASHBOARD & MONITORING SECTION -->
     <!-- ======================================== -->
     <menuitem id="menu_energy_dashboard_monitoring" name="Dashboard &amp; Monitoring" 
               parent="menu_energy_management_root" 
-              sequence="10" groups="facilities_management.group_facilities_user"/>
+              sequence="10" groups="fm.group_facilities_user"/>
 
     <!-- Interactive Energy Performance Dashboard -->
     <menuitem id="menu_energy_performance_dashboard_interactive" name="Interactive Energy Performance Dashboard" 
               parent="menu_energy_dashboard_monitoring" 
               action="action_energy_performance_dashboard_interactive" 
-              sequence="10" groups="facilities_management.group_facilities_user"/>
+              sequence="10" groups="fm.group_facilities_user"/>
 
     <!-- ======================================== -->
     <!-- DATA MANAGEMENT SECTION -->
     <!-- ======================================== -->
     <menuitem id="menu_energy_data_management" name="Data Management" 
               parent="menu_energy_management_root" 
-              sequence="20" groups="facilities_management.group_facilities_user"/>
+              sequence="20" groups="fm.group_facilities_user"/>
 
     <!-- Utility Meters Menu -->
     <menuitem id="menu_utility_meters" name="Utility Meters" 
               parent="menu_energy_data_management" 
               action="action_utility_meter" 
-              sequence="10" groups="facilities_management.group_facilities_user"/>
+              sequence="10" groups="fm.group_facilities_user"/>
 
     <!-- Energy Consumption Menu -->
     <menuitem id="menu_energy_consumption" name="Energy Consumption" 
               parent="menu_energy_data_management" 
               action="action_energy_consumption" 
-              sequence="20" groups="facilities_management.group_facilities_user"/>
+              sequence="20" groups="fm.group_facilities_user"/>
 
     <!-- Meter Readings Menu (alias for energy consumption with different context) -->
     <menuitem id="menu_meter_readings" name="Meter Readings" 
               parent="menu_energy_data_management" 
               action="action_energy_consumption" 
-              sequence="30" groups="facilities_management.group_facilities_user"/>
+              sequence="30" groups="fm.group_facilities_user"/>
 
     <!-- ======================================== -->
     <!-- ALERTS & NOTIFICATIONS SECTION -->
     <!-- ======================================== -->
     <menuitem id="menu_energy_alerts_notifications" name="Alerts &amp; Notifications" 
               parent="menu_energy_management_root" 
-              sequence="30" groups="facilities_management.group_facilities_user"/>
+              sequence="30" groups="fm.group_facilities_user"/>
 
     <!-- Active Energy Alerts Menu -->
     <menuitem id="menu_energy_alerts_active" name="Active Alerts" 
               parent="menu_energy_alerts_notifications" 
               action="action_energy_alert" 
-              sequence="10" groups="facilities_management.group_facilities_user"/>
+              sequence="10" groups="fm.group_facilities_user"/>
 
     <!-- Energy Alert History Menu (placeholder for alert history) -->
     <menuitem id="menu_energy_alerts_history" name="Alert History" 
               parent="menu_energy_alerts_notifications" 
               action="action_energy_alert" 
-              sequence="20" groups="facilities_management.group_facilities_user"/>
+              sequence="20" groups="fm.group_facilities_user"/>
 
     <!-- Energy Alert Rules Menu -->
     <menuitem id="menu_energy_alert_rules" name="Alert Rules" 
               parent="menu_energy_alerts_notifications" 
               action="action_energy_alert_rule" 
-              sequence="30" groups="facilities_management.group_facilities_manager"/>
+              sequence="30" groups="fm.group_facilities_manager"/>
 
     <!-- ======================================== -->
     <!-- ANALYTICS & REPORTS SECTION -->
     <!-- ======================================== -->
     <menuitem id="menu_energy_analytics_reports" name="Analytics &amp; Reports" 
               parent="menu_energy_management_root" 
-              sequence="40" groups="facilities_management.group_facilities_user"/>
+              sequence="40" groups="fm.group_facilities_user"/>
 
     <!-- Energy Reports Action -->
     <record id="action_energy_reports" model="ir.actions.act_window">
@@ -100,49 +100,49 @@
     <menuitem id="menu_energy_reports" name="Energy Reports" 
               parent="menu_energy_analytics_reports" 
               action="action_energy_reports" 
-              sequence="10" groups="facilities_management.group_facilities_user"/>
+              sequence="10" groups="fm.group_facilities_user"/>
 
     <!-- Energy Cost Analysis Menu -->
     <menuitem id="menu_energy_cost_analysis" name="Cost Analysis" 
               parent="menu_energy_analytics_reports" 
               action="action_energy_cost_analysis"
-              sequence="20" groups="facilities_management.group_facilities_user"/>
+              sequence="20" groups="fm.group_facilities_user"/>
 
     <!-- Sustainability Reports Menu -->
     <menuitem id="menu_sustainability_reports" name="Sustainability Reports" 
               parent="menu_energy_analytics_reports" 
               action="action_sustainability_report" 
-              sequence="30" groups="facilities_management.group_facilities_user"/>
+              sequence="30" groups="fm.group_facilities_user"/>
 
     <!-- Energy Benchmarking Menu -->
     <menuitem id="menu_energy_benchmarking" name="Energy Benchmarking" 
               parent="menu_energy_analytics_reports" 
               action="action_energy_benchmark"
-              sequence="40" groups="facilities_management.group_facilities_user"/>
+              sequence="40" groups="fm.group_facilities_user"/>
 
     <!-- Energy Benchmark Reports Menu -->
     <menuitem id="menu_energy_benchmark_reports" name="Benchmark Reports" 
               parent="menu_energy_benchmarking" 
               action="action_energy_benchmark_report"
-              sequence="10" groups="facilities_management.group_facilities_user"/>
+              sequence="10" groups="fm.group_facilities_user"/>
 
     <!-- ======================================== -->
     <!-- CONFIGURATION SECTION -->
     <!-- ======================================== -->
     <menuitem id="menu_energy_configuration" name="Configuration" 
               parent="menu_energy_management_root" 
-              sequence="50" groups="facilities_management.group_facilities_manager"/>
+              sequence="50" groups="fm.group_facilities_manager"/>
 
     <!-- Energy Settings Menu -->
     <menuitem id="menu_energy_settings" name="Energy Settings" 
               parent="menu_energy_configuration" 
-              sequence="10" groups="facilities_management.group_facilities_manager"/>
+              sequence="10" groups="fm.group_facilities_manager"/>
 
     <!-- Meter Configuration Menu -->
     <menuitem id="menu_meter_configuration" name="Meter Configuration" 
               parent="menu_energy_configuration" 
               action="action_utility_meter" 
-              sequence="20" groups="facilities_management.group_facilities_manager"/>
+              sequence="20" groups="fm.group_facilities_manager"/>
 
     <!-- Asset Energy Management Integration -->
     <!-- Add energy management actions to asset form view -->

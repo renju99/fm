@@ -6,10 +6,10 @@
             <field name="name">Energy Performance Dashboard Report</field>
             <field name="model">facilities.energy.performance.dashboard</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">facilities_management.energy_performance_dashboard</field>
-            <field name="report_file">facilities_management.energy_performance_dashboard</field>
+            <field name="report_name">fm.energy_performance_dashboard</field>
+            <field name="report_file">fm.energy_performance_dashboard</field>
             <field name="print_report_name">'Energy Performance Dashboard - %s' % (object.name)</field>
-            <field name="binding_model_id" ref="facilities_management.model_facilities_energy_performance_dashboard"/>
+            <field name="binding_model_id" ref="fm.model_facilities_energy_performance_dashboard"/>
             <field name="binding_type">report</field>
         </record>
 

@@ -1107,7 +1107,7 @@ class MaintenanceWorkOrder(models.Model):
     def action_start_work(self):
         """Start work order and record start time"""
         # Check user permissions
-        if not self.env.user.has_group('facilities_management.group_maintenance_technician'):
+        if not self.env.user.has_group('fm.group_maintenance_technician'):
             raise AccessError(_("Only technicians can start work orders."))
             
         for workorder in self:
@@ -1123,7 +1123,7 @@ class MaintenanceWorkOrder(models.Model):
     def action_complete_work(self):
         """Complete work order and record end time"""
         # Check user permissions
-        if not self.env.user.has_group('facilities_management.group_maintenance_technician'):
+        if not self.env.user.has_group('fm.group_maintenance_technician'):
             raise AccessError(_("Only technicians can complete work orders."))
             
         for workorder in self:
@@ -1413,8 +1413,8 @@ Error Time: {fields.Datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
                 # First level: Facility managers and supervisors
                 try:
                     group_ids.extend([
-                        self.env.ref('facilities_management.group_facility_manager', raise_if_not_found=False),
-                        self.env.ref('facilities_management.group_facility_supervisor', raise_if_not_found=False)
+                        self.env.ref('fm.group_facility_manager', raise_if_not_found=False),
+                        self.env.ref('fm.group_facility_supervisor', raise_if_not_found=False)
                     ])
                 except Exception as e:
                     _logger.warning(f"Could not find facility management groups for level 1 escalation: {str(e)}")
@@ -1423,8 +1423,8 @@ Error Time: {fields.Datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
                 # Second level: Senior managers and facility directors
                 try:
                     group_ids.extend([
-                        self.env.ref('facilities_management.group_facility_director', raise_if_not_found=False),
-                        self.env.ref('facilities_management.group_facility_manager', raise_if_not_found=False)
+                        self.env.ref('fm.group_facility_director', raise_if_not_found=False),
+                        self.env.ref('fm.group_facility_manager', raise_if_not_found=False)
                     ])
                 except Exception as e:
                     _logger.warning(f"Could not find facility management groups for level 2 escalation: {str(e)}")
@@ -1433,8 +1433,8 @@ Error Time: {fields.Datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
                 # Third level and above: All facility managers and directors
                 try:
                     group_ids.extend([
-                        self.env.ref('facilities_management.group_facility_director', raise_if_not_found=False),
-                        self.env.ref('facilities_management.group_facility_manager', raise_if_not_found=False)
+                        self.env.ref('fm.group_facility_director', raise_if_not_found=False),
+                        self.env.ref('fm.group_facility_manager', raise_if_not_found=False)
                     ])
                 except Exception as e:
                     _logger.warning(f"Could not find facility management groups for level 3+ escalation: {str(e)}")
@@ -1558,7 +1558,7 @@ Triggered: {escalation_log.escalation_date.strftime('%Y-%m-%d %H:%M:%S')}
                 # Send formal email using template if recipient has email
                 if recipient.user_id and recipient.user_id.email:
                     try:
-                        escalation_template = self.env.ref('facilities_management.email_template_sla_escalation', raise_if_not_found=False)
+                        escalation_template = self.env.ref('fm.email_template_sla_escalation', raise_if_not_found=False)
                         if escalation_template:
                             escalation_template.with_context(
                                 lang=recipient.user_id.lang or 'en_US'
@@ -1581,7 +1581,7 @@ Triggered: {escalation_log.escalation_date.strftime('%Y-%m-%d %H:%M:%S')}
         for recipient in recipients:
             try:
                 self.activity_schedule(
-                    'facilities_management.mail_activity_escalation',
+                    'fm.mail_activity_escalation',
                     user_id=recipient.user_id.id if recipient.user_id else recipient.id,
                     note=f'SLA Escalation Level {escalation_log.escalation_level} for Work Order {self.name}'
                 )
@@ -1937,7 +1937,7 @@ Triggered: {escalation_log.escalation_date.strftime('%Y-%m-%d %H:%M:%S')}
     def action_approve_onhold(self):
         """Approve on-hold request (facilities manager only)"""
         self.ensure_one()
-        if not self.env.user.has_group('facilities_management.group_facilities_manager'):
+        if not self.env.user.has_group('fm.group_facilities_manager'):
             raise UserError(_("Only facilities managers can approve on-hold requests."))
         
         if self.onhold_approval_state != 'pending':
@@ -1955,7 +1955,7 @@ Triggered: {escalation_log.escalation_date.strftime('%Y-%m-%d %H:%M:%S')}
     def action_reject_onhold(self):
         """Reject on-hold request (facilities manager only)"""
         self.ensure_one()
-        if not self.env.user.has_group('facilities_management.group_facilities_manager'):
+        if not self.env.user.has_group('fm.group_facilities_manager'):
             raise UserError(_("Only facilities managers can reject on-hold requests."))
         
         if self.onhold_approval_state != 'pending':
@@ -2022,7 +2022,7 @@ Triggered: {escalation_log.escalation_date.strftime('%Y-%m-%d %H:%M:%S')}
         if self.state != 'completed':
             raise UserError(_("Only completed work orders can be reopened."))
         
-        if not self.env.user.has_group('facilities_management.group_facilities_manager'):
+        if not self.env.user.has_group('fm.group_facilities_manager'):
             raise UserError(_("Only facilities managers can reopen work orders."))
         
         return {
@@ -2119,7 +2119,7 @@ Triggered: {escalation_log.escalation_date.strftime('%Y-%m-%d %H:%M:%S')}
         """Compute whether the current user can reopen this work order"""
         for workorder in self:
             workorder.can_reopen_workorder = (workorder.state == 'completed' and 
-                                            self.env.user.has_group('facilities_management.group_facilities_manager'))
+                                            self.env.user.has_group('fm.group_facilities_manager'))
 
     def _compute_picking_count(self):
         for workorder in self:
@@ -2550,7 +2550,7 @@ Triggered: {escalation_log.escalation_date.strftime('%Y-%m-%d %H:%M:%S')}
     @api.model
     def _can_manage_escalation(self):
         """Check if current user can manage SLA escalation settings"""
-        return self.env.user.has_group('facilities_management.group_sla_escalation_manager')
+        return self.env.user.has_group('fm.group_sla_escalation_manager')
 
     def action_manual_escalation_check(self):
         """Action to manually trigger escalation check for this work order"""

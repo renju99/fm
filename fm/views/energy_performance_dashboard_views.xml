@@ -137,7 +137,7 @@
             <field name="name">facilities.energy.performance.dashboard.search</field>
             <field name="model">facilities.energy.performance.dashboard</field>
             <field name="arch" type="xml">
-                <search string="Energy Performance Dashboards">
+                <search>
                     <field name="name"/>
                     <field name="facility_id"/>
                     <field name="meter_ids"/>
@@ -152,12 +152,10 @@
                     <filter string="Current Year" name="current_year" domain="[('date_from', '>=', datetime.datetime.now().replace(month=1, day=1).strftime('%Y-%m-%d'))]"/>
                     <filter string="Current Month" name="current_month" domain="[('date_from', '>=', datetime.datetime.now().replace(day=1).strftime('%Y-%m-%d'))]"/>
                     
-                    <group expand="0" string="Group By">
-                        <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
-                        <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
-                        <filter string="Benchmark Performance" name="group_benchmark" context="{'group_by': 'benchmark_performance'}"/>
-                        <filter string="Consumption Trend" name="group_trend" context="{'group_by': 'consumption_trend'}"/>
-                    </group>
+                <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+                <filter string="Benchmark Performance" name="group_benchmark" context="{'group_by': 'benchmark_performance'}"/>
+                <filter string="Consumption Trend" name="group_trend" context="{'group_by': 'consumption_trend'}"/>
                 </search>
             </field>
         </record>

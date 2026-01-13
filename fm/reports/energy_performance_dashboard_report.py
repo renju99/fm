@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 
 class EnergyPerformanceDashboardReport(models.AbstractModel):
-    _name = 'report.facilities_management.energy_performance_dashboard'
+    _name = 'report.fm.energy_performance_dashboard'
     _description = 'Energy Performance Dashboard Report'
 
     @api.model

@@ -235,7 +235,7 @@
         <field name="name">service.document.search</field>
         <field name="model">facilities.service.document</field>
         <field name="arch" type="xml">
-            <search string="Service Documents">
+            <search>
                 <field name="name"/>
                 <field name="description"/>
                 <field name="content"/>
@@ -257,12 +257,10 @@
                 <filter string="Video Links" name="video_links" domain="[('video_url', '!=', False)]"/>
                 <separator/>
                 <filter string="Review Due" name="review_due" domain="[('next_review_date', '&lt;=', context_today())]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Document Type" name="group_by_document_type" context="{'group_by': 'document_type'}"/>
-                    <filter string="Category" name="group_by_category" context="{'group_by': 'category'}"/>
-                    <filter string="Author" name="group_by_author" context="{'group_by': 'author_id'}"/>
-                    <filter string="Published Status" name="group_by_published" context="{'group_by': 'published'}"/>
-                </group>
+            <filter string="Document Type" name="group_by_document_type" context="{'group_by': 'document_type'}"/>
+            <filter string="Category" name="group_by_category" context="{'group_by': 'category'}"/>
+            <filter string="Author" name="group_by_author" context="{'group_by': 'author_id'}"/>
+            <filter string="Published Status" name="group_by_published" context="{'group_by': 'published'}"/>
             </search>
         </field>
     </record>

@@ -147,7 +147,7 @@
         <field name="name">financial.dashboard.search</field>
         <field name="model">facilities.financial.dashboard</field>
         <field name="arch" type="xml">
-            <search string="Financial Dashboards">
+            <search>
                 <field name="name"/>
                 <field name="period_type"/>
                 <field name="start_date"/>
@@ -158,10 +158,8 @@
                 <filter name="archived_dashboards" string="Archived" 
                         domain="[('active', '=', False)]"/>
                 <separator/>
-                <group expand="0" string="Group By">
-                    <filter name="group_by_period_type" string="Period Type" context="{'group_by': 'period_type'}"/>
-                    <filter name="group_by_company" string="Company" context="{'group_by': 'company_id'}"/>
-                </group>
+            <filter name="group_by_period_type" string="Period Type" context="{'group_by': 'period_type'}"/>
+            <filter name="group_by_company" string="Company" context="{'group_by': 'company_id'}"/>
             </search>
         </field>
     </record>

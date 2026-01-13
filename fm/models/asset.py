@@ -1304,7 +1304,7 @@ class FacilityAsset(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.report',
-            'report_name': 'facilities_management.asset_report',
+            'report_name': 'fm.asset_report',
             'report_type': 'qweb-pdf',
             'data': {'asset_ids': [self.id]},
         }

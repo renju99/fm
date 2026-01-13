@@ -4,10 +4,10 @@
         <field name="name">Facility Work Order Report</field>
         <field name="model">facilities.facility</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">facilities_management.facility_workorder_report</field>
-        <field name="report_file">facilities_management.facility_workorder_report</field>
+        <field name="report_name">fm.facility_workorder_report</field>
+        <field name="report_file">fm.facility_workorder_report</field>
         <field name="print_report_name">'Facility Work Order Report - %s' % (object.name)</field>
-        <field name="binding_model_id" ref="facilities_management.model_facilities_facility"/>
+        <field name="binding_model_id" ref="fm.model_facilities_facility"/>
         <field name="binding_type">report</field>
     </record>
 

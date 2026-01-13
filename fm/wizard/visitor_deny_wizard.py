@@ -415,7 +415,7 @@ class VisitorDenyWizard(models.TransientModel):
     def _send_host_notification(self):
         """Send notification to host."""
         template = self.env.ref(
-            'facilities_management.email_template_visitor_denied_host',
+            'fm.email_template_visitor_denied_host',
             raise_if_not_found=False
         )
         if template and self.host_id.email:
@@ -425,7 +425,7 @@ class VisitorDenyWizard(models.TransientModel):
         """Send notification to visitor."""
         if self.visitor_id.visitor_email:
             template = self.env.ref(
-                'facilities_management.email_template_visitor_denied_visitor',
+                'fm.email_template_visitor_denied_visitor',
                 raise_if_not_found=False
             )
             if template:
@@ -434,7 +434,7 @@ class VisitorDenyWizard(models.TransientModel):
     def _send_security_notification(self):
         """Send notification to security team."""
         security_group = self.env.ref(
-            'facilities_management.group_facilities_security',
+            'fm.group_facilities_security',
             raise_if_not_found=False
         )
         if security_group:
@@ -461,7 +461,7 @@ class VisitorDenyWizard(models.TransientModel):
     def _send_management_notification(self):
         """Send notification to management."""
         manager_group = self.env.ref(
-            'facilities_management.group_facilities_manager',
+            'fm.group_facilities_manager',
             raise_if_not_found=False
         )
         if manager_group:

@@ -450,18 +450,16 @@
                         domain="[('start_date','&gt;=',context_today()),('start_date','&lt;=',(context_today() + relativedelta(weeks=1)))]"/>
                 <filter string="Overdue" name="overdue" domain="[('start_date','&lt;',context_today()),('status','not in',['done','cancelled'])]"/>
                 
-                <group expand="0" string="Group By">
-                    <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
-                    <filter string="Asset" name="group_asset" context="{'group_by': 'asset_id'}"/>
-                    <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
-                    <filter string="Technician" name="group_technician" context="{'group_by': 'technician_id'}"/>
-                    <filter string="Schedule" name="group_schedule" context="{'group_by': 'schedule_id'}"/>
-                    <filter string="Job Plan" name="group_job_plan" context="{'group_by': 'job_plan_id'}"/>
-                    <filter string="SLA Status" name="group_sla_status" context="{'group_by': 'sla_status'}"/>
-                    <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
-                    <filter string="Maintenance Team" name="group_maintenance_team" context="{'group_by': 'maintenance_team_id'}"/>
-                    <filter string="Start Date" name="group_start_date" context="{'group_by': 'start_date:month'}"/>
-                </group>
+            <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
+            <filter string="Asset" name="group_asset" context="{'group_by': 'asset_id'}"/>
+            <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+            <filter string="Technician" name="group_technician" context="{'group_by': 'technician_id'}"/>
+            <filter string="Schedule" name="group_schedule" context="{'group_by': 'schedule_id'}"/>
+            <filter string="Job Plan" name="group_job_plan" context="{'group_by': 'job_plan_id'}"/>
+            <filter string="SLA Status" name="group_sla_status" context="{'group_by': 'sla_status'}"/>
+            <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
+            <filter string="Maintenance Team" name="group_maintenance_team" context="{'group_by': 'maintenance_team_id'}"/>
+            <filter string="Start Date" name="group_start_date" context="{'group_by': 'start_date:month'}"/>
             </search>
         </field>
     </record>

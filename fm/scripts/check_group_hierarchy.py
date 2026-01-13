@@ -53,11 +53,11 @@ print(f"{'-'*70}\n")
 print("🔍 Checking specific facilities management groups:\n")
 
 groups_to_check = [
-    'facilities_management.group_maintenance_technician',
-    'facilities_management.group_facilities_user',
-    'facilities_management.group_facilities_manager',
-    'facilities_management.group_sla_escalation_manager',
-    'facilities_management.group_tenant_user',
+    'fm.group_maintenance_technician',
+    'fm.group_facilities_user',
+    'fm.group_facilities_manager',
+    'fm.group_sla_escalation_manager',
+    'fm.group_tenant_user',
 ]
 
 for xml_id in groups_to_check:

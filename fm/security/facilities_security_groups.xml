@@ -16,7 +16,6 @@
         <!-- Maintenance Technician Group (Base Internal User) -->
         <record id="group_maintenance_technician" model="res.groups">
             <field name="name">Maintenance Technician</field>
-            <field name="category_id" ref="module_category_facilities"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="comment">Technicians who can view and update work orders assigned to them</field>
         </record>
@@ -24,7 +23,6 @@
         <!-- Facilities Management User Group -->
         <record id="group_facilities_user" model="res.groups">
             <field name="name">Facilities Management User</field>
-            <field name="category_id" ref="module_category_facilities"/>
             <field name="implied_ids" eval="[(4, ref('group_maintenance_technician'))]"/>
             <field name="comment">Users in this group will have access to facilities management features</field>
         </record>
@@ -32,7 +30,6 @@
         <!-- Facilities Management Manager Group -->
         <record id="group_facilities_manager" model="res.groups">
             <field name="name">Facilities Management Manager</field>
-            <field name="category_id" ref="module_category_facilities"/>
             <field name="implied_ids" eval="[(4, ref('group_facilities_user'))]"/>
             <field name="comment">Facilities managers with full access to all features including configuration and reports</field>
         </record>
@@ -40,7 +37,6 @@
         <!-- SLA Escalation Manager Group -->
         <record id="group_sla_escalation_manager" model="res.groups">
             <field name="name">SLA Escalation Manager</field>
-            <field name="category_id" ref="module_category_facilities"/>
             <field name="implied_ids" eval="[(4, ref('group_facilities_manager'))]"/>
             <field name="comment">Users who can manage SLA escalation settings and controls</field>
         </record>
@@ -49,7 +45,6 @@
         <!-- Tenant User Group for Portal Access -->
         <record id="group_tenant_user" model="res.groups">
             <field name="name">Tenant Portal User</field>
-            <field name="category_id" ref="base.module_category_hidden"/>
             <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
             <field name="comment">External portal users who can submit service requests and access basic facilities features</field>
         </record>

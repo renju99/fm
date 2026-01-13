@@ -39,7 +39,7 @@ class AssetCategory(models.Model):
 
     def action_view_assets(self):
         """Open assets in this category"""
-        action = self.env.ref('facilities_management.action_asset').read()[0]
+        action = self.env.ref('fm.action_asset').read()[0]
         action['domain'] = [('category_id', '=', self.id)]
         action['context'] = {'default_category_id': self.id}
         return action

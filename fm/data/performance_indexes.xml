@@ -3,125 +3,125 @@
     <data noupdate="1">
         <!-- Performance indexes for maintenance work orders -->
         <record id="index_workorder_state" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="model_id" ref="fm.model_facilities_workorder"/>
             <field name="name">state</field>
             <field name="index_type">btree</field>
         </record>
         
         <record id="index_workorder_priority" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="model_id" ref="fm.model_facilities_workorder"/>
             <field name="name">priority</field>
             <field name="index_type">btree</field>
         </record>
         
         <record id="index_workorder_technician" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="model_id" ref="fm.model_facilities_workorder"/>
             <field name="name">technician_id</field>
             <field name="index_type">btree</field>
         </record>
         
         <record id="index_workorder_team" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="model_id" ref="fm.model_facilities_workorder"/>
             <field name="name">team_id</field>
             <field name="index_type">btree</field>
         </record>
         
         <record id="index_workorder_asset" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="model_id" ref="fm.model_facilities_workorder"/>
             <field name="name">asset_id</field>
             <field name="index_type">btree</field>
         </record>
         
         <record id="index_workorder_facility" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="model_id" ref="fm.model_facilities_workorder"/>
             <field name="name">facility_id</field>
             <field name="index_type">btree</field>
         </record>
         
         <record id="index_workorder_create_date" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="model_id" ref="fm.model_facilities_workorder"/>
             <field name="name">create_date</field>
             <field name="index_type">btree</field>
         </record>
         
         <record id="index_workorder_sla_status" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="model_id" ref="fm.model_facilities_workorder"/>
             <field name="name">sla_status</field>
             <field name="index_type">btree</field>
         </record>
         
         <!-- Performance indexes for work order assignments -->
         <record id="index_assignment_workorder" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder_assignment"/>
+            <field name="model_id" ref="fm.model_facilities_workorder_assignment"/>
             <field name="name">workorder_id</field>
             <field name="index_type">btree</field>
         </record>
         
         <record id="index_assignment_technician" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder_assignment"/>
+            <field name="model_id" ref="fm.model_facilities_workorder_assignment"/>
             <field name="name">technician_id</field>
             <field name="index_type">btree</field>
         </record>
         
         <record id="index_assignment_status" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder_assignment"/>
+            <field name="model_id" ref="fm.model_facilities_workorder_assignment"/>
             <field name="name">status</field>
             <field name="index_type">btree</field>
         </record>
         
         <!-- Performance indexes for work order tasks -->
         <record id="index_task_workorder" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder_task"/>
+            <field name="model_id" ref="fm.model_facilities_workorder_task"/>
             <field name="name">workorder_id</field>
             <field name="index_type">btree</field>
         </record>
         
         <record id="index_task_done" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder_task"/>
+            <field name="model_id" ref="fm.model_facilities_workorder_task"/>
             <field name="name">is_done</field>
             <field name="index_type">btree</field>
         </record>
         
         <!-- Performance indexes for service requests -->
         <record id="index_service_request_state" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_service_request"/>
+            <field name="model_id" ref="fm.model_facilities_service_request"/>
             <field name="name">state</field>
             <field name="index_type">btree</field>
         </record>
         
         <record id="index_service_request_requester" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_service_request"/>
+            <field name="model_id" ref="fm.model_facilities_service_request"/>
             <field name="name">requester_id</field>
             <field name="index_type">btree</field>
         </record>
         
         <record id="index_service_request_facility" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_service_request"/>
+            <field name="model_id" ref="fm.model_facilities_service_request"/>
             <field name="name">facility_id</field>
             <field name="index_type">btree</field>
         </record>
         
         <!-- Composite indexes for common queries -->
         <record id="index_workorder_state_priority" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="model_id" ref="fm.model_facilities_workorder"/>
             <field name="name">state,priority</field>
             <field name="index_type">btree</field>
         </record>
         
         <record id="index_workorder_technician_state" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="model_id" ref="fm.model_facilities_workorder"/>
             <field name="name">technician_id,state</field>
             <field name="index_type">btree</field>
         </record>
         
         <record id="index_workorder_facility_state" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="model_id" ref="fm.model_facilities_workorder"/>
             <field name="name">facility_id,state</field>
             <field name="index_type">btree</field>
         </record>
         
         <record id="index_workorder_asset_state" model="ir.model.fields.index">
-            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="model_id" ref="fm.model_facilities_workorder"/>
             <field name="name">asset_id,state</field>
             <field name="index_type">btree</field>
         </record>

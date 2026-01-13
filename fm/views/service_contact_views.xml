@@ -219,7 +219,7 @@
         <field name="name">service.contact.search</field>
         <field name="model">facilities.service.contact</field>
         <field name="arch" type="xml">
-            <search string="Service Contacts">
+            <search>
                 <field name="name"/>
                 <field name="email"/>
                 <field name="phone"/>
@@ -240,11 +240,9 @@
                 <filter string="Level 2" name="level2" domain="[('priority_level', '=', '2')]"/>
                 <filter string="Level 3" name="level3" domain="[('priority_level', '=', '3')]"/>
                 <filter string="Level 4" name="level4" domain="[('priority_level', '=', '4')]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Category" name="group_by_category" context="{'group_by': 'category'}"/>
-                    <filter string="Priority Level" name="group_by_priority" context="{'group_by': 'priority_level'}"/>
-                    <filter string="Building" name="group_by_building" context="{'group_by': 'building_id'}"/>
-                </group>
+            <filter string="Category" name="group_by_category" context="{'group_by': 'category'}"/>
+            <filter string="Priority Level" name="group_by_priority" context="{'group_by': 'priority_level'}"/>
+            <filter string="Building" name="group_by_building" context="{'group_by': 'building_id'}"/>
             </search>
         </field>
     </record>

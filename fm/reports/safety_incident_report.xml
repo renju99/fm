@@ -4,10 +4,10 @@
         <field name="name">Safety Incident Report</field>
         <field name="model">facilities.safety.incident</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">facilities_management.safety_incident_report</field>
-        <field name="report_file">facilities_management.safety_incident_report</field>
+        <field name="report_name">fm.safety_incident_report</field>
+        <field name="report_file">fm.safety_incident_report</field>
         <field name="print_report_name">'Safety Incident Report - %s' % (object.incident_number if object.incident_number else object.name)</field>
-        <field name="binding_model_id" ref="facilities_management.model_facilities_safety_incident"/>
+        <field name="binding_model_id" ref="fm.model_facilities_safety_incident"/>
         <field name="binding_type">report</field>
     </record>
 

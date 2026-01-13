@@ -4,7 +4,7 @@ from odoo import models, api, fields
 
 
 class FacilityWorkOrderReport(models.AbstractModel):
-    _name = 'report.facilities_management.facility_workorder_report'
+    _name = 'report.fm.facility_workorder_report'
     _description = 'Facility Work Order Report'
 
     @api.model

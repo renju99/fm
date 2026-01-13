@@ -343,56 +343,56 @@
               name="Facilities"
               sequence="10"
               web_icon="hr,static/description/icon.png"
-              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager,facilities_management.group_maintenance_technician"/>
+              groups="fm.group_facilities_user,fm.group_facilities_manager,fm.group_maintenance_technician"/>
 
     <menuitem id="menu_asset_management"
               name="Asset Management"
               sequence="20"
               web_icon="stock,static/description/icon.png"
-              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager,facilities_management.group_maintenance_technician"/>
+              groups="fm.group_facilities_user,fm.group_facilities_manager,fm.group_maintenance_technician"/>
 
     <menuitem id="menu_maintenance"
               name="Maintenance"
               sequence="30"
               web_icon="maintenance,static/description/icon.png"
-              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager,facilities_management.group_maintenance_technician"/>
+              groups="fm.group_facilities_user,fm.group_facilities_manager,fm.group_maintenance_technician"/>
 
 
     <menuitem id="menu_space_booking"
               name="Space Booking"
               sequence="40"
               web_icon="calendar,static/description/icon.png"
-              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager,facilities_management.group_maintenance_technician"/>
+              groups="fm.group_facilities_user,fm.group_facilities_manager,fm.group_maintenance_technician"/>
 
     <menuitem id="menu_facilities_analytics"
               name="Analytics"
               sequence="45"
               web_icon="fa-line-chart"
-              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager"/>
+              groups="fm.group_facilities_user,fm.group_facilities_manager"/>
 
     <menuitem id="menu_financial_management"
               name="Financial Management"
               sequence="50"
               web_icon="account,static/description/icon.png"
-              groups="facilities_management.group_facilities_manager"/>
+              groups="fm.group_facilities_manager"/>
 
     <menuitem id="menu_vendor_management"
               name="Vendor Management"
               sequence="55"
               web_icon="purchase,static/description/icon.png"
-              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager"/>
+              groups="fm.group_facilities_user,fm.group_facilities_manager"/>
 
     <menuitem id="menu_safety_management"
               name="Safety &amp; HSE"
               sequence="60"
               web_icon="hr,static/description/icon.png"
-              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager"/>
+              groups="fm.group_facilities_user,fm.group_facilities_manager"/>
 
     <menuitem id="menu_energy_management_root"
               name="Energy Management"
               sequence="70"
               web_icon="stock,static/description/icon.png"
-              groups="facilities_management.group_facilities_user,facilities_management.group_facilities_manager"/>
+              groups="fm.group_facilities_user,fm.group_facilities_manager"/>
 
     <!-- FACILITIES SECTION -->
     <menuitem id="menu_facility_records"
@@ -699,7 +699,7 @@
     <menuitem id="menu_maintenance_workorder_assignment"
               name="Technician Assignments"
               parent="menu_work_orders"
-              action="facilities_management.action_maintenance_workorder_assignment"
+              action="fm.action_maintenance_workorder_assignment"
               sequence="30"/>
 
     <!-- Escalation Log Action -->
@@ -708,8 +708,8 @@
         <field name="res_model">facilities.escalation.log</field>
         <field name="view_mode">list,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
-                (0, 0, {'view_mode': 'list', 'view_id': ref('facilities_management.view_maintenance_escalation_log_tree')}),
-                (0, 0, {'view_mode': 'form', 'view_id': ref('facilities_management.view_maintenance_escalation_log_form')})]"/>
+                (0, 0, {'view_mode': 'list', 'view_id': ref('fm.view_maintenance_escalation_log_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('fm.view_maintenance_escalation_log_form')})]"/>
         <field name="context">{}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

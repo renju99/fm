@@ -71,7 +71,7 @@ class FacilitiesHomepageController(http.Controller):
             
             # Try to render using the template first, fallback to HTML if needed
             try:
-                return request.render('facilities_management.facilities_homepage_template', values)
+                return request.render('fm.facilities_homepage_template', values)
             except Exception as template_error:
                 _logger.warning("Template rendering failed, using fallback: %s", str(template_error))
                 return self._render_enhanced_homepage(values)
@@ -516,7 +516,7 @@ class FacilitiesHomepageController(http.Controller):
                     </div>
                     <div class="row g-4">
                         <div class="col-lg-4 col-md-6">
-                            <a href="/web#action=facilities_management.action_asset" class="service-card">
+                            <a href="/web#action=fm.action_asset" class="service-card">
                                 <div class="icon-wrapper">
                                     <i class="fas fa-building"></i>
                                 </div>
@@ -526,7 +526,7 @@ class FacilitiesHomepageController(http.Controller):
                             </a>
                         </div>
                         <div class="col-lg-4 col-md-6">
-                            <a href="/web#action=facilities_management.action_maintenance_workorder" class="service-card">
+                            <a href="/web#action=fm.action_maintenance_workorder" class="service-card">
                                 <div class="icon-wrapper">
                                     <i class="fas fa-wrench"></i>
                                 </div>
@@ -536,7 +536,7 @@ class FacilitiesHomepageController(http.Controller):
                             </a>
                         </div>
                         <div class="col-lg-4 col-md-6">
-                            <a href="/web#action=facilities_management.action_space_booking" class="service-card">
+                            <a href="/web#action=fm.action_space_booking" class="service-card">
                                 <div class="icon-wrapper">
                                     <i class="fas fa-calendar-alt"></i>
                                 </div>
@@ -546,7 +546,7 @@ class FacilitiesHomepageController(http.Controller):
                             </a>
                         </div>
                         <div class="col-lg-4 col-md-6">
-                            <a href="/web#action=facilities_management.action_asset_performance_dashboard" class="service-card">
+                            <a href="/web#action=fm.action_asset_performance_dashboard" class="service-card">
                                 <div class="icon-wrapper">
                                     <i class="fas fa-chart-line"></i>
                                 </div>
@@ -556,7 +556,7 @@ class FacilitiesHomepageController(http.Controller):
                             </a>
                         </div>
                         <div class="col-lg-4 col-md-6">
-                            <a href="/web#action=facilities_management.action_vendor_profile" class="service-card">
+                            <a href="/web#action=fm.action_vendor_profile" class="service-card">
                                 <div class="icon-wrapper">
                                     <i class="fas fa-users"></i>
                                 </div>
@@ -566,7 +566,7 @@ class FacilitiesHomepageController(http.Controller):
                             </a>
                         </div>
                         <div class="col-lg-4 col-md-6">
-                            <a href="/web#action=facilities_management.action_financial_dashboard" class="service-card">
+                            <a href="/web#action=fm.action_financial_dashboard" class="service-card">
                                 <div class="icon-wrapper">
                                     <i class="fas fa-shield-alt"></i>
                                 </div>
@@ -657,7 +657,7 @@ class FacilitiesHomepageController(http.Controller):
     @http.route('/facilities/dashboard', type='http', auth='user', website=True)
     def facilities_dashboard(self, **kwargs):
         """Redirect to facilities management dashboard"""
-        return request.redirect('/web#action=facilities_management.action_asset_performance_dashboard')
+        return request.redirect('/web#action=fm.action_asset_performance_dashboard')
 
     def _get_facility_stats(self):
         """Get basic facility management statistics"""
@@ -890,11 +890,11 @@ class FacilitiesHomepageController(http.Controller):
                 return 'Guest'
             
             # Check for specific groups
-            if request.env.user.has_group('facilities_management.group_facilities_manager'):
+            if request.env.user.has_group('fm.group_facilities_manager'):
                 return 'Facility Manager'
-            elif request.env.user.has_group('facilities_management.group_maintenance_technician'):
+            elif request.env.user.has_group('fm.group_maintenance_technician'):
                 return 'Maintenance Technician'
-            elif request.env.user.has_group('facilities_management.group_tenant_user'):
+            elif request.env.user.has_group('fm.group_tenant_user'):
                 return 'Tenant User'
             elif request.env.user.has_group('base.group_system'):
                 return 'System Administrator'
@@ -913,13 +913,13 @@ class FacilitiesHomepageController(http.Controller):
             permissions = []
             
             # Check various permissions
-            if request.env.user.has_group('facilities_management.group_facilities_manager'):
+            if request.env.user.has_group('fm.group_facilities_manager'):
                 permissions.extend(['manage_assets', 'manage_maintenance', 'view_analytics', 'manage_tenants'])
             
-            if request.env.user.has_group('facilities_management.group_maintenance_technician'):
+            if request.env.user.has_group('fm.group_maintenance_technician'):
                 permissions.extend(['view_workorders', 'update_workorders', 'scan_assets'])
             
-            if request.env.user.has_group('facilities_management.group_tenant_user'):
+            if request.env.user.has_group('fm.group_tenant_user'):
                 permissions.extend(['submit_requests', 'view_bookings', 'view_own_requests'])
             
             return permissions
@@ -936,26 +936,26 @@ class FacilitiesHomepageController(http.Controller):
             groups = []
             
             # Add groups based on user permissions
-            if request.env.user.has_group('facilities_management.group_facilities_manager'):
+            if request.env.user.has_group('fm.group_facilities_manager'):
                 groups.append({
                     'name': 'Facility Management',
                     'icon': 'fa-building',
                     'color': 'primary',
                     'items': [
-                        {'name': 'Assets', 'url': '/web#action=facilities_management.action_asset', 'icon': 'fa-cube'},
-                        {'name': 'Maintenance', 'url': '/web#action=facilities_management.action_maintenance_workorder', 'icon': 'fa-wrench'},
-                        {'name': 'Analytics', 'url': '/web#action=facilities_management.action_asset_performance_dashboard', 'icon': 'fa-chart-bar'},
+                        {'name': 'Assets', 'url': '/web#action=fm.action_asset', 'icon': 'fa-cube'},
+                        {'name': 'Maintenance', 'url': '/web#action=fm.action_maintenance_workorder', 'icon': 'fa-wrench'},
+                        {'name': 'Analytics', 'url': '/web#action=fm.action_asset_performance_dashboard', 'icon': 'fa-chart-bar'},
                     ]
                 })
             
-            if request.env.user.has_group('facilities_management.group_tenant_user'):
+            if request.env.user.has_group('fm.group_tenant_user'):
                 groups.append({
                     'name': 'Tenant Services',
                     'icon': 'fa-home',
                     'color': 'success',
                     'items': [
                         {'name': 'Service Requests', 'url': '/my/service-requests', 'icon': 'fa-ticket-alt'},
-                        {'name': 'Space Booking', 'url': '/web#action=facilities_management.action_space_booking', 'icon': 'fa-calendar'},
+                        {'name': 'Space Booking', 'url': '/web#action=fm.action_space_booking', 'icon': 'fa-calendar'},
                         {'name': 'My Requests', 'url': '/my/service-requests', 'icon': 'fa-list'},
                     ]
                 })
@@ -979,19 +979,19 @@ class FacilitiesHomepageController(http.Controller):
                 # Add common actions
                 actions = [
                     {'name': 'Submit Request', 'url': '/my/service-request/new', 'icon': 'fa-plus', 'color': 'primary'},
-                    {'name': 'View Dashboard', 'url': '/web#action=facilities_management.action_asset_performance_dashboard', 'icon': 'fa-tachometer-alt', 'color': 'info'},
+                    {'name': 'View Dashboard', 'url': '/web#action=fm.action_asset_performance_dashboard', 'icon': 'fa-tachometer-alt', 'color': 'info'},
                 ]
                 
                 # Add role-specific actions
-                if request.env.user.has_group('facilities_management.group_facilities_manager'):
+                if request.env.user.has_group('fm.group_facilities_manager'):
                     actions.extend([
-                        {'name': 'Manage Assets', 'url': '/web#action=facilities_management.action_asset', 'icon': 'fa-cube', 'color': 'warning'},
-                        {'name': 'Work Orders', 'url': '/web#action=facilities_management.action_maintenance_workorder', 'icon': 'fa-wrench', 'color': 'danger'},
+                        {'name': 'Manage Assets', 'url': '/web#action=fm.action_asset', 'icon': 'fa-cube', 'color': 'warning'},
+                        {'name': 'Work Orders', 'url': '/web#action=fm.action_maintenance_workorder', 'icon': 'fa-wrench', 'color': 'danger'},
                     ])
                 
-                if request.env.user.has_group('facilities_management.group_tenant_user'):
+                if request.env.user.has_group('fm.group_tenant_user'):
                     actions.extend([
-                        {'name': 'Book Space', 'url': '/web#action=facilities_management.action_space_booking', 'icon': 'fa-calendar', 'color': 'success'},
+                        {'name': 'Book Space', 'url': '/web#action=fm.action_space_booking', 'icon': 'fa-calendar', 'color': 'success'},
                         {'name': 'My Requests', 'url': '/my/service-requests', 'icon': 'fa-list', 'color': 'info'},
                     ])
             
@@ -1000,7 +1000,7 @@ class FacilitiesHomepageController(http.Controller):
             _logger.error("Error getting quick actions: %s", str(e))
             return []
 
-    @http.route('/facilities/quick-stats', type='json', auth='public', website=True)
+    @http.route('/facilities/quick-stats', type='jsonrpc', auth='public', website=True)
     def get_quick_stats(self, **kwargs):
         """AJAX endpoint to get quick statistics"""
         try:
@@ -1016,44 +1016,44 @@ class FacilitiesHomepageController(http.Controller):
                 'error': str(e)
             }
 
-    @http.route('/facilities/navigation-menu', type='json', auth='user', website=True)
+    @http.route('/facilities/navigation-menu', type='jsonrpc', auth='user', website=True)
     def get_navigation_menu(self, **kwargs):
         """Get navigation menu items for the homepage"""
         try:
             menu_items = [
                 {
                     'name': 'Asset Management',
-                    'url': '/web#action=facilities_management.action_asset',
+                    'url': '/web#action=fm.action_asset',
                     'icon': 'fa-building',
                     'description': 'Manage facility assets and equipment'
                 },
                 {
                     'name': 'Maintenance',
-                    'url': '/web#action=facilities_management.action_maintenance_workorder',
+                    'url': '/web#action=fm.action_maintenance_workorder',
                     'icon': 'fa-tools',
                     'description': 'Work orders and maintenance tasks'
                 },
                 {
                     'name': 'Space Booking',
-                    'url': '/web#action=facilities_management.action_space_booking',
+                    'url': '/web#action=fm.action_space_booking',
                     'icon': 'fa-calendar-alt',
                     'description': 'Book meeting rooms and spaces'
                 },
                 {
                     'name': 'Analytics',
-                    'url': '/web#action=facilities_management.action_asset_performance_dashboard',
+                    'url': '/web#action=fm.action_asset_performance_dashboard',
                     'icon': 'fa-chart-bar',
                     'description': 'View analytics and reports'
                 },
                 {
                     'name': 'Vendor Management',
-                    'url': '/web#action=facilities_management.action_vendor_profile',
+                    'url': '/web#action=fm.action_vendor_profile',
                     'icon': 'fa-users',
                     'description': 'Manage vendors and contracts'
                 },
                 {
                     'name': 'Financial Dashboard',
-                    'url': '/web#action=facilities_management.action_financial_dashboard',
+                    'url': '/web#action=fm.action_financial_dashboard',
                     'icon': 'fa-dollar-sign',
                     'description': 'Financial overview and budgets'
                 },
@@ -1120,13 +1120,13 @@ class FacilitiesHomepageController(http.Controller):
     @http.route('/facilities/features', type='http', auth='public', website=True)
     def features_page(self, **kwargs):
         """Features page"""
-        return request.render('facilities_management.features_page_template', {})
+        return request.render('fm.features_page_template', {})
 
 
     @http.route('/facilities/about', type='http', auth='public', website=True)
     def about_page(self, **kwargs):
         """About page"""
-        return request.render('facilities_management.about_page_template', {})
+        return request.render('fm.about_page_template', {})
 
     @http.route('/facilities/contact', type='http', auth='public', website=True, methods=['GET', 'POST'])
     def contact_page(self, **kwargs):
@@ -1134,7 +1134,7 @@ class FacilitiesHomepageController(http.Controller):
         if request.httprequest.method == 'POST':
             return self._handle_contact_form(kwargs)
         
-        return request.render('facilities_management.contact_page_template', {})
+        return request.render('fm.contact_page_template', {})
 
     def _handle_contact_form(self, kwargs):
         """Handle contact form submission"""
@@ -1149,7 +1149,7 @@ class FacilitiesHomepageController(http.Controller):
             
             # Validate required fields
             if not all([name, email, subject, message]):
-                return request.render('facilities_management.contact_page_template', {
+                return request.render('fm.contact_page_template', {
                     'error': 'Name, email, subject, and message are required fields.',
                     'form_data': kwargs
                 })
@@ -1168,7 +1168,7 @@ class FacilitiesHomepageController(http.Controller):
             
         except Exception as e:
             _logger.error("Error handling contact form: %s", str(e))
-            return request.render('facilities_management.contact_page_template', {
+            return request.render('fm.contact_page_template', {
                 'error': 'An error occurred while processing your message. Please try again.',
                 'form_data': kwargs
             })
@@ -1257,7 +1257,7 @@ class FacilitiesHomepageController(http.Controller):
     def _send_contact_confirmation(self, partner, contact_message):
         """Send contact confirmation email"""
         try:
-            template = request.env.ref('facilities_management.contact_confirmation_email', raise_if_not_found=False)
+            template = request.env.ref('fm.contact_confirmation_email', raise_if_not_found=False)
             if template:
                 template.sudo().send_mail(contact_message.id, force_send=True)
         except Exception as e:
@@ -1266,9 +1266,9 @@ class FacilitiesHomepageController(http.Controller):
     @http.route('/facilities/contact-success', type='http', auth='public', website=True)
     def contact_success(self, **kwargs):
         """Contact success page"""
-        return request.render('facilities_management.contact_success_template', {})
+        return request.render('fm.contact_success_template', {})
 
     @http.route('/facilities/pricing', type='http', auth='public', website=True)
     def pricing_page(self, **kwargs):
         """Pricing page"""
-        return request.render('facilities_management.pricing_page_template', {})
+        return request.render('fm.pricing_page_template', {})

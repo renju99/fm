@@ -7,7 +7,7 @@ _logger = logging.getLogger(__name__)
 
 
 class AssetPerformanceStandardReport(models.AbstractModel):
-    _name = 'report.facilities_management.asset_performance_standard'
+    _name = 'report.fm.asset_performance_standard'
     _description = 'Standard Asset Performance Report'
 
     @api.model

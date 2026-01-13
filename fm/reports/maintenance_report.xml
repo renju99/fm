@@ -4,10 +4,10 @@
         <field name="name">Asset Maintenance Report</field>
         <field name="model">facilities.asset</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">facilities_management.report_asset_maintenance_tabular_template</field>
-        <field name="report_file">facilities_management.report_asset_maintenance_tabular_template</field>
+        <field name="report_name">fm.report_asset_maintenance_tabular_template</field>
+        <field name="report_file">fm.report_asset_maintenance_tabular_template</field>
         <field name="print_report_name">'Maintenance Report - %s' % (object.name)</field>
-        <field name="binding_model_id" ref="facilities_management.model_facilities_asset"/>
+        <field name="binding_model_id" ref="fm.model_facilities_asset"/>
         <field name="binding_type">report</field>
     </record>
 

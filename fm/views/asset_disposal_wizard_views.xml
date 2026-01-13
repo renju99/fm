@@ -175,7 +175,7 @@
             <field name="name">facilities.asset.disposal.search</field>
             <field name="model">facilities.asset.disposal</field>
             <field name="arch" type="xml">
-                <search string="Asset Disposals">
+                <search>
                     <field name="asset_id"/>
                     <field name="disposal_reason"/>
                     <field name="disposal_method"/>
@@ -183,17 +183,11 @@
                             domain="[('disposal_date', '&gt;=', datetime.datetime.now().strftime('%Y-01-01'))]"/>
                     <filter string="Hazardous Materials" name="hazardous" 
                             domain="[('hazardous_materials', '=', True)]"/>
-                    <group expand="0" string="Group By">
-                        <filter string="Disposal Reason" name="group_reason" 
-                                context="{'group_by': 'disposal_reason'}"/>
-                        <filter string="Disposal Method" name="group_method" 
-                                context="{'group_by': 'disposal_method'}"/>
-                        <filter string="Environmental Impact" name="group_impact" 
-                                context="{'group_by': 'environmental_impact'}"/>
-                        <filter string="Month" name="group_month" 
-                                context="{'group_by': 'disposal_date:month'}"/>
-                    </group>
-                </search>
+                <filter string="Disposal Reason" name="group_reason" context="{'group_by': 'disposal_reason'}"/>
+                <filter string="Disposal Method" name="group_method" context="{'group_by': 'disposal_method'}"/>
+                <filter string="Environmental Impact" name="group_impact" context="{'group_by': 'environmental_impact'}"/>
+                <filter string="Month" name="group_month" context="{'group_by': 'disposal_date:month'}"/>
+            </search>
             </field>
         </record>
 

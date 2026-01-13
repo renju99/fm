@@ -40,7 +40,7 @@ class WorkOrderReopenWizard(models.TransientModel):
             raise ValidationError(_("Please provide a reason for reopening the work order."))
         
         # Check if user has permission to reopen (facilities manager)
-        if not self.env.user.has_group('facilities_management.group_facilities_manager'):
+        if not self.env.user.has_group('fm.group_facilities_manager'):
             raise UserError(_("Only facilities managers can reopen work orders."))
         
         # Update work order state

@@ -382,7 +382,7 @@ class SafetyIncident(models.Model):
         
         # Create activity for investigation
         self.activity_schedule(
-            'facilities_management.mail_activity_incident_investigation',
+            'fm.mail_activity_incident_investigation',
             date_deadline=fields.Date.today() + timedelta(days=7),
             summary=_('Complete Incident Investigation'),
             note=_('Please complete investigation for incident: %s') % self.name,

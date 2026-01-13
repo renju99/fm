@@ -62,7 +62,7 @@
         <field name="name">maintenance.workorder.access.log.search</field>
         <field name="model">maintenance.workorder.access.log</field>
         <field name="arch" type="xml">
-            <search string="Search Access Logs">
+            <search>
                 <field name="workorder_id"/>
                 <field name="user_id"/>
                 <field name="action"/>
@@ -75,12 +75,10 @@
                 <filter string="Today" name="today" domain="[('access_date', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
                 <filter string="This Week" name="this_week" domain="[('access_date', '>=', (context_today() - relativedelta(weeks=1)))]"/>
                 <filter string="This Month" name="this_month" domain="[('access_date', '>=', datetime.datetime.now().strftime('%Y-%m-01'))]"/>
-                <group expand="0" string="Group By">
-                    <filter string="User" name="group_user" context="{'group_by': 'user_id'}"/>
-                    <filter string="Action" name="group_action" context="{'group_by': 'action'}"/>
-                    <filter string="Security Level" name="group_security_level" context="{'group_by': 'security_level'}"/>
-                    <filter string="Date" name="group_date" context="{'group_by': 'access_date:day'}"/>
-                </group>
+            <filter string="User" name="group_user" context="{'group_by': 'user_id'}"/>
+            <filter string="Action" name="group_action" context="{'group_by': 'action'}"/>
+            <filter string="Security Level" name="group_security_level" context="{'group_by': 'security_level'}"/>
+            <filter string="Date" name="group_date" context="{'group_by': 'access_date:day'}"/>
             </search>
         </field>
     </record>
@@ -91,8 +89,8 @@
         <field name="res_model">maintenance.workorder.access.log</field>
         <field name="view_mode">list,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
-                (0, 0, {'view_mode': 'list', 'view_id': ref('facilities_management.view_maintenance_workorder_access_log_tree')}),
-                (0, 0, {'view_mode': 'form', 'view_id': ref('facilities_management.view_maintenance_workorder_access_log_form')})]"/>
+                (0, 0, {'view_mode': 'list', 'view_id': ref('fm.view_maintenance_workorder_access_log_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('fm.view_maintenance_workorder_access_log_form')})]"/>
         <field name="context">{'search_default_critical': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
@@ -108,7 +106,7 @@
     <record id="view_workorder_form_inherit_security" model="ir.ui.view">
         <field name="name">facilities.workorder.form.inherit.security</field>
         <field name="model">facilities.workorder</field>
-        <field name="inherit_id" ref="facilities_management.view_workorder_enhanced_form"/>
+        <field name="inherit_id" ref="fm.view_workorder_enhanced_form"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button class="oe_stat_button" name="action_view_access_logs" type="object"
@@ -125,10 +123,10 @@
     <record id="view_workorder_form_inherit_security_fields" model="ir.ui.view">
         <field name="name">facilities.workorder.form.inherit.security.fields</field>
         <field name="model">facilities.workorder</field>
-        <field name="inherit_id" ref="facilities_management.view_workorder_enhanced_form"/>
+        <field name="inherit_id" ref="fm.view_workorder_enhanced_form"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <page string="Security" name="security" groups="facilities_management.group_facilities_security_admin">
+                <page string="Security" name="security" groups="fm.group_facilities_security_admin">
                     <group>
                         <group string="Access Control">
                             <field name="access_level"/>
@@ -200,23 +198,23 @@
     <!-- Security Menu Items -->
     <menuitem id="menu_maintenance_security"
               name="Security"
-              parent="facilities_management.menu_maintenance_admin"
+              parent="fm.menu_maintenance_admin"
               sequence="10"
-              groups="facilities_management.group_facilities_security_admin"/>
+              groups="fm.group_facilities_security_admin"/>
 
     <menuitem id="menu_maintenance_access_logs"
               name="Access Logs"
-              parent="facilities_management.menu_maintenance_security"
+              parent="fm.menu_maintenance_security"
               action="action_maintenance_workorder_access_log"
               sequence="10"
-              groups="facilities_management.group_facilities_security_auditor"/>
+              groups="fm.group_facilities_security_auditor"/>
 
     <menuitem id="menu_maintenance_security_dashboard"
               name="Security Dashboard"
-              parent="facilities_management.menu_maintenance_security"
+              parent="fm.menu_maintenance_security"
               action="action_maintenance_workorder_security_dashboard"
               sequence="20"
-              groups="facilities_management.group_facilities_security_admin"/>
+              groups="fm.group_facilities_security_admin"/>
 
     <!-- Security Dashboard Action -->
     <record id="action_maintenance_workorder_security_dashboard" model="ir.actions.act_window">

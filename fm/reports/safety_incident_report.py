@@ -8,7 +8,7 @@ _logger = logging.getLogger(__name__)
 
 
 class SafetyIncidentReport(models.AbstractModel):
-    _name = 'report.facilities_management.safety_incident_report'
+    _name = 'report.fm.safety_incident_report'
     _description = 'Safety Incident Report'
 
     @api.model

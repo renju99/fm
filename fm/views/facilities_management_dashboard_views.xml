@@ -202,7 +202,7 @@
         <field name="name">facilities.management.dashboard.search</field>
         <field name="model">facilities.management.dashboard</field>
         <field name="arch" type="xml">
-            <search string="Search Dashboards">
+            <search>
                 <field name="name"/>
                 <field name="user_id"/>
                 <field name="facility_ids"/>
@@ -222,15 +222,9 @@
                 <filter string="This Year" name="this_year" 
                         domain="[('period_type', '=', 'year')]"/>
                 
-                <group expand="0" string="Group By">
-                    <filter string="Owner" name="group_by_user" 
-                            context="{'group_by': 'user_id'}"/>
-                    <filter string="Period Type" name="group_by_period" 
-                            context="{'group_by': 'period_type'}"/>
-                    <filter string="Company" name="group_by_company" 
-                            context="{'group_by': 'company_id'}" 
-                            groups="base.group_multi_company"/>
-                </group>
+            <filter string="Owner" name="group_by_user" context="{'group_by': 'user_id'}"/>
+            <filter string="Period Type" name="group_by_period" context="{'group_by': 'period_type'}"/>
+            <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}"/>
             </search>
         </field>
     </record>

@@ -235,7 +235,7 @@
         <field name="name">service.catalog.search</field>
         <field name="model">facilities.service.catalog</field>
         <field name="arch" type="xml">
-            <search string="Service Catalog">
+            <search>
                 <field name="name"/>
                 <field name="code"/>
                 <field name="description"/>
@@ -248,11 +248,9 @@
                 <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
                 <separator/>
                 <filter string="Approval Required" name="approval_required" domain="[('approval_required', '=', True)]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Category" name="group_by_category" context="{'group_by': 'category'}"/>
-                    <filter string="Availability" name="group_by_available" context="{'group_by': 'available'}"/>
-                    <filter string="Parent Service" name="group_by_parent" context="{'group_by': 'parent_id'}"/>
-                </group>
+            <filter string="Category" name="group_by_category" context="{'group_by': 'category'}"/>
+            <filter string="Availability" name="group_by_available" context="{'group_by': 'available'}"/>
+            <filter string="Parent Service" name="group_by_parent" context="{'group_by': 'parent_id'}"/>
             </search>
         </field>
     </record>

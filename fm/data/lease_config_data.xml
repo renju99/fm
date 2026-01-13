@@ -3,12 +3,12 @@
     <data noupdate="1">
         <!-- Configuration Parameters -->
         <record id="lease_reminder_days" model="ir.config_parameter">
-            <field name="key">facilities_management.lease_reminder_days</field>
+            <field name="key">fm.lease_reminder_days</field>
             <field name="value">60</field>
         </record>
 
         <record id="lease_customer_reminder_days" model="ir.config_parameter">
-            <field name="key">facilities_management.lease_customer_reminder_days</field>
+            <field name="key">fm.lease_customer_reminder_days</field>
             <field name="value">60</field>
         </record>
     </data>

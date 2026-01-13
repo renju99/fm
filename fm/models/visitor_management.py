@@ -145,7 +145,7 @@ class VisitorManagement(models.Model):
     
     # Location Information
     facility_id = fields.Many2one(
-        'facility.facility',
+        'facilities.facility',
         string='Facility',
         required=True,
         tracking=True,
@@ -153,20 +153,20 @@ class VisitorManagement(models.Model):
     )
     
     building_id = fields.Many2one(
-        'facility.building',
+        'facilities.building',
         string='Building',
         tracking=True,
         help="Building to visit"
     )
     
     floor_id = fields.Many2one(
-        'facility.floor',
+        'facilities.floor',
         string='Floor',
         help="Floor number"
     )
     
     room_id = fields.Many2one(
-        'facility.room',
+        'facilities.room',
         string='Room/Office',
         help="Specific room or office to visit"
     )
@@ -446,7 +446,7 @@ class VisitorManagement(models.Model):
             
             # Send notification to host
             template = self.env.ref(
-                'facilities_management.email_template_visitor_approval_request',
+                'fm.email_template_visitor_approval_request',
                 raise_if_not_found=False
             )
             if template:
@@ -478,7 +478,7 @@ class VisitorManagement(models.Model):
             # Send approval notification to visitor
             if record.visitor_email:
                 template = self.env.ref(
-                    'facilities_management.email_template_visitor_approved',
+                    'fm.email_template_visitor_approved',
                     raise_if_not_found=False
                 )
                 if template:

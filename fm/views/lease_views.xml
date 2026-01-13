@@ -298,12 +298,10 @@
                 <filter string="This Year" name="filter_this_year" 
                         domain="[('contract_start_date', '&gt;=', context_today().strftime('%Y-01-01')),
                                 ('contract_start_date', '&lt;=', context_today().strftime('%Y-12-31'))]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
-                    <filter string="Property Type" name="group_property_usage" context="{'group_by': 'property_usage'}"/>
-                    <filter string="Landlord" name="group_landlord" context="{'group_by': 'landlord_partner_id'}"/>
-                    <filter string="Month" name="group_month" context="{'group_by': 'contract_start_date:month'}"/>
-                </group>
+            <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+            <filter string="Property Type" name="group_property_usage" context="{'group_by': 'property_usage'}"/>
+            <filter string="Landlord" name="group_landlord" context="{'group_by': 'landlord_partner_id'}"/>
+            <filter string="Month" name="group_month" context="{'group_by': 'contract_start_date:month'}"/>
             </search>
         </field>
     </record>

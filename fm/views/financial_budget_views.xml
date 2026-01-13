@@ -34,7 +34,7 @@
                             invisible="state != 'draft'" class="btn-primary"/>
                     <button name="action_approve" type="object" string="Approve" 
                             invisible="state != 'confirmed'" class="btn-primary" 
-                            groups="facilities_management.group_facilities_manager"/>
+                            groups="fm.group_facilities_manager"/>
                     <button name="action_activate" type="object" string="Activate" 
                             invisible="state != 'approved'" class="btn-primary"/>
                     <button name="action_close" type="object" string="Close" 
@@ -209,7 +209,7 @@
         <field name="name">financial.budget.search</field>
         <field name="model">facilities.financial.budget</field>
         <field name="arch" type="xml">
-            <search string="Financial Budgets">
+            <search>
                 <field name="name" string="Budget Name"/>
                 <field name="code" string="Budget Code"/>
                 <field name="fiscal_year"/>
@@ -228,12 +228,10 @@
                 <filter name="near_limit" string="Near Budget Limit" 
                         domain="[('utilization_percentage', '&gt;', 90), ('utilization_percentage', '&lt;=', 100)]"/>
                 <separator/>
-                <group expand="0" string="Group By">
-                    <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
-                    <filter name="group_by_fiscal_year" string="Fiscal Year" context="{'group_by': 'fiscal_year'}"/>
-                    <filter name="group_by_manager" string="Manager" context="{'group_by': 'manager_id'}"/>
-                    <filter name="group_by_cost_center" string="Cost Center" context="{'group_by': 'cost_center_id'}"/>
-                </group>
+            <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
+            <filter name="group_by_fiscal_year" string="Fiscal Year" context="{'group_by': 'fiscal_year'}"/>
+            <filter name="group_by_manager" string="Manager" context="{'group_by': 'manager_id'}"/>
+            <filter name="group_by_cost_center" string="Cost Center" context="{'group_by': 'cost_center_id'}"/>
             </search>
         </field>
     </record>

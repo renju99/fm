@@ -13,11 +13,11 @@ portal_group = env.ref('base.group_portal')
 internal_group = env.ref('base.group_user')
 
 # Get facilities management groups
-maintenance_tech = env.ref('facilities_management.group_maintenance_technician')
-facilities_user = env.ref('facilities_management.group_facilities_user')
-facilities_manager = env.ref('facilities_management.group_facilities_manager')
-sla_manager = env.ref('facilities_management.group_sla_escalation_manager')
-tenant_user = env.ref('facilities_management.group_tenant_user')
+maintenance_tech = env.ref('fm.group_maintenance_technician')
+facilities_user = env.ref('fm.group_facilities_user')
+facilities_manager = env.ref('fm.group_facilities_manager')
+sla_manager = env.ref('fm.group_sla_escalation_manager')
+tenant_user = env.ref('fm.group_tenant_user')
 
 print("🔧 Fixing group hierarchies...\n")
 

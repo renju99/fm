@@ -166,7 +166,7 @@
         <field name="name">visitor.management.search</field>
         <field name="model">visitor.management</field>
         <field name="arch" type="xml">
-            <search string="Search Visitors">
+            <search>
                 <field name="visitor_number"/>
                 <field name="visitor_name"/>
                 <field name="visitor_company"/>
@@ -189,14 +189,12 @@
                         domain="[('visit_date', '&gt;=', (context_today() - relativedelta(weeks=1)).strftime('%Y-%m-%d'))]"/>
                 <filter string="Currently On-site" name="on_site" domain="[('state', '=', 'checked_in')]"/>
                 <separator/>
-                <group expand="0" string="Group By">
-                    <filter string="Visitor" name="group_visitor" context="{'group_by': 'visitor_name'}"/>
-                    <filter string="Host" name="group_host" context="{'group_by': 'host_id'}"/>
-                    <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
-                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
-                    <filter string="Purpose" name="group_purpose" context="{'group_by': 'visit_purpose'}"/>
-                    <filter string="Visit Date" name="group_visit_date" context="{'group_by': 'visit_date'}"/>
-                </group>
+            <filter string="Visitor" name="group_visitor" context="{'group_by': 'visitor_name'}"/>
+            <filter string="Host" name="group_host" context="{'group_by': 'host_id'}"/>
+            <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+            <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+            <filter string="Purpose" name="group_purpose" context="{'group_by': 'visit_purpose'}"/>
+            <filter string="Visit Date" name="group_visit_date" context="{'group_by': 'visit_date'}"/>
             </search>
         </field>
     </record>
@@ -294,7 +292,7 @@
     <!-- Menu Items -->
     <menuitem id="menu_visitor_management_root"
               name="Visitors"
-              parent="facility_asset_menus"
+              parent="menu_facilities_root"
               sequence="70"/>
 
     <menuitem id="menu_visitor_management"

@@ -4,9 +4,9 @@
     <record id="service_request_portal_page_view" model="ir.ui.view">
         <field name="name">Service Request Portal Page</field>
         <field name="type">qweb</field>
-        <field name="key">facilities_management.service_request_portal_page</field>
+        <field name="key">fm.service_request_portal_page</field>
         <field name="arch" type="xml">
-            <t name="Service Request Portal" t-name="facilities_management.service_request_portal_page">
+            <t name="Service Request Portal" t-name="fm.service_request_portal_page">
                 <t t-call="website.layout">
                     <div class="container mt-5">
                         <div class="row">
@@ -94,9 +94,9 @@
     <record id="service_request_form_page_view" model="ir.ui.view">
         <field name="name">Service Request Form Page</field>
         <field name="type">qweb</field>
-        <field name="key">facilities_management.service_request_form_page</field>
+        <field name="key">fm.service_request_form_page</field>
         <field name="arch" type="xml">
-            <t name="Submit Service Request" t-name="facilities_management.service_request_form_page">
+            <t name="Submit Service Request" t-name="fm.service_request_form_page">
                 <t t-call="website.layout">
                     <div class="container mt-5">
                         <div class="row">
@@ -328,9 +328,9 @@
     <record id="my_service_requests_page_view" model="ir.ui.view">
         <field name="name">My Service Requests Page</field>
         <field name="type">qweb</field>
-        <field name="key">facilities_management.my_service_requests_page</field>
+        <field name="key">fm.my_service_requests_page</field>
         <field name="arch" type="xml">
-            <t name="My Service Requests" t-name="facilities_management.my_service_requests_page">
+            <t name="My Service Requests" t-name="fm.my_service_requests_page">
                 <t t-call="website.layout">
                     <div class="container mt-5">
                         <div class="row">
@@ -428,9 +428,9 @@
     <record id="service_catalog_page_view" model="ir.ui.view">
         <field name="name">Service Catalog Page</field>
         <field name="type">qweb</field>
-        <field name="key">facilities_management.service_catalog_page</field>
+        <field name="key">fm.service_catalog_page</field>
         <field name="arch" type="xml">
-            <t name="Service Catalog" t-name="facilities_management.service_catalog_page">
+            <t name="Service Catalog" t-name="fm.service_catalog_page">
                 <t t-call="website.layout">
                     <div class="container mt-5">
                         <div class="row">
@@ -485,9 +485,9 @@
     <record id="help_center_page_view" model="ir.ui.view">
         <field name="name">Help Center Page</field>
         <field name="type">qweb</field>
-        <field name="key">facilities_management.help_center_page</field>
+        <field name="key">fm.help_center_page</field>
         <field name="arch" type="xml">
-            <t name="Help Center" t-name="facilities_management.help_center_page">
+            <t name="Help Center" t-name="fm.help_center_page">
                 <t t-call="website.layout">
                     <div class="container mt-5">
                         <div class="row">

@@ -53,7 +53,7 @@ class WorkorderOnholdWizard(models.TransientModel):
         })
         
         # Create activity for facilities manager
-        facilities_managers = self.env.ref('facilities_management.group_facilities_manager').users
+        facilities_managers = self.env.ref('fm.group_facilities_manager').users
         if facilities_managers:
             self.workorder_id.activity_schedule(
                 'mail.mail_activity_data_todo',

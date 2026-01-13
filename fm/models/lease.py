@@ -542,7 +542,7 @@ class FacilitiesLease(models.Model):
             self._generate_and_store_pdf()
 
         # Get email template
-        template = self.env.ref('facilities_management.lease_email_template', raise_if_not_found=False)
+        template = self.env.ref('fm.lease_email_template', raise_if_not_found=False)
         if not template:
             # Create template if it doesn't exist
             template = self._create_lease_email_template()
@@ -576,7 +576,7 @@ class FacilitiesLease(models.Model):
         """Create email template for lease documents"""
         return self.env['mail.template'].create({
             'name': 'Lease Document Email',
-            'model_id': self.env.ref('facilities_management.model_facilities_lease').id,
+            'model_id': self.env.ref('fm.model_facilities_lease').id,
             'subject': 'Lease Agreement - {{ object.name }}',
             'body_html': '''
                 <div style="margin: 0px; padding: 0px;">
@@ -611,7 +611,7 @@ class FacilitiesLease(models.Model):
             'summary': _('Please sign the lease agreement'),
             'note': _('Lease agreement %s is ready for your signature.') % self.name,
             'user_id': self.user_id.id,
-            'res_model_id': self.env.ref('facilities_management.model_facilities_lease').id,
+            'res_model_id': self.env.ref('fm.model_facilities_lease').id,
             'res_id': self.id,
             'date_deadline': fields.Date.today() + relativedelta(days=7),
         })
@@ -658,7 +658,7 @@ class FacilitiesLease(models.Model):
     def _cron_create_lease_reminders(self):
         """Create activities for lease agreements expiring soon"""
         reminder_days = int(self.env['ir.config_parameter'].sudo().get_param(
-            'facilities_management.lease_reminder_days', 60
+            'fm.lease_reminder_days', 60
         ))
 
         # Find leases that need reminders
@@ -684,7 +684,7 @@ class FacilitiesLease(models.Model):
                     'summary': f'Lease expiring soon: {lease.name}',
                     'note': f'Lease agreement {lease.name} for {lease.tenant_name} expires on {lease.contract_end_date}. Please take necessary action.',
                     'user_id': lease.user_id.id,
-                    'res_model_id': self.env.ref('facilities_management.model_facilities_lease').id,
+                    'res_model_id': self.env.ref('fm.model_facilities_lease').id,
                     'res_id': lease.id,
                     'date_deadline': fields.Date.today() + relativedelta(days=7),
                 })
@@ -693,7 +693,7 @@ class FacilitiesLease(models.Model):
     def _cron_update_expiring_status(self):
         """Update lease status to expiring when approaching expiration date"""
         reminder_days = int(self.env['ir.config_parameter'].sudo().get_param(
-            'facilities_management.lease_reminder_days', 60
+            'fm.lease_reminder_days', 60
         ))
 
         # Find active leases that should be marked as expiring
@@ -711,7 +711,7 @@ class FacilitiesLease(models.Model):
     def _cron_send_customer_reminders(self):
         """Send email reminders to customers for expiring leases"""
         reminder_days = int(self.env['ir.config_parameter'].sudo().get_param(
-            'facilities_management.lease_customer_reminder_days', 60
+            'fm.lease_customer_reminder_days', 60
         ))
 
         # Find leases that need customer reminders
@@ -722,7 +722,7 @@ class FacilitiesLease(models.Model):
             ('tenant_partner_id.email', '!=', False),
         ])
 
-        template = self.env.ref('facilities_management.lease_reminder_email_template', raise_if_not_found=False)
+        template = self.env.ref('fm.lease_reminder_email_template', raise_if_not_found=False)
         if not template:
             template = self._create_reminder_email_template()
 
@@ -760,7 +760,7 @@ class FacilitiesLease(models.Model):
         """Create email template for lease expiration reminders"""
         return self.env['mail.template'].create({
             'name': 'Lease Expiration Reminder',
-            'model_id': self.env.ref('facilities_management.model_facilities_lease').id,
+            'model_id': self.env.ref('fm.model_facilities_lease').id,
             'subject': 'Lease Agreement Expiration Reminder - {{ object.name }}',
             'body_html': '''
                 <div style="margin: 0px; padding: 0px;">

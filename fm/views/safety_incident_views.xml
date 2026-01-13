@@ -281,7 +281,7 @@
         <field name="name">safety.incident.search</field>
         <field name="model">facilities.safety.incident</field>
         <field name="arch" type="xml">
-            <search string="Safety Incidents">
+            <search>
                 <field name="incident_number"/>
                 <field name="name"/>
                 <field name="facility_id"/>
@@ -313,14 +313,12 @@
                 <filter name="this_year" string="This Year" 
                         domain="[('incident_date', '>=', context_today().strftime('%Y-01-01')), ('incident_date', '&lt;=', context_today())]"/>
                 <separator/>
-                <group expand="0" string="Group By">
-                    <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
-                    <filter name="group_by_severity" string="Severity" context="{'group_by': 'severity'}"/>
-                    <filter name="group_by_incident_type" string="Incident Type" context="{'group_by': 'incident_type'}"/>
-                    <filter name="group_by_facility" string="Facility" context="{'group_by': 'facility_id'}"/>
-                    <filter name="group_by_investigator" string="Investigator" context="{'group_by': 'investigator_id'}"/>
-                    <filter name="group_by_month" string="Month" context="{'group_by': 'incident_date:month'}"/>
-                </group>
+            <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
+            <filter name="group_by_severity" string="Severity" context="{'group_by': 'severity'}"/>
+            <filter name="group_by_incident_type" string="Incident Type" context="{'group_by': 'incident_type'}"/>
+            <filter name="group_by_facility" string="Facility" context="{'group_by': 'facility_id'}"/>
+            <filter name="group_by_investigator" string="Investigator" context="{'group_by': 'investigator_id'}"/>
+            <filter name="group_by_month" string="Month" context="{'group_by': 'incident_date:month'}"/>
             </search>
         </field>
     </record>

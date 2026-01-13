@@ -259,7 +259,7 @@
         <field name="name">service.request.search</field>
         <field name="model">facilities.service.request</field>
         <field name="arch" type="xml">
-            <search string="Service Requests">
+            <search>
                 <field name="name"/>
                 <field name="title"/>
                 <field name="description"/>
@@ -289,16 +289,14 @@
                 <filter string="This Month" name="this_month" domain="[('request_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
                 <separator/>
                 <filter string="Active" name="active" domain="[('active', '=', True)]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
-                    <filter string="Service Type" name="group_by_service_type" context="{'group_by': 'service_type'}"/>
-                    <filter string="Priority" name="group_by_priority" context="{'group_by': 'priority'}"/>
-                    <filter string="Requester" name="group_by_requester" context="{'group_by': 'requester_id'}"/>
-                    <filter string="Assigned To" name="group_by_assigned_to" context="{'group_by': 'assigned_to_id'}"/>
-                    <filter string="Team" name="group_by_team" context="{'group_by': 'team_id'}"/>
-                    <filter string="SLA Status" name="group_by_sla_status" context="{'group_by': 'sla_status'}"/>
-                    <filter string="Request Date" name="group_by_request_date" context="{'group_by': 'request_date:month'}"/>
-                </group>
+            <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+            <filter string="Service Type" name="group_by_service_type" context="{'group_by': 'service_type'}"/>
+            <filter string="Priority" name="group_by_priority" context="{'group_by': 'priority'}"/>
+            <filter string="Requester" name="group_by_requester" context="{'group_by': 'requester_id'}"/>
+            <filter string="Assigned To" name="group_by_assigned_to" context="{'group_by': 'assigned_to_id'}"/>
+            <filter string="Team" name="group_by_team" context="{'group_by': 'team_id'}"/>
+            <filter string="SLA Status" name="group_by_sla_status" context="{'group_by': 'sla_status'}"/>
+            <filter string="Request Date" name="group_by_request_date" context="{'group_by': 'request_date:month'}"/>
             </search>
         </field>
     </record>

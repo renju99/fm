@@ -32,7 +32,7 @@ class FacilitiesBookingRejectWizard(models.TransientModel):
         
         # Send notification email if requested
         if self.notify_user:
-            template = self.env.ref('facilities_management.mail_template_space_booking_rejected', 
+            template = self.env.ref('fm.mail_template_space_booking_rejected', 
                                   raise_if_not_found=False)
             if template:
                 template.send_mail(self.booking_id.id, force_send=True)

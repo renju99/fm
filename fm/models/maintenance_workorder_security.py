@@ -49,7 +49,7 @@ class MaintenanceWorkOrderSecurity(models.Model):
         
         for record in self:
             # Check basic access
-            has_basic_access = user.has_group('facilities_management.group_facilities_user')
+            has_basic_access = user.has_group('fm.group_facilities_user')
             
             # Check access level
             has_access_level = self._check_access_level(user, record.access_level)
@@ -58,11 +58,11 @@ class MaintenanceWorkOrderSecurity(models.Model):
             has_security_clearance = self._check_security_clearance(user, record)
             
             # Check specific permissions
-            has_view_permission = user.has_group('facilities_management.group_facilities_user')
-            has_edit_permission = user.has_group('facilities_management.group_maintenance_technician')
-            has_delete_permission = user.has_group('facilities_management.group_facilities_manager')
-            has_assign_permission = user.has_group('facilities_management.group_maintenance_technician')
-            has_approve_permission = user.has_group('facilities_management.group_facilities_manager')
+            has_view_permission = user.has_group('fm.group_facilities_user')
+            has_edit_permission = user.has_group('fm.group_maintenance_technician')
+            has_delete_permission = user.has_group('fm.group_facilities_manager')
+            has_assign_permission = user.has_group('fm.group_maintenance_technician')
+            has_approve_permission = user.has_group('fm.group_facilities_manager')
             
             # Check if user is the creator or assigned technician
             is_creator = record.created_by_id.id == user.id
@@ -81,7 +81,7 @@ class MaintenanceWorkOrderSecurity(models.Model):
         elif access_level == 'internal':
             return user.has_group('base.group_user')
         elif access_level == 'confidential':
-            return user.has_group('facilities_management.group_facilities_manager')
+            return user.has_group('fm.group_facilities_manager')
         elif access_level == 'restricted':
             return user.has_group('base.group_system')
         return False
@@ -200,7 +200,7 @@ class MaintenanceWorkOrderSecurity(models.Model):
         # Check if user can modify sensitive fields
         sensitive_fields = ['priority', 'state', 'approval_state']
         if any(field in vals for field in sensitive_fields):
-            if not user.has_group('facilities_management.group_facilities_manager'):
+            if not user.has_group('fm.group_facilities_manager'):
                 raise AccessError(_('Only facility managers can modify sensitive fields.'))
 
     def _check_data_integrity(self, vals):
@@ -242,7 +242,7 @@ class MaintenanceWorkOrderSecurity(models.Model):
         if not user.active:
             raise ValidationError(_('User is not active.'))
         
-        if not user.has_group('facilities_management.group_facilities_user'):
+        if not user.has_group('fm.group_facilities_user'):
             raise ValidationError(_('User does not have maintenance permissions.'))
 
     def _check_workflow_security(self, new_state):
@@ -250,20 +250,20 @@ class MaintenanceWorkOrderSecurity(models.Model):
         current_user = self.env.user
         
         # Check if user can perform state transition
-        if new_state == 'completed' and not current_user.has_group('facilities_management.group_maintenance_technician'):
+        if new_state == 'completed' and not current_user.has_group('fm.group_maintenance_technician'):
             raise AccessError(_('Only technicians can complete work orders.'))
         
-        if new_state == 'cancelled' and not current_user.has_group('facilities_management.group_facilities_manager'):
+        if new_state == 'cancelled' and not current_user.has_group('fm.group_facilities_manager'):
             raise AccessError(_('Only managers can cancel work orders.'))
 
     def _check_field_security(self, field_name, value):
         """Check security for specific fields"""
         if field_name == 'total_cost' and value and value > 10000:
-            if not self.env.user.has_group('facilities_management.group_facilities_manager'):
+            if not self.env.user.has_group('fm.group_facilities_manager'):
                 raise AccessError(_('Only managers can set costs above $10,000.'))
         
         if field_name == 'priority' and value in ['3', '4']:
-            if not self.env.user.has_group('facilities_management.group_facilities_manager'):
+            if not self.env.user.has_group('fm.group_facilities_manager'):
                 raise AccessError(_('Only managers can set high priority work orders.'))
 
     def action_view_access_logs(self):
@@ -282,7 +282,7 @@ class MaintenanceWorkOrderSecurity(models.Model):
         """Export security report for this work order"""
         self.ensure_one()
         
-        if not self.env.user.has_group('facilities_management.group_facilities_manager'):
+        if not self.env.user.has_group('fm.group_facilities_manager'):
             raise AccessError(_('Only managers can export security reports.'))
         
         # Generate security report

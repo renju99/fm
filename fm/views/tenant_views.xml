@@ -128,7 +128,7 @@
         <field name="name">res.partner.tenant.search</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
-            <search string="Search Tenants">
+            <search>
                 <field name="name" string="Tenant Name"/>
                 <field name="phone"/>
                 <field name="email"/>
@@ -139,11 +139,9 @@
                 <separator/>
                 <filter string="Active" name="active_tenants" domain="[('tenant_status', '=', 'active')]"/>
                 <filter string="Has Active Leases" name="has_leases" domain="[('active_leases_count', '>', 0)]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Type" name="group_type" context="{'group_by': 'tenant_type'}"/>
-                    <filter string="Status" name="group_status" context="{'group_by': 'tenant_status'}"/>
-                    <filter string="City" name="group_city" context="{'group_by': 'city'}"/>
-                </group>
+            <filter string="Type" name="group_type" context="{'group_by': 'tenant_type'}"/>
+            <filter string="Status" name="group_status" context="{'group_by': 'tenant_status'}"/>
+            <filter string="City" name="group_city" context="{'group_by': 'city'}"/>
             </search>
         </field>
     </record>

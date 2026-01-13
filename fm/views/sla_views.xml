@@ -145,7 +145,7 @@
             <field name="name">facilities.sla.search</field>
             <field name="model">facilities.sla</field>
             <field name="arch" type="xml">
-                <search string="SLA Search">
+                <search>
                     <field name="name"/>
                     <field name="asset_criticality"/>
                     <field name="maintenance_type"/>
@@ -154,13 +154,11 @@
                     <filter string="High Priority" name="high_priority" domain="[('priority', '&gt;=', 8)]"/>
                     <filter string="Critical Assets" name="critical_assets" domain="[('asset_criticality', '=', 'critical')]"/>
                     <filter string="Low Compliance" name="low_compliance" domain="[('compliance_rate', '&lt;', 80)]"/>
-                    <group expand="0" string="Group By">
-                        <filter string="Status" name="group_active" context="{'group_by': 'active'}"/>
-                        <filter string="Asset Criticality" name="group_criticality" context="{'group_by': 'asset_criticality'}"/>
-                        <filter string="Maintenance Type" name="group_type" context="{'group_by': 'maintenance_type'}"/>
-                        <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
-                        <filter string="Compliance Rate" name="group_compliance" context="{'group_by': 'compliance_rate'}"/>
-                    </group>
+                <filter string="Status" name="group_active" context="{'group_by': 'active'}"/>
+                <filter string="Asset Criticality" name="group_criticality" context="{'group_by': 'asset_criticality'}"/>
+                <filter string="Maintenance Type" name="group_type" context="{'group_by': 'maintenance_type'}"/>
+                <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
+                <filter string="Compliance Rate" name="group_compliance" context="{'group_by': 'compliance_rate'}"/>
                 </search>
             </field>
         </record>

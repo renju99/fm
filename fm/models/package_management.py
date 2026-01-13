@@ -61,7 +61,7 @@ class PackageManagement(models.Model):
     
     # Location Information
     facility_id = fields.Many2one(
-        'facility.facility',
+        'facilities.facility',
         string='Facility',
         required=True,
         tracking=True,
@@ -69,20 +69,20 @@ class PackageManagement(models.Model):
     )
     
     building_id = fields.Many2one(
-        'facility.building',
+        'facilities.building',
         string='Building',
         tracking=True,
         help="Building where recipient is located"
     )
     
     floor_id = fields.Many2one(
-        'facility.floor',
+        'facilities.floor',
         string='Floor',
         tracking=True
     )
     
     room_id = fields.Many2one(
-        'facility.room',
+        'facilities.room',
         string='Room/Unit',
         tracking=True,
         help="Recipient's room or unit number"
@@ -325,7 +325,7 @@ class PackageManagement(models.Model):
         
         # Send email notification
         template = self.env.ref(
-            'facilities_management.email_template_package_arrival',
+            'fm.email_template_package_arrival',
             raise_if_not_found=False
         )
         if template:

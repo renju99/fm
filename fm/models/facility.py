@@ -577,7 +577,7 @@ class Facility(models.Model):
         # Render the PDF using the same report action and computed data
         try:
             pdf_bin, content_type = self.env['ir.actions.report']._render_qweb_pdf(
-                'facilities_management.monthly_building_report_pdf_action',
+                'fm.monthly_building_report_pdf_action',
                 [wizard.id],
                 data=action.get('data') if isinstance(action, dict) else None,
             )
@@ -608,7 +608,7 @@ class Facility(models.Model):
         If no template is found, silently skip sending.
         """
         self.ensure_one()
-        template = self.env.ref('facilities_management.email_template_monthly_facility_report', raise_if_not_found=False)
+        template = self.env.ref('fm.email_template_monthly_facility_report', raise_if_not_found=False)
         if not template:
             _logger.warning("Monthly facility report email template not found. Skipping email for %s.", self.name)
             return False
@@ -621,7 +621,7 @@ class Facility(models.Model):
         # Pull recipients from global configuration for this report
         if not recipient_emails:
             recipient_emails = self.env['facilities.report.recipient'].get_recipient_emails(
-                report_action_xmlid='facilities_management.monthly_building_report_pdf_action',
+                report_action_xmlid='fm.monthly_building_report_pdf_action',
                 facility=self,
             )
 

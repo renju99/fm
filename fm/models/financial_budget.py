@@ -259,7 +259,7 @@ class FinancialBudget(models.Model):
         self.message_post(body=_('Budget confirmed'))
     
     def action_approve(self):
-        if self.approval_required and not self.env.user.has_group('facilities_management.group_facilities_manager'):
+        if self.approval_required and not self.env.user.has_group('fm.group_facilities_manager'):
             raise UserError(_('Only facilities managers can approve budgets.'))
         
         self.write({

@@ -6,7 +6,6 @@
         <!-- Create a group for users who should NOT see project elements -->
         <record id="group_hide_project_elements" model="res.groups">
             <field name="name">Hide Project Elements</field>
-            <field name="category_id" ref="base.module_category_hidden"/>
             <field name="comment">Users in this group will not see project-related menu items and actions</field>
         </record>
         

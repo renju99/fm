@@ -176,7 +176,7 @@
         <field name="name">cost.center.search</field>
         <field name="model">facilities.cost.center</field>
         <field name="arch" type="xml">
-            <search string="Cost Centers">
+            <search>
                 <field name="name" string="Cost Center Name"/>
                 <field name="code" string="Cost Center Code"/>
                 <field name="complete_name" string="Complete Name"/>
@@ -195,12 +195,10 @@
                 <filter name="near_limit" string="Near Budget Limit" 
                         domain="[('budget_utilization', '&gt;', 90), ('budget_utilization', '&lt;=', 100)]"/>
                 <separator/>
-                <group expand="0" string="Group By">
-                    <filter name="group_by_type" string="Type" context="{'group_by': 'type'}"/>
-                    <filter name="group_by_parent" string="Parent Cost Center" context="{'group_by': 'parent_id'}"/>
-                    <filter name="group_by_manager" string="Manager" context="{'group_by': 'manager_id'}"/>
-                    <filter name="group_by_level" string="Level" context="{'group_by': 'level'}"/>
-                </group>
+            <filter name="group_by_type" string="Type" context="{'group_by': 'type'}"/>
+            <filter name="group_by_parent" string="Parent Cost Center" context="{'group_by': 'parent_id'}"/>
+            <filter name="group_by_manager" string="Manager" context="{'group_by': 'manager_id'}"/>
+            <filter name="group_by_level" string="Level" context="{'group_by': 'level'}"/>
             </search>
         </field>
     </record>

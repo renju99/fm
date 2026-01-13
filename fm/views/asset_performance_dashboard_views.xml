@@ -10,7 +10,7 @@
                     <header>
                         <button name="action_process" string="Process Analysis" type="object" class="btn-primary"/>
                         <button name="action_reset" string="Reset" type="object" class="btn-secondary"/>
-                        <button name="%(facilities_management.action_report_asset_performance_standard)d" string="Generate Report" type="action" class="btn-success" invisible="state != 'completed'"/>
+                        <button name="%(fm.action_report_asset_performance_standard)d" string="Generate Report" type="action" class="btn-success" invisible="state != 'completed'"/>
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>

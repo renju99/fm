@@ -96,11 +96,11 @@
                     
                     <!-- SLA Escalation Control Buttons - Only for SLA Escalation Managers -->
                     <button name="action_toggle_escalation_cron" type="object" string="Disable Auto Escalation" class="btn-warning"
-                        groups="facilities_management.group_sla_escalation_manager"
+                        groups="fm.group_sla_escalation_manager"
                         invisible="not sla_id"
                         help="Toggle automatic SLA escalation on/off (SLA Escalation Managers only)"/>
                     <button name="action_manual_escalation_check" type="object" string="Check SLA Escalation" class="btn-info"
-                        groups="facilities_management.group_sla_escalation_manager"
+                        groups="fm.group_sla_escalation_manager"
                         invisible="not sla_id"
                         help="Manually trigger SLA escalation check for this work order (SLA Escalation Managers only)"/>
                     
@@ -588,16 +588,14 @@
                 
                 <filter string="Escalation Triggered" name="escalation_triggered" domain="[('escalation_triggered','=',True)]"/>
                 
-                <group expand="0" string="Group By">
-                    <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
-                    <filter string="Asset" name="group_asset" context="{'group_by': 'asset_id'}"/>
-                    <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
-                    <filter string="Technician" name="group_technician" context="{'group_by': 'technician_id'}"/>
-                    <filter string="SLA Status" name="group_sla_status" context="{'group_by': 'sla_status'}"/>
-                    <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
-                    <filter string="Work Order Type" name="group_work_order_type" context="{'group_by': 'work_order_type'}"/>
-                    <filter string="Maintenance Team" name="group_maintenance_team" context="{'group_by': 'maintenance_team_id'}"/>
-                </group>
+            <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
+            <filter string="Asset" name="group_asset" context="{'group_by': 'asset_id'}"/>
+            <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+            <filter string="Technician" name="group_technician" context="{'group_by': 'technician_id'}"/>
+            <filter string="SLA Status" name="group_sla_status" context="{'group_by': 'sla_status'}"/>
+            <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
+            <filter string="Work Order Type" name="group_work_order_type" context="{'group_by': 'work_order_type'}"/>
+            <filter string="Maintenance Team" name="group_maintenance_team" context="{'group_by': 'maintenance_team_id'}"/>
             </search>
         </field>
     </record>

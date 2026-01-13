@@ -3,7 +3,7 @@
     <data noupdate="1">
         <record id="email_template_maintenance_reminder" model="mail.template">
             <field name="name">Maintenance Schedule Reminder</field>
-            <field name="model_id" ref="facilities_management.model_asset_maintenance_schedule"/>
+            <field name="model_id" ref="model_asset_maintenance_schedule"/>
             <field name="email_from">${(object.technician_id.user_id.email_formatted or user.email_formatted)}</field>
             <field name="email_to">${(object.technician_id.user_id.email_formatted or '')}</field>
             <field name="subject">Upcoming Maintenance for ${object.asset_id.name}</field>

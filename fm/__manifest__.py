@@ -1,6 +1,6 @@
 {
     'name': 'Facilities Management',
-    'version': '1.2.11',
+    'version': '19.0.1.2.11',
     'summary': 'Comprehensive Facility and Asset Management including Maintenance, Bookings, Analytics, and Energy Management',
     'description': """
 Facility and Asset Management System
@@ -47,7 +47,7 @@ Features:
         'website',
     ],
     'external_dependencies': {
-        'python': ['qrcode', 'Pillow'],
+        'python': ['qrcode', 'Pillow', 'matplotlib'],
     },
     'data': [
         # Security
@@ -55,6 +55,9 @@ Features:
         'security/hide_project_security.xml',
         'security/hide_link_tracker_security.xml',
         'security/hide_unrelated_menus_security.xml',
+
+        # User Form Customization (must be loaded early)
+        'views/res_users_views.xml',
 
         # Data
         'data/sequences.xml',
@@ -209,12 +212,11 @@ Features:
         'views/energy_benchmark_views.xml',
         'views/energy_performance_dashboard_views.xml',
         
-        # Package and Visitor Management Views
-        'views/package_management_views.xml',
-        'views/visitor_management_views.xml',
-
         # Views - Menus (must be loaded after views that define actions)
         'views/facility_asset_menus.xml',
+        # Package and Visitor Management Views (must be after menus)
+        'views/visitor_management_views.xml',
+        'views/package_management_views.xml',
         'views/energy_management_menus.xml',
 
         # Asset Views (must be loaded after wizard views)
@@ -237,50 +239,50 @@ Features:
     ],
     'assets': {
         'web.assets_backend': [
-                    'facilities_management/static/src/css/facilities.css',
-        'facilities_management/static/src/css/facilities_management_dashboard.css',
-        'facilities_management/static/src/css/portal.css',
-        'facilities_management/static/src/css/maintenance_message_widget.css',
-        'facilities_management/static/src/css/asset_performance_dashboard.css',
-        'facilities_management/static/src/css/budget_dashboard.css',
-        'facilities_management/static/src/css/space_booking_dashboard.css',
-        'facilities_management/static/src/css/responsive_workorders.css',
-        'facilities_management/static/src/css/autofill_enhancements.css',
-        'facilities_management/static/src/css/workorder_calendar_simple.css',
-        'facilities_management/static/src/css/facilities_analytics_dashboard.css',
+            'fm/static/src/css/facilities.css',
+            'fm/static/src/css/facilities_management_dashboard.css',
+            'fm/static/src/css/portal.css',
+            'fm/static/src/css/maintenance_message_widget.css',
+            'fm/static/src/css/asset_performance_dashboard.css',
+            'fm/static/src/css/budget_dashboard.css',
+            'fm/static/src/css/space_booking_dashboard.css',
+            'fm/static/src/css/responsive_workorders.css',
+            'fm/static/src/css/autofill_enhancements.css',
+            'fm/static/src/css/workorder_calendar_simple.css',
+            'fm/static/src/css/facilities_analytics_dashboard.css',
             ('include', 'web._assets_helpers'),
             'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js',
-            'facilities_management/static/src/js/dashboard_widgets.js',
-            'facilities_management/static/src/js/facilities_analytics_dashboard.js',
-            'facilities_management/static/src/js/asset_performance_dashboard_kpi.js',
-            'facilities_management/static/src/js/maintenance_analytics_dashboards.js',
-            'facilities_management/static/src/js/mobile_workorder.js',
-            'facilities_management/static/src/js/responsive_workorders.js',
-            'facilities_management/static/src/js/autofill_enhancements.js',
-            # 'facilities_management/static/src/js/menu_access_control.js',  # Removed: incompatible with Odoo 18, use security groups instead
-                    'facilities_management/static/src/js/mobile_workorders_enhanced_action.js',
-        'facilities_management/static/src/js/maintenance_message_widget.js',
-        'facilities_management/static/src/js/asset_performance_dashboard.js',
-        'facilities_management/static/src/js/budget_dashboard.js',
-        'facilities_management/static/src/js/energy_performance_dashboard.js',
-        'facilities_management/static/src/js/space_booking_dashboard.js',
-        'facilities_management/static/src/js/workorder_calendar_simple.js',
-        'facilities_management/static/src/js/facilities_management_dashboard.js',
-        'facilities_management/static/src/xml/mobile_workorders_enhanced.xml',
-        'facilities_management/static/src/xml/facilities_management_dashboard.xml',
-        'facilities_management/static/src/xml/asset_performance_dashboard.xml',
-        'facilities_management/static/src/xml/facilities_analytics_dashboard.xml',
-        'facilities_management/static/src/xml/asset_performance_dashboard_kpi.xml',
-        'facilities_management/static/src/xml/budget_dashboard.xml',
-        'facilities_management/static/src/xml/maintenance_analytics_dashboards.xml',
-        'facilities_management/static/src/xml/*.xml',
+            'fm/static/src/js/dashboard_widgets.js',
+            'fm/static/src/js/facilities_analytics_dashboard.js',
+            'fm/static/src/js/asset_performance_dashboard_kpi.js',
+            'fm/static/src/js/maintenance_analytics_dashboards.js',
+            'fm/static/src/js/mobile_workorder.js',
+            'fm/static/src/js/responsive_workorders.js',
+            'fm/static/src/js/autofill_enhancements.js',
+            # 'fm/static/src/js/menu_access_control.js',  # Removed: incompatible with Odoo 19, use security groups instead
+            'fm/static/src/js/mobile_workorders_enhanced_action.js',
+            'fm/static/src/js/maintenance_message_widget.js',
+            'fm/static/src/js/asset_performance_dashboard.js',
+            'fm/static/src/js/budget_dashboard.js',
+            'fm/static/src/js/energy_performance_dashboard.js',
+            'fm/static/src/js/space_booking_dashboard.js',
+            'fm/static/src/js/workorder_calendar_simple.js',
+            'fm/static/src/js/facilities_management_dashboard.js',
+            'fm/static/src/xml/mobile_workorders_enhanced.xml',
+            'fm/static/src/xml/facilities_management_dashboard.xml',
+            'fm/static/src/xml/asset_performance_dashboard.xml',
+            'fm/static/src/xml/facilities_analytics_dashboard.xml',
+            'fm/static/src/xml/asset_performance_dashboard_kpi.xml',
+            'fm/static/src/xml/budget_dashboard.xml',
+            'fm/static/src/xml/maintenance_analytics_dashboards.xml',
+            'fm/static/src/xml/*.xml',
         ],
         'web.assets_frontend': [
-            'facilities_management/static/src/css/portal.css',
-            'facilities_management/static/src/css/portal_navigation.css',
-            'facilities_management/static/src/css/facilities_homepage.css',
-            'facilities_management/static/src/js/facilities_homepage.js',
-            'facilities_management/static/src/js/portal_navigation.js',
+            'fm/static/src/css/portal.css',
+            'fm/static/src/css/portal_navigation.css',
+            'fm/static/src/css/facilities_homepage.css',
+            'fm/static/src/js/facilities_homepage.js',
+            'fm/static/src/js/portal_navigation.js',
         ],
     },
     'demo': [

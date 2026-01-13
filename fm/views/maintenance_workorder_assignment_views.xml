@@ -73,7 +73,7 @@
         <field name="name">facilities.workorder.assignment.search</field>
         <field name="model">facilities.workorder.assignment</field>
         <field name="arch" type="xml">
-            <search string="Search Technician Assignments">
+            <search>
                 <field name="technician_id"/>
                 <field name="workorder_id"/>
                 <field name="status"/>
@@ -81,11 +81,9 @@
                 <filter string="Completed" name="completed" domain="[('status', '=', 'completed')]"/>
                 <filter string="Paused" name="paused" domain="[('status', '=', 'paused')]"/>
                 <filter string="Not Started" name="not_started" domain="[('status', '=', 'not_started')]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Technician" name="group_technician" context="{'group_by': 'technician_id'}"/>
-                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
-                    <filter string="Work Order" name="group_workorder" context="{'group_by': 'workorder_id'}"/>
-                </group>
+            <filter string="Technician" name="group_technician" context="{'group_by': 'technician_id'}"/>
+            <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+            <filter string="Work Order" name="group_workorder" context="{'group_by': 'workorder_id'}"/>
             </search>
         </field>
     </record>
@@ -96,9 +94,9 @@
         <field name="res_model">facilities.workorder.assignment</field>
         <field name="view_mode">list,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
-                (0, 0, {'view_mode': 'list', 'view_id': ref('facilities_management.view_maintenance_workorder_assignment_tree')}),
-                (0, 0, {'view_mode': 'form', 'view_id': ref('facilities_management.view_maintenance_workorder_assignment_form')})]"/>
-        <field name="search_view_id" ref="facilities_management.view_maintenance_workorder_assignment_search"/>
+                (0, 0, {'view_mode': 'list', 'view_id': ref('fm.view_maintenance_workorder_assignment_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('fm.view_maintenance_workorder_assignment_form')})]"/>
+        <field name="search_view_id" ref="fm.view_maintenance_workorder_assignment_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first technician assignment!

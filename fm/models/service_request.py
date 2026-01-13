@@ -463,7 +463,7 @@ class ServiceRequest(models.Model):
 
     def _send_assignment_notification(self):
         """Send notification when request is assigned"""
-        template = self.env.ref('facilities_management.service_request_assignment_email_template', raise_if_not_found=False)
+        template = self.env.ref('fm.service_request_assignment_email_template', raise_if_not_found=False)
         if template and self.assigned_to_id:
             template.send_mail(self.id, force_send=True)
 
@@ -791,7 +791,7 @@ class ServiceRequest(models.Model):
         # Check if user is the requester or has manager permissions
         is_requester = (self.requester_id.id == user_id)
         
-        has_manager_permissions = current_user.has_group('facilities_management.group_facilities_manager')
+        has_manager_permissions = current_user.has_group('fm.group_facilities_manager')
         
         return (
             (is_requester or has_manager_permissions) and 
@@ -814,7 +814,7 @@ class ServiceRequest(models.Model):
             
             # Check manager permissions (this might fail for portal users, so we catch it)
             try:
-                has_manager_permissions = current_user.has_group('facilities_management.group_facilities_manager')
+                has_manager_permissions = current_user.has_group('fm.group_facilities_manager')
             except:
                 has_manager_permissions = False
             

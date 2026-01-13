@@ -4,7 +4,6 @@
         <!-- Create a group for users who should NOT see non-facilities menus -->
         <record id="group_facilities_focused_user" model="res.groups">
             <field name="name">Facilities Focused User</field>
-            <field name="category_id" ref="base.module_category_hidden"/>
             <field name="comment">Users in this group will only see facilities-related menus and essential tools</field>
         </record>
 

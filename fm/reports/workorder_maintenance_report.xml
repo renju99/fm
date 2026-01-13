@@ -4,10 +4,10 @@
         <field name="name">Workorder Maintenance Report</field>
         <field name="model">facilities.workorder</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">facilities_management.report_workorder_maintenance_template</field>
-        <field name="report_file">facilities_management.report_workorder_maintenance_template</field>
+        <field name="report_name">fm.report_workorder_maintenance_template</field>
+        <field name="report_file">fm.report_workorder_maintenance_template</field>
         <field name="print_report_name">'Workorder Report - %s' % (object.name)</field>
-        <field name="binding_model_id" ref="facilities_management.model_facilities_workorder"/>
+        <field name="binding_model_id" ref="fm.model_facilities_workorder"/>
         <field name="binding_type">report</field>
     </record>
 

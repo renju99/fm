@@ -186,7 +186,7 @@
         <field name="name">facilities.sustainability.report.search</field>
         <field name="model">facilities.sustainability.report</field>
         <field name="arch" type="xml">
-            <search string="Sustainability Reports">
+            <search>
                 <field name="name"/>
                 <field name="report_code"/>
                 <field name="facility_id"/>
@@ -217,13 +217,11 @@
                 <filter string="Target Met" name="target_met" domain="[('target_achievement', '=', 'met')]"/>
                 <filter string="Target Not Met" name="target_not_met" domain="[('target_achievement', '=', 'not_met')]"/>
                 
-                <group expand="0" string="Group By">
-                    <filter string="Report Type" name="group_type" context="{'group_by': 'report_type'}"/>
-                    <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
-                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
-                    <filter string="Target Achievement" name="group_target" context="{'group_by': 'target_achievement'}"/>
-                    <filter string="Report Date" name="group_date" context="{'group_by': 'report_date:year'}"/>
-                </group>
+            <filter string="Report Type" name="group_type" context="{'group_by': 'report_type'}"/>
+            <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+            <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+            <filter string="Target Achievement" name="group_target" context="{'group_by': 'target_achievement'}"/>
+            <filter string="Report Date" name="group_date" context="{'group_by': 'report_date:year'}"/>
             </search>
         </field>
     </record>

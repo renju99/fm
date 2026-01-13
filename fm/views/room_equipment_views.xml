@@ -198,12 +198,10 @@
                 <filter name="computing" string="Computing" domain="[('equipment_type', '=', 'computing')]"/>
                 <filter name="furniture" string="Furniture" domain="[('equipment_type', '=', 'furniture')]"/>
                 
-                <group expand="0" string="Group By">
-                    <filter name="group_type" string="Equipment Type" context="{'group_by': 'equipment_type'}"/>
-                    <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
-                    <filter name="group_location" string="Location" context="{'group_by': 'current_location'}"/>
-                    <filter name="group_manufacturer" string="Manufacturer" context="{'group_by': 'manufacturer'}"/>
-                </group>
+            <filter name="group_type" string="Equipment Type" context="{'group_by': 'equipment_type'}"/>
+            <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
+            <filter name="group_location" string="Location" context="{'group_by': 'current_location'}"/>
+            <filter name="group_manufacturer" string="Manufacturer" context="{'group_by': 'manufacturer'}"/>
             </search>
         </field>
     </record>

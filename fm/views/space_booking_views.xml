@@ -53,15 +53,13 @@
                 <filter name="training" string="Training" domain="[('booking_type', '=', 'training')]"/>
                 <filter name="maintenance" string="Maintenance" domain="[('booking_type', '=', 'maintenance')]"/>
 
-                <group expand="0" string="Group By">
-                    <filter name="group_room" string="Room" context="{'group_by': 'room_id'}"/>
-                    <filter name="group_user" string="User" context="{'group_by': 'user_id'}"/>
-                    <filter name="group_department" string="Department" context="{'group_by': 'department_id'}"/>
-                    <filter name="group_type" string="Booking Type" context="{'group_by': 'booking_type'}"/>
-                    <filter name="group_priority" string="Priority" context="{'group_by': 'priority'}"/>
-                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
-                    <filter name="group_date" string="Date" context="{'group_by': 'start_datetime:day'}"/>
-                </group>
+            <filter name="group_room" string="Room" context="{'group_by': 'room_id'}"/>
+            <filter name="group_user" string="User" context="{'group_by': 'user_id'}"/>
+            <filter name="group_department" string="Department" context="{'group_by': 'department_id'}"/>
+            <filter name="group_type" string="Booking Type" context="{'group_by': 'booking_type'}"/>
+            <filter name="group_priority" string="Priority" context="{'group_by': 'priority'}"/>
+            <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+            <filter name="group_date" string="Date" context="{'group_by': 'start_datetime:day'}"/>
             </search>
         </field>
     </record>

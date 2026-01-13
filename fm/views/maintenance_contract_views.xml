@@ -90,7 +90,7 @@
         <field name="name">maintenance.contract.search</field>
         <field name="model">facilities.maintenance.contract</field>
         <field name="arch" type="xml">
-            <search string="Maintenance Contracts">
+            <search>
                 <field name="name" string="Contract Name"/>
                 <field name="contract_number" string="Contract Number"/>
                 <field name="partner_id" string="Vendor"/>
@@ -102,11 +102,9 @@
                 <filter name="expiring_soon" string="Expiring Soon" 
                         domain="[('end_date', '&lt;=', (context_today() + relativedelta(days=30))), ('state', '=', 'active')]"/>
                 <separator/>
-                <group expand="0" string="Group By">
-                    <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
-                    <filter name="group_by_partner" string="Vendor" context="{'group_by': 'partner_id'}"/>
-                    <filter name="group_by_contract_type" string="Contract Type" context="{'group_by': 'contract_type'}"/>
-                </group>
+            <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
+            <filter name="group_by_partner" string="Vendor" context="{'group_by': 'partner_id'}"/>
+            <filter name="group_by_contract_type" string="Contract Type" context="{'group_by': 'contract_type'}"/>
             </search>
         </field>
     </record>

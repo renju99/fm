@@ -225,7 +225,7 @@
         <field name="name">facilities.facility.search</field>
         <field name="model">facilities.facility</field>
         <field name="arch" type="xml">
-            <search string="Facility Search">
+            <search>
                 <field name="name"/>
                 <field name="code"/>
                 <field name="manager_id"/>
@@ -257,16 +257,14 @@
                 <filter string="CSV Import" name="csv" domain="[('import_source', '=', 'csv')]"/>
                 <filter string="API Import" name="api" domain="[('import_source', '=', 'api')]"/>
                 
-                <group expand="0" string="Group By">
-                    <filter string="Property Type" name="group_property_type" context="{'group_by': 'property_type'}"/>
-                    <filter string="Occupancy Status" name="group_occupancy" context="{'group_by': 'occupancy_status'}"/>
-                    <filter string="Manager" name="group_manager" context="{'group_by': 'manager_id'}"/>
-                    <filter string="City" name="group_city" context="{'group_by': 'city'}"/>
-                    <filter string="State" name="group_state" context="{'group_by': 'state_id'}"/>
-                    <filter string="Country" name="group_country" context="{'group_by': 'country_id'}"/>
-                    <filter string="Import Source" name="group_import_source" context="{'group_by': 'import_source'}"/>
-                    <filter string="Hierarchy Level" name="group_hierarchy" context="{'group_by': 'facility_level'}"/>
-                </group>
+            <filter string="Property Type" name="group_property_type" context="{'group_by': 'property_type'}"/>
+            <filter string="Occupancy Status" name="group_occupancy" context="{'group_by': 'occupancy_status'}"/>
+            <filter string="Manager" name="group_manager" context="{'group_by': 'manager_id'}"/>
+            <filter string="City" name="group_city" context="{'group_by': 'city'}"/>
+            <filter string="State" name="group_state" context="{'group_by': 'state_id'}"/>
+            <filter string="Country" name="group_country" context="{'group_by': 'country_id'}"/>
+            <filter string="Import Source" name="group_import_source" context="{'group_by': 'import_source'}"/>
+            <filter string="Hierarchy Level" name="group_hierarchy" context="{'group_by': 'facility_level'}"/>
             </search>
         </field>
     </record>

@@ -26,10 +26,8 @@
                     <field name="report_action_id"/>
                     <field name="facility_id"/>
                     <filter name="filter_active" string="Active" domain="[('active','=',True)]"/>
-                    <group expand="0" string="Group By">
-                        <filter name="group_by_report" string="Report" context="{'group_by':'report_action_id'}"/>
-                        <filter name="group_by_facility" string="Facility" context="{'group_by':'facility_id'}"/>
-                    </group>
+                <filter name="group_by_report" string="Report" context="{'group_by':'report_action_id'}"/>
+                <filter name="group_by_facility" string="Facility" context="{'group_by':'facility_id'}"/>
                 </search>
             </field>
         </record>

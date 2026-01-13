@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<t t-name="facilities_management.MobileWorkordersEnhanced">
+<t t-name="fm.MobileWorkordersEnhanced">
   <div class="o_mobile_workorders_enhanced p-3">
     <div class="mb-3">
       <h4 class="text-primary">Assigned to Me</h4>

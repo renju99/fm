@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit User Form View to Add Facilities Management Groups Section -->
+        <record id="view_users_form_inherit_fm_groups" model="ir.ui.view">
+            <field name="name">res.users.form.inherit.fm.groups</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <!-- Find the Access Rights tab/page and add FM section at the beginning -->
+                <xpath expr="//page[@name='access_rights']" position="inside">
+                    <separator string="Facilities Management" colspan="2"/>
+                    <group string="Facilities Management Access Rights" name="facilities_management_groups" class="o_label_nowrap" colspan="2">
+                        <field name="fm_groups_ids" 
+                               widget="many2many_tags" 
+                               options="{'no_create': True, 'no_create_edit': True}"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+

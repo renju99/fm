@@ -128,7 +128,7 @@
         <field name="name">facilities.energy.consumption.search</field>
         <field name="model">facilities.energy.consumption</field>
         <field name="arch" type="xml">
-            <search string="Energy Consumption Readings">
+            <search>
                 <field name="name"/>
                 <field name="meter_id"/>
                 <field name="reading_date"/>
@@ -151,14 +151,12 @@
                 <filter string="High Variance" name="high_variance" domain="[('variance_percentage', '>', 50)]"/>
                 <filter string="Low Variance" name="low_variance" domain="[('variance_percentage', '&lt;', -50)]"/>
                 
-                <group expand="0" string="Group By">
-                    <filter string="Meter" name="group_meter" context="{'group_by': 'meter_id'}"/>
-                    <filter string="Reading Date" name="group_date" context="{'group_by': 'reading_date:day'}"/>
-                    <filter string="Reading Type" name="group_type" context="{'group_by': 'reading_type'}"/>
-                    <filter string="Validated" name="group_validated" context="{'group_by': 'is_validated'}"/>
-                    <filter string="Anomaly" name="group_anomaly" context="{'group_by': 'is_anomaly'}"/>
-                    <filter string="Reading User" name="group_user" context="{'group_by': 'reading_user_id'}"/>
-                </group>
+            <filter string="Meter" name="group_meter" context="{'group_by': 'meter_id'}"/>
+            <filter string="Reading Date" name="group_date" context="{'group_by': 'reading_date:day'}"/>
+            <filter string="Reading Type" name="group_type" context="{'group_by': 'reading_type'}"/>
+            <filter string="Validated" name="group_validated" context="{'group_by': 'is_validated'}"/>
+            <filter string="Anomaly" name="group_anomaly" context="{'group_by': 'is_anomaly'}"/>
+            <filter string="Reading User" name="group_user" context="{'group_by': 'reading_user_id'}"/>
             </search>
         </field>
     </record>

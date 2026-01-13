@@ -5,7 +5,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 class MaintenanceReport(models.AbstractModel):
-    _name = 'report.facilities_management.report_asset_maintenance_template'
+    _name = 'report.fm.report_asset_maintenance_template'
     _description = 'Asset Maintenance Report Template'
 
     @api.model

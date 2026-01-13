@@ -22,7 +22,7 @@
         <menuitem 
             id="menu_project_visibility_config"
             name="Project Visibility"
-            parent="facilities_management.menu_maintenance_config_main"
+            parent="fm.menu_maintenance_config_main"
             sequence="100"
             groups="base.group_system"/>
             

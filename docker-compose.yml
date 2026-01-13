@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+    # Port mapping removed - database only needs internal Docker network access
+    # Odoo connects via Docker's internal network, so external port mapping is not required
+    # If you need external database access, uncomment the line below and use a different port
+    # ports:
+    #   - "5433:5432"  # Use 5433 instead of 5432 to avoid conflicts
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  odoo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8069:8069"
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo
+      - ODOO_ADMIN_PASSWORD=admin123
+    volumes:
+      - ./fm:/mnt/extra-addons/fm
+      - odoo-web-data:/var/lib/odoo
+      - odoo-config:/etc/odoo
+    command:
+      - --addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons
+      - --log-level=info
+      - --database=fm
+      # Uncomment below for development mode with auto-reload
+      # - --dev=reload,qweb,werkzeug,xml
+
+volumes:
+  odoo-db-data:
+  odoo-web-data:
+  odoo-config:
+

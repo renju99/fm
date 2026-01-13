@@ -79,7 +79,7 @@
         <field name="name">facilities.building.search</field>
         <field name="model">facilities.building</field>
         <field name="arch" type="xml">
-            <search string="Buildings">
+            <search>
                 <field name="name"/>
                 <field name="code"/>
                 <field name="facility_id"/>
@@ -87,11 +87,9 @@
                 <field name="building_type"/>
                 <filter string="Active" name="active" domain="[('active', '=', True)]"/>
                 <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Facility" name="groupby_facility" context="{'group_by':'facility_id'}"/>
-                    <filter string="Building Type" name="groupby_building_type" context="{'group_by':'building_type'}"/>
-                    <filter string="Manager" name="groupby_manager" context="{'group_by':'manager_id'}"/>
-                </group>
+            <filter string="Facility" name="groupby_facility" context="{'group_by':'facility_id'}"/>
+            <filter string="Building Type" name="groupby_building_type" context="{'group_by':'building_type'}"/>
+            <filter string="Manager" name="groupby_manager" context="{'group_by':'manager_id'}"/>
             </search>
         </field>
     </record>

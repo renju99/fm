@@ -199,7 +199,7 @@
         <field name="name">budget.vs.actual.report.simple.search</field>
         <field name="model">facilities.budget.vs.actual.report</field>
         <field name="arch" type="xml">
-            <search string="Budget vs Actual Reports">
+            <search>
                 <field name="name"/>
                 <field name="analytic_account_id"/>
                 <field name="cost_center_id"/>
@@ -219,18 +219,10 @@
                         domain="[('variance_percentage', '&lt;', -5)]"/>
                 <filter name="under_budget" string="Under Budget" 
                         domain="[('variance_percentage', '&gt;', 5)]"/>
-                <group expand="0" string="Group By">
-                    <filter name="group_by_analytic_account" string="Analytic Account" 
-                            context="{'group_by': 'analytic_account_id'}"/>
-                    <filter name="group_by_cost_center" string="Cost Center" 
-                            context="{'group_by': 'cost_center_id'}"/>
-                    <filter name="group_by_budget" string="Budget" 
-                            context="{'group_by': 'budget_id'}"/>
-                    <filter name="group_by_state" string="Status" 
-                            context="{'group_by': 'state'}"/>
-                    <filter name="group_by_date" string="Date" 
-                            context="{'group_by': 'date_from'}"/>
-                </group>
+            <filter name="group_by_analytic_account" string="Analytic Account" context="{'group_by': 'analytic_account_id'}"/>
+            <filter name="group_by_cost_center" string="Cost Center" context="{'group_by': 'cost_center_id'}"/>
+            <filter name="group_by_budget" string="Budget" context="{'group_by': 'budget_id'}"/>
+            <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
             </search>
         </field>
     </record>

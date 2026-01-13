@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
     <!-- Space Booking Kanban Template -->
-    <t t-name="facilities_management.SpaceBookingKanban">
+    <t t-name="fm.SpaceBookingKanban">
         <div class="o_kanban_record_top">
             <div class="o_kanban_record_headings">
                 <strong class="o_kanban_record_title">
@@ -27,7 +27,7 @@
     </t>
 
     <!-- Space Booking Form Template -->
-    <t t-name="facilities_management.SpaceBookingForm">
+    <t t-name="fm.SpaceBookingForm">
         <form>
             <sheet>
                 <group>

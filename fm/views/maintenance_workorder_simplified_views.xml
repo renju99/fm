@@ -364,7 +364,7 @@
         <field name="model">facilities.workorder</field>
         <field name="priority" eval="5"/>
         <field name="arch" type="xml">
-            <search string="Search Work Orders">
+            <search>
                 <field name="name"/>
                 <field name="title"/>
                 <field name="work_order_type"/>
@@ -381,13 +381,11 @@
                 <filter string="High Priority" name="high_priority" domain="[('priority', 'in', ['3', '4'])]"/>
                 <filter string="My Work Orders" name="my_workorders" domain="[('technician_id.user_id', '=', uid)]"/>
                 <filter string="Overdue" name="overdue" domain="[('start_date', '&lt;', context_today())]"/>
-                <group expand="0" string="Group By">
-                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
-                    <filter string="Work Order Type" name="group_type" context="{'group_by': 'work_order_type'}"/>
-                    <filter string="Technician" name="group_technician" context="{'group_by': 'technician_id'}"/>
-                    <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
-                    <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
-                </group>
+            <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+            <filter string="Work Order Type" name="group_type" context="{'group_by': 'work_order_type'}"/>
+            <filter string="Technician" name="group_technician" context="{'group_by': 'technician_id'}"/>
+            <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+            <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
             </search>
         </field>
     </record>
@@ -407,9 +405,9 @@
         <field name="res_model">facilities.workorder</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
-                (0, 0, {'view_mode': 'kanban', 'view_id': ref('facilities_management.view_workorder_simplified_kanban')}),
-                (0, 0, {'view_mode': 'list', 'view_id': ref('facilities_management.view_workorder_simplified_tree')}),
-                (0, 0, {'view_mode': 'form', 'view_id': ref('facilities_management.view_workorder_simplified_form')})]"/>
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('fm.view_workorder_simplified_kanban')}),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('fm.view_workorder_simplified_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('fm.view_workorder_simplified_form')})]"/>
         <field name="context">{'search_default_my_workorders': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
@@ -428,8 +426,8 @@
         <field name="res_model">facilities.workorder</field>
         <field name="view_mode">kanban,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
-                (0, 0, {'view_mode': 'kanban', 'view_id': ref('facilities_management.view_workorder_simplified_kanban')}),
-                (0, 0, {'view_mode': 'form', 'view_id': ref('facilities_management.view_workorder_mobile_form')})]"/>
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('fm.view_workorder_simplified_kanban')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('fm.view_workorder_mobile_form')})]"/>
         <field name="context">{'search_default_my_workorders': 1}</field>
     </record>
 
@@ -445,25 +443,25 @@
     <!-- Menu Items -->
     <menuitem id="menu_work_orders_simplified"
               name="Work Orders (Simplified)"
-              parent="facilities_management.menu_work_orders"
+              parent="fm.menu_work_orders"
               action="action_workorder_simplified"
               sequence="5"/>
 
     <menuitem id="menu_work_orders_mobile"
               name="Work Orders (Mobile)"
-              parent="facilities_management.menu_work_orders"
+              parent="fm.menu_work_orders"
               action="action_workorder_mobile"
               sequence="10"/>
 
     <menuitem id="menu_work_orders_dashboard"
               name="Work Order Dashboard"
-              parent="facilities_management.menu_work_orders"
+              parent="fm.menu_work_orders"
               action="action_workorder_dashboard"
               sequence="15"/>
 
     <menuitem id="menu_work_orders_quick_create"
               name="Quick Create"
-              parent="facilities_management.menu_work_orders"
+              parent="fm.menu_work_orders"
               action="action_workorder_quick_create"
               sequence="20"/>
 </odoo>

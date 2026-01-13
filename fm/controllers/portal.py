@@ -64,7 +64,7 @@ class ServiceRequestPortal(CustomerPortal):
             'page_name': 'dashboard',
         })
         
-        return request.render("facilities_management.portal_dashboard", values)
+        return request.render("fm.portal_dashboard", values)
     
     def _prepare_home_portal_values(self, counters):
         """Add service request counts to portal home"""
@@ -203,7 +203,7 @@ class ServiceRequestPortal(CustomerPortal):
             'filterby': filterby,
             'groupby': groupby,
         })
-        return request.render("facilities_management.portal_my_service_requests", values)
+        return request.render("fm.portal_my_service_requests", values)
 
     @http.route(['/my/service-request/<int:request_id>'], type='http', auth="user", website=True, sitemap=False)
     def portal_service_request_detail(self, request_id, access_token=None, **kw):
@@ -217,7 +217,7 @@ class ServiceRequestPortal(CustomerPortal):
             'service_request': service_request_sudo,
             'page_name': 'service_request',
         }
-        return request.render("facilities_management.portal_service_request_detail", values)
+        return request.render("fm.portal_service_request_detail", values)
 
     @http.route(['/my/service-request/new'], type='http', auth="user", website=True, sitemap=False)
     def portal_service_request_new(self, **kw):
@@ -242,7 +242,7 @@ class ServiceRequestPortal(CustomerPortal):
             'rooms': rooms,
             'page_name': 'service_request_new',
         }
-        return request.render("facilities_management.portal_service_request_new", values)
+        return request.render("fm.portal_service_request_new", values)
 
     @http.route(['/my/service-request/create'], type='http', auth="user", website=True, methods=['GET', 'POST'], csrf=True)
     def portal_service_request_create(self, room_id=None, **post):
@@ -283,7 +283,7 @@ class ServiceRequestPortal(CustomerPortal):
                 'page_name': 'service_request_create_from_qr',
                 'is_qr_request': bool(room_id),
             }
-            return request.render("facilities_management.portal_service_request_create_from_qr", values)
+            return request.render("fm.portal_service_request_create_from_qr", values)
         
         # Handle POST request (form submission)
         try:
@@ -371,7 +371,7 @@ class ServiceRequestPortal(CustomerPortal):
                     'catalog_by_category': {},
                     'page_name': 'service_catalog',
                 }
-                return request.render("facilities_management.portal_service_catalog", values)
+                return request.render("fm.portal_service_catalog", values)
 
             # Group by category
             catalog_by_category = {}
@@ -385,7 +385,7 @@ class ServiceRequestPortal(CustomerPortal):
                 'catalog_by_category': catalog_by_category,
                 'page_name': 'service_catalog',
             }
-            return request.render("facilities_management.portal_service_catalog", values)
+            return request.render("fm.portal_service_catalog", values)
         except Exception as e:
             return f"<h1>Error in service catalog: {str(e)}</h1>"
 
@@ -411,7 +411,7 @@ class ServiceRequestPortal(CustomerPortal):
                 'rooms': rooms,
                 'page_name': 'service_request_from_catalog',
             }
-            return request.render("facilities_management.portal_service_request_from_catalog", values)
+            return request.render("fm.portal_service_request_from_catalog", values)
 
         except Exception:
             return request.redirect('/my/service-catalog')
@@ -454,7 +454,7 @@ class ServiceRequestPortal(CustomerPortal):
             'current_category': category,
             'page_name': 'help_center',
         }
-        return request.render("facilities_management.portal_help_center", values)
+        return request.render("fm.portal_help_center", values)
 
     @http.route(['/my/help-center/document/<int:document_id>'], type='http', auth="user", website=True)
     def portal_help_document(self, document_id, **kw):
@@ -474,7 +474,7 @@ class ServiceRequestPortal(CustomerPortal):
                 'document': document,
                 'page_name': 'help_document',
             }
-            return request.render("facilities_management.portal_help_document", values)
+            return request.render("fm.portal_help_document", values)
 
         except Exception:
             return request.redirect('/my/help-center')
@@ -527,7 +527,7 @@ class ServiceRequestPortal(CustomerPortal):
         
         return request.redirect('/my/service-requests')
 
-    @http.route(['/api/buildings/<int:facility_id>'], type='json', auth="user", website=True)
+    @http.route(['/api/buildings/<int:facility_id>'], type='jsonrpc', auth="user", website=True)
     def get_buildings_for_facility(self, facility_id, **kw):
         """Get buildings for a facility (AJAX)"""
         buildings = request.env['facilities.building'].sudo().search([
@@ -535,7 +535,7 @@ class ServiceRequestPortal(CustomerPortal):
         ])
         return [{'id': b.id, 'name': b.name} for b in buildings]
 
-    @http.route(['/api/floors/<int:building_id>'], type='json', auth="user", website=True)
+    @http.route(['/api/floors/<int:building_id>'], type='jsonrpc', auth="user", website=True)
     def get_floors_for_building(self, building_id, **kw):
         """Get floors for a building (AJAX)"""
         floors = request.env['facilities.floor'].sudo().search([
@@ -543,7 +543,7 @@ class ServiceRequestPortal(CustomerPortal):
         ])
         return [{'id': f.id, 'name': f.name} for f in floors]
 
-    @http.route(['/api/rooms/<int:floor_id>'], type='json', auth="user", website=True)
+    @http.route(['/api/rooms/<int:floor_id>'], type='jsonrpc', auth="user", website=True)
     def get_rooms_for_floor(self, floor_id, **kw):
         """Get rooms for a floor (AJAX)"""
         rooms = request.env['facilities.room'].sudo().search([
@@ -562,7 +562,7 @@ class ServiceRequestPortal(CustomerPortal):
                 _logger.error(f"Service request {service_request_id} not found")
                 if request.httprequest.headers.get('X-Requested-With') == 'XMLHttpRequest':
                     return request.make_json_response({'error': 'Service request not found'}, status=404)
-                return request.render('facilities_management.portal_service_request_detail', {
+                return request.render('fm.portal_service_request_detail', {
                     'error': 'Service request not found.'
                 })
             
@@ -576,7 +576,7 @@ class ServiceRequestPortal(CustomerPortal):
                 error_msg = 'You are not authorized to reopen this service request. You can only reopen requests that you created.'
                 if request.httprequest.headers.get('X-Requested-With') == 'XMLHttpRequest':
                     return request.make_json_response({'error': error_msg}, status=403)
-                return request.render('facilities_management.portal_service_request_detail', {
+                return request.render('fm.portal_service_request_detail', {
                     'service_request': service_request,
                     'error': error_msg
                 })
@@ -586,7 +586,7 @@ class ServiceRequestPortal(CustomerPortal):
                 error_msg = 'Please provide a reason for reopening the request.'
                 if request.httprequest.headers.get('X-Requested-With') == 'XMLHttpRequest':
                     return request.make_json_response({'error': error_msg}, status=400)
-                return request.render('facilities_management.portal_service_request_detail', {
+                return request.render('fm.portal_service_request_detail', {
                     'service_request': service_request,
                     'error': error_msg
                 })
@@ -612,7 +612,7 @@ class ServiceRequestPortal(CustomerPortal):
                 error_msg = 'Unable to reopen this service request. It may not be in a reopenable state.'
                 if request.httprequest.headers.get('X-Requested-With') == 'XMLHttpRequest':
                     return request.make_json_response({'error': error_msg}, status=400)
-                return request.render('facilities_management.portal_service_request_detail', {
+                return request.render('fm.portal_service_request_detail', {
                     'service_request': service_request,
                     'error': error_msg
                 })
@@ -622,7 +622,7 @@ class ServiceRequestPortal(CustomerPortal):
             error_msg = 'An error occurred while reopening the service request. Please try again or contact support.'
             if request.httprequest.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return request.make_json_response({'error': error_msg}, status=500)
-            return request.render('facilities_management.portal_service_request_detail', {
+            return request.render('fm.portal_service_request_detail', {
                 'service_request': service_request if 'service_request' in locals() else None,
                 'error': error_msg
             })

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="facilities_management.MaintenanceDashboardTemplate">
+    <t t-name="fm.MaintenanceDashboardTemplate">
         <div class="o_facilities_analytics_dashboard p-3">
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-3">

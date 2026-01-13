@@ -198,7 +198,7 @@
         <field name="name">facilities.energy.alert.search</field>
         <field name="model">facilities.energy.alert</field>
         <field name="arch" type="xml">
-            <search string="Search Energy Alerts">
+            <search>
                 <field name="name"/>
                 <field name="alert_type"/>
                 <field name="meter_id"/>
@@ -220,14 +220,12 @@
                 <filter string="Unresolved" name="unresolved" domain="[('state', 'in', ['new', 'acknowledged', 'investigating'])]"/>
                 <filter string="Resolved" name="resolved" domain="[('state', 'in', ['resolved', 'closed'])]"/>
                 
-                <group expand="0" string="Group By">
-                    <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
-                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
-                    <filter string="Alert Type" name="group_alert_type" context="{'group_by': 'alert_type'}"/>
-                    <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
-                    <filter string="Assigned To" name="group_assigned" context="{'group_by': 'assigned_to_id'}"/>
-                    <filter string="Alert Date" name="group_date" context="{'group_by': 'alert_date:day'}"/>
-                </group>
+            <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
+            <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+            <filter string="Alert Type" name="group_alert_type" context="{'group_by': 'alert_type'}"/>
+            <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+            <filter string="Assigned To" name="group_assigned" context="{'group_by': 'assigned_to_id'}"/>
+            <filter string="Alert Date" name="group_date" context="{'group_by': 'alert_date:day'}"/>
             </search>
         </field>
     </record>
@@ -326,7 +324,7 @@
         <field name="name">facilities.energy.alert.rule.search</field>
         <field name="model">facilities.energy.alert.rule</field>
         <field name="arch" type="xml">
-            <search string="Search Energy Alert Rules">
+            <search>
                 <field name="name"/>
                 <field name="rule_type"/>
                 <field name="meter_type"/>
@@ -335,11 +333,9 @@
                 <filter string="Active Rules" name="active" domain="[('active', '=', True)]"/>
                 <filter string="Inactive Rules" name="inactive" domain="[('active', '=', False)]"/>
                 
-                <group expand="0" string="Group By">
-                    <filter string="Rule Type" name="group_rule_type" context="{'group_by': 'rule_type'}"/>
-                    <filter string="Meter Type" name="group_meter_type" context="{'group_by': 'meter_type'}"/>
-                    <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
-                </group>
+            <filter string="Rule Type" name="group_rule_type" context="{'group_by': 'rule_type'}"/>
+            <filter string="Meter Type" name="group_meter_type" context="{'group_by': 'meter_type'}"/>
+            <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
             </search>
         </field>
     </record>

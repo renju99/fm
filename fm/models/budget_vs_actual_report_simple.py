@@ -411,7 +411,7 @@ class BudgetVsActualReport(models.Model):
         """Send budget vs actual report via email"""
         self.ensure_one()
         
-        template = self.env.ref('facilities_management.email_template_budget_vs_actual_report', False)
+        template = self.env.ref('fm.email_template_budget_vs_actual_report', False)
         if template:
             template.send_mail(self.id, force_send=True)
         else:

@@ -92,14 +92,12 @@
                 <filter string="Unresolved" name="unresolved" domain="[('resolution_date','=',False)]"/>
                 <filter string="Resolved" name="resolved_time" domain="[('resolution_date','!=',False)]"/>
                 
-                <group expand="0" string="Group By">
-                    <filter string="Work Order" name="group_workorder" context="{'group_by': 'workorder_id'}"/>
-                    <filter string="Escalation Level" name="group_level" context="{'group_by': 'escalation_level'}"/>
-                    <filter string="Escalation Type" name="group_type" context="{'group_by': 'escalation_type'}"/>
-                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
-                    <filter string="Resolved By" name="group_resolved_by" context="{'group_by': 'escalated_to_id'}"/>
-                    <filter string="Month" name="group_month" context="{'group_by': 'escalation_date:month'}"/>
-                </group>
+            <filter string="Work Order" name="group_workorder" context="{'group_by': 'workorder_id'}"/>
+            <filter string="Escalation Level" name="group_level" context="{'group_by': 'escalation_level'}"/>
+            <filter string="Escalation Type" name="group_type" context="{'group_by': 'escalation_type'}"/>
+            <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+            <filter string="Resolved By" name="group_resolved_by" context="{'group_by': 'escalated_to_id'}"/>
+            <filter string="Month" name="group_month" context="{'group_by': 'escalation_date:month'}"/>
             </search>
         </field>
     </record>

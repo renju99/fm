@@ -130,7 +130,7 @@
         <field name="name">res.partner.landlord.search</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
-            <search string="Search Landlords">
+            <search>
                 <field name="name" string="Landlord Name"/>
                 <field name="phone"/>
                 <field name="email"/>
@@ -142,10 +142,8 @@
                 <separator/>
                 <filter string="Has Properties" name="has_properties" domain="[('owned_facilities_count', '>', 0)]"/>
                 <filter string="Has Leases" name="has_leases" domain="[('total_leases_count', '>', 0)]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Type" name="group_type" context="{'group_by': 'landlord_type'}"/>
-                    <filter string="City" name="group_city" context="{'group_by': 'city'}"/>
-                </group>
+            <filter string="Type" name="group_type" context="{'group_by': 'landlord_type'}"/>
+            <filter string="City" name="group_city" context="{'group_by': 'city'}"/>
             </search>
         </field>
     </record>

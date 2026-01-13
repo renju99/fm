@@ -286,16 +286,16 @@ class MaintenanceWorkOrderErrorHandling(models.Model):
         user = self.env.user
         
         # Check if user has maintenance permissions
-        if not user.has_group('facilities_management.group_facilities_user'):
+        if not user.has_group('fm.group_facilities_user'):
             raise AccessError(_('You do not have permission to perform maintenance operations'))
         
         # Check specific action permissions
         if action in ['start_progress', 'complete', 'put_on_hold', 'resume_work']:
-            if not user.has_group('facilities_management.group_maintenance_technician'):
+            if not user.has_group('fm.group_maintenance_technician'):
                 raise AccessError(_('You do not have permission to perform this action'))
         
         if action in ['import_job_plan_tasks', 'create', 'unlink']:
-            if not user.has_group('facilities_management.group_facilities_manager'):
+            if not user.has_group('fm.group_facilities_manager'):
                 raise AccessError(_('You do not have permission to perform this action'))
 
     def _handle_sla_errors(self, error, context=None):

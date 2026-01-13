@@ -395,7 +395,7 @@ class FacilitiesSpaceBooking(models.Model):
 
             if rec.state == 'confirmed':
                 rec.schedule_reminder_emails()
-                template = self.env.ref('facilities_management.mail_template_space_booking_confirmed',
+                template = self.env.ref('fm.mail_template_space_booking_confirmed',
                                         raise_if_not_found=False)
                 if template:
                     template.send_mail(rec.id, force_send=True)
@@ -408,7 +408,7 @@ class FacilitiesSpaceBooking(models.Model):
 
         for rec in self:
             if vals.get('state') == 'confirmed' and old_state.get(rec.id) != 'confirmed':
-                template = self.env.ref('facilities_management.mail_template_space_booking_confirmed',
+                template = self.env.ref('fm.mail_template_space_booking_confirmed',
                                         raise_if_not_found=False)
                 if template:
                     template.send_mail(rec.id, force_send=True)
@@ -579,7 +579,7 @@ class FacilitiesSpaceBooking(models.Model):
     def action_send_reminder(self):
         """Send booking reminder"""
         self.ensure_one()
-        template = self.env.ref('facilities_management.mail_template_space_booking_reminder', raise_if_not_found=False)
+        template = self.env.ref('fm.mail_template_space_booking_reminder', raise_if_not_found=False)
         if template:
             template.send_mail(self.id, force_send=True)
             self.reminder_sent = True

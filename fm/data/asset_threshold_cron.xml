@@ -4,7 +4,7 @@
         <!-- Cron job for checking asset thresholds -->
         <record id="cron_check_asset_thresholds" model="ir.cron">
             <field name="name">Check Asset Thresholds</field>
-            <field name="model_id" ref="facilities_management.model_facilities_asset_threshold"/>
+            <field name="model_id" ref="fm.model_facilities_asset_threshold"/>
             <field name="state">code</field>
             <field name="code">model.cron_check_thresholds()</field>
             <field name="interval_number">5</field>
@@ -15,7 +15,7 @@
         <!-- Cron job for asset health score updates -->
         <record id="cron_update_asset_health_scores" model="ir.cron">
             <field name="name">Update Asset Health Scores</field>
-            <field name="model_id" ref="facilities_management.model_facilities_asset"/>
+            <field name="model_id" ref="fm.model_facilities_asset"/>
             <field name="state">code</field>
             <field name="code">model._update_health_scores()</field>
             <field name="interval_number">1</field>
@@ -27,7 +27,7 @@
         <!-- Cron job for asset disposal automation -->
         <record id="cron_asset_disposal_automation" model="ir.cron">
             <field name="name">Asset Disposal Automation</field>
-            <field name="model_id" ref="facilities_management.model_facilities_asset"/>
+            <field name="model_id" ref="fm.model_facilities_asset"/>
             <field name="state">code</field>
             <field name="code">model._check_disposal_candidates()</field>
             <field name="interval_number">1</field>

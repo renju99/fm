@@ -10,6 +10,7 @@ _logger = logging.getLogger(__name__)
 # ===============================
 
 # 1. Base/Configuration/Lookup Models (Least dependencies within module)
+from . import res_users
 from . import hr_employee
 from . import product
 from . import maintenance_team
@@ -148,7 +149,7 @@ from ..wizard import facility_manager_check_wizard
 def pre_init_hook(cr):
     """Ensure clean slate for facilities_management module."""
     env = api.Environment(cr, SUPERUSER_ID, {})
-    _logger.info("Running pre_init_hook for facilities_management...")
+    _logger.info("Running pre_init_hook for fm...")
     try:
         cr.execute(
             """
@@ -179,6 +180,61 @@ def post_init_hook(env):
     # Create default SLA records
     slas = env['facilities.sla'].create_default_sla_records()
     _logger.info("Ensured default SLA records exist after install/upgrade.")
+
+    # Update FM security groups to have the Facilities Management category
+    # Note: Using SQL directly as category_id might not be accessible via ORM in Odoo 19
+    try:
+        # Get category ID from database
+        env.cr.execute("""
+            SELECT id FROM ir_module_category 
+            WHERE name = 'Facilities Management'
+            LIMIT 1
+        """)
+        category_result = env.cr.fetchone()
+        
+        if category_result:
+            category_id = category_result[0]
+            
+            # List of all FM group names (without module prefix)
+            fm_group_names = [
+                'group_maintenance_technician',
+                'group_facilities_user',
+                'group_facilities_manager',
+                'group_sla_escalation_manager',
+                'group_tenant_user',
+                'group_facilities_focused_user',
+                'group_hide_project_elements',
+                'group_facilities_security_admin',
+                'group_facilities_security_auditor',
+                'group_facilities_high_priority',
+            ]
+            
+            # Update groups using SQL (check if category_id column exists first)
+            env.cr.execute("""
+                SELECT column_name FROM information_schema.columns 
+                WHERE table_name = 'res_groups' AND column_name = 'category_id'
+            """)
+            has_category_column = env.cr.fetchone()
+            
+            if has_category_column:
+                placeholders = ','.join(['%s'] * len(fm_group_names))
+                env.cr.execute(f"""
+                    UPDATE res_groups 
+                    SET category_id = %s
+                    WHERE id IN (
+                        SELECT res_id FROM ir_model_data 
+                        WHERE module = 'fm' AND name IN ({placeholders})
+                    )
+                """, [category_id] + fm_group_names)
+                
+                updated_count = env.cr.rowcount
+                if updated_count > 0:
+                    env.cr.commit()
+                    _logger.info(f"Updated {updated_count} FM security groups with Facilities Management category via SQL.")
+            else:
+                _logger.info("category_id column does not exist in res_groups table - groups will be organized by module.")
+    except Exception as e:
+        _logger.warning(f"Could not update FM groups category: {e}")
 
     # Check if we should create sample work orders for better user experience
     try:

@@ -26,14 +26,9 @@
                 <separator/>
 
                 <!-- Group By -->
-                <group expand="0" string="Group By">
-                    <filter name="group_category" string="Category"
-                            context="{'group_by': 'category_id'}"/>
-                    <filter name="group_condition" string="Condition"
-                            context="{'group_by': 'condition'}"/>
-                    <filter name="group_facility" string="Facility"
-                            context="{'group_by': 'facility_id'}"/>
-                </group>
+                <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
+                <filter name="group_condition" string="Condition" context="{'group_by': 'condition'}"/>
+                <filter name="group_facility" string="Facility" context="{'group_by': 'facility_id'}"/>
             </search>
         </field>
     </record>

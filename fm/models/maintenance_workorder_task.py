@@ -120,7 +120,7 @@ class MaintenanceWorkorderTask(models.Model):
             'view_mode': 'form',
             'res_id': self.id,
             'target': 'current',
-            'view_id': self.env.ref('facilities_management.view_maintenance_workorder_task_mobile_form').id,
+            'view_id': self.env.ref('fm.view_maintenance_workorder_task_mobile_form').id,
             'context': {'mobile_view': True},
         }
 

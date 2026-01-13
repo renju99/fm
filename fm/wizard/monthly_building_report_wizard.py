@@ -584,7 +584,7 @@ class MonthlyBuildingReportWizard(models.TransientModel):
             },
         }
 
-        return self.env.ref('facilities_management.monthly_building_report_pdf_action').report_action(
+        return self.env.ref('fm.monthly_building_report_pdf_action').report_action(
             self,
             data={
                 'doc': data,

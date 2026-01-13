@@ -61,7 +61,7 @@
         <field name="name">maintenance.workorder.error.log.search</field>
         <field name="model">maintenance.workorder.error.log</field>
         <field name="arch" type="xml">
-            <search string="Search Error Logs">
+            <search>
                 <field name="workorder_id"/>
                 <field name="error_type"/>
                 <field name="user_id"/>
@@ -71,12 +71,10 @@
                 <filter string="Today" name="today" domain="[('error_date', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
                 <filter string="This Week" name="this_week" domain="[('error_date', '>=', (context_today() - relativedelta(weeks=1)))]"/>
                 <filter string="This Month" name="this_month" domain="[('error_date', '>=', datetime.datetime.now().strftime('%Y-%m-01'))]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Error Type" name="group_error_type" context="{'group_by': 'error_type'}"/>
-                    <filter string="Work Order" name="group_workorder" context="{'group_by': 'workorder_id'}"/>
-                    <filter string="User" name="group_user" context="{'group_by': 'user_id'}"/>
-                    <filter string="Date" name="group_date" context="{'group_by': 'error_date:day'}"/>
-                </group>
+            <filter string="Error Type" name="group_error_type" context="{'group_by': 'error_type'}"/>
+            <filter string="Work Order" name="group_workorder" context="{'group_by': 'workorder_id'}"/>
+            <filter string="User" name="group_user" context="{'group_by': 'user_id'}"/>
+            <filter string="Date" name="group_date" context="{'group_by': 'error_date:day'}"/>
             </search>
         </field>
     </record>
@@ -87,8 +85,8 @@
         <field name="res_model">maintenance.workorder.error.log</field>
         <field name="view_mode">list,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
-                (0, 0, {'view_mode': 'list', 'view_id': ref('facilities_management.view_maintenance_workorder_error_log_tree')}),
-                (0, 0, {'view_mode': 'form', 'view_id': ref('facilities_management.view_maintenance_workorder_error_log_form')})]"/>
+                (0, 0, {'view_mode': 'list', 'view_id': ref('fm.view_maintenance_workorder_error_log_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('fm.view_maintenance_workorder_error_log_form')})]"/>
         <field name="context">{'search_default_unresolved': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
@@ -105,7 +103,7 @@
     <record id="view_workorder_form_inherit_error_handling" model="ir.ui.view">
         <field name="name">facilities.workorder.form.inherit.error.handling</field>
         <field name="model">facilities.workorder</field>
-        <field name="inherit_id" ref="facilities_management.view_workorder_enhanced_form"/>
+        <field name="inherit_id" ref="fm.view_workorder_enhanced_form"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button class="oe_stat_button" name="action_view_error_logs" type="object"
@@ -125,7 +123,7 @@
     <record id="view_workorder_form_inherit_error_fields" model="ir.ui.view">
         <field name="name">facilities.workorder.form.inherit.error.fields</field>
         <field name="model">facilities.workorder</field>
-        <field name="inherit_id" ref="facilities_management.view_workorder_enhanced_form"/>
+        <field name="inherit_id" ref="fm.view_workorder_enhanced_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='invoice_status']" position="after">
                 <field name="error_count" invisible="1"/>
@@ -137,8 +135,8 @@
     <!-- Error Log Menu Item -->
     <menuitem id="menu_maintenance_error_logs"
               name="Error Logs"
-              parent="facilities_management.menu_maintenance_admin"
+              parent="fm.menu_maintenance_admin"
               action="action_maintenance_workorder_error_log"
               sequence="30"
-              groups="facilities_management.group_facilities_manager"/>
+              groups="fm.group_facilities_manager"/>
 </odoo>

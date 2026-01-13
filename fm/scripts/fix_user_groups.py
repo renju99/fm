@@ -14,7 +14,7 @@ users = env['res.users'].search([])
 # Define the problematic groups
 portal_group = env.ref('base.group_portal')
 internal_group = env.ref('base.group_user')
-tenant_group = env.ref('facilities_management.group_tenant_user', raise_if_not_found=False)
+tenant_group = env.ref('fm.group_tenant_user', raise_if_not_found=False)
 
 print(f"\n{'='*60}")
 print("FACILITIES MANAGEMENT - User Group Conflict Fixer")

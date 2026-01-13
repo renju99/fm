@@ -4,7 +4,7 @@
         <!-- Monthly Facility Report Email Template -->
         <record id="email_template_monthly_facility_report" model="mail.template">
             <field name="name">Monthly Facility Report</field>
-            <field name="model_id" ref="facilities_management.model_facilities_facility"/>
+            <field name="model_id" ref="fm.model_facilities_facility"/>
             <field name="subject">Monthly Facility Maintenance Report - ${object.name} - ${ctx.get('report_period') or ''}</field>
             <field name="email_from">${user.email_formatted}</field>
             <field name="email_to">${object.email or (object.manager_id.user_id.email or '')}</field>
@@ -35,7 +35,7 @@
         <!-- Asset Created Notification -->
         <record id="email_template_asset_created" model="mail.template">
             <field name="name">Asset Created Notification</field>
-            <field name="model_id" ref="facilities_management.model_facilities_asset"/>
+            <field name="model_id" ref="fm.model_facilities_asset"/>
             <field name="subject">New Asset Created: ${object.name} (${object.asset_code})</field>
             <field name="email_from">${user.email_formatted}</field>
             <field name="email_to">${(object.facility_id.manager_id.user_id.email_formatted or '')}</field>
@@ -87,7 +87,7 @@
         <!-- Asset Warranty Expiration Warning -->
         <record id="email_template_asset_warranty_expiring" model="mail.template">
             <field name="name">Asset Warranty Expiration Warning</field>
-            <field name="model_id" ref="facilities_management.model_facilities_asset"/>
+            <field name="model_id" ref="fm.model_facilities_asset"/>
             <field name="subject">Warranty Expiring Soon: ${object.name}</field>
             <field name="email_from">${user.email_formatted}</field>
             <field name="email_to">${(object.facility_id.manager_id.user_id.email_formatted or '')}</field>
@@ -138,7 +138,7 @@
         <!-- Work Order Assignment Notification -->
         <record id="email_template_workorder_assigned" model="mail.template">
             <field name="name">Work Order Assignment Notification</field>
-            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="model_id" ref="fm.model_facilities_workorder"/>
             <field name="subject">Work Order Assigned: ${object.name} - ${object.asset_id.name}</field>
             <field name="email_from">${user.email_formatted}</field>
             <field name="email_to">${(object.technician_ids[0].user_id.email_formatted if object.technician_ids else '')}</field>
@@ -193,7 +193,7 @@
         <!-- SLA Breach Alert -->
         <record id="email_template_sla_breach_alert" model="mail.template">
             <field name="name">SLA Breach Alert</field>
-            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="model_id" ref="fm.model_facilities_workorder"/>
             <field name="subject">URGENT: SLA Breached - ${object.name}</field>
             <field name="email_from">${user.email_formatted}</field>
             <field name="email_to">${(object.facility_id.manager_id.user_id.email_formatted or '')}</field>
@@ -251,7 +251,7 @@
         <!-- SLA Escalation Notification Template -->
         <record id="email_template_sla_escalation" model="mail.template">
             <field name="name">SLA Escalation Notification</field>
-            <field name="model_id" ref="facilities_management.model_facilities_escalation_log"/>
+            <field name="model_id" ref="fm.model_facilities_escalation_log"/>
             <field name="subject">🚨 SLA Escalation Level ${object.escalation_level} - ${object.workorder_id.name}</field>
             <field name="email_from">${user.email_formatted}</field>
             <field name="email_to">${(object.escalated_to_id.user_id.email_formatted if object.escalated_to_id and object.escalated_to_id.user_id else '')}</field>
@@ -328,7 +328,7 @@
         <!-- Work Order Completion Notification -->
         <record id="email_template_workorder_completed" model="mail.template">
             <field name="name">Work Order Completion Notification</field>
-            <field name="model_id" ref="facilities_management.model_facilities_workorder"/>
+            <field name="model_id" ref="fm.model_facilities_workorder"/>
             <field name="subject">Work Order Completed: ${object.name}</field>
             <field name="email_from">${user.email_formatted}</field>
             <field name="email_to">${(object.facility_id.manager_id.user_id.email_formatted or '')}</field>
@@ -390,7 +390,7 @@
         <!-- Asset Disposal Notification -->
         <record id="email_template_asset_disposal" model="mail.template">
             <field name="name">Asset Disposal Notification</field>
-            <field name="model_id" ref="facilities_management.model_facilities_asset"/>
+            <field name="model_id" ref="fm.model_facilities_asset"/>
             <field name="subject">Asset Disposal Request: ${object.name}</field>
             <field name="email_from">${user.email_formatted}</field>
             <field name="email_to">${(object.facility_id.manager_id.user_id.email_formatted or '')}</field>
@@ -458,9 +458,9 @@
                         <div style="background-color: #e7f3ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
                             <h3 style="margin-top: 0;">Maintenance Details:</h3>
                             <ul>
-                                <li><strong>Date:</strong> <t t-out="context.get('maintenance_date', 'TBD')"/></li>
-                                <li><strong>Duration:</strong> <t t-out="context.get('maintenance_duration', '2-4 hours')"/></li>
-                                <li><strong>Impact:</strong> <t t-out="context.get('maintenance_impact', 'Minimal - read-only access')"/></li>
+                                <li><strong>Date:</strong> <t t-out="ctx.get('maintenance_date') or 'TBD'"/></li>
+                                <li><strong>Duration:</strong> <t t-out="ctx.get('maintenance_duration') or '2-4 hours'"/></li>
+                                <li><strong>Impact:</strong> <t t-out="ctx.get('maintenance_impact') or 'Minimal - read-only access'"/></li>
                             </ul>
                         </div>
                         

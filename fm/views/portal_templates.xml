@@ -2,7 +2,7 @@
 <odoo>
     <!-- Portal Service Requests List -->
     <template id="portal_my_service_requests" name="My Service Requests">
-        <t t-call="facilities_management.portal_layout_with_navigation">
+        <t t-call="fm.portal_layout_with_navigation">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
 
 
@@ -149,7 +149,7 @@
 
     <!-- Portal Service Request Detail -->
     <template id="portal_service_request_detail" name="Service Request Detail">
-        <t t-call="facilities_management.portal_layout_with_navigation">
+        <t t-call="fm.portal_layout_with_navigation">
             <t t-set="o_portal_fullwidth_alert" t-value="True"/>
 
             <!-- Success/Error Messages -->
@@ -293,7 +293,7 @@
                         
                         
                         <!-- Check if current user is the requester or has manager permissions -->
-                        <t t-if="service_request.requester_id.id == request.env.user.id or request.env.user.has_group('facilities_management.group_facilities_manager')">
+                        <t t-if="service_request.requester_id.id == request.env.user.id or request.env.user.has_group('fm.group_facilities_manager')">
                             <t t-set="can_reopen" t-value="True"/>
                         </t>
                         <t t-if="can_reopen">
@@ -330,7 +330,7 @@
                                 <strong>Cannot Reopen:</strong> You don't have permission to reopen this request or it's not in a reopenable state.
                                 <br/>Current State: <t t-esc="service_request.state"/>
                                 <br/>User Match: <t t-if="service_request.requester_id.id == request.env.user.id">Yes (You are the requester)</t><t t-else="">No (You are not the requester)</t>
-                                <br/>Manager Permissions: <t t-if="request.env.user.has_group('facilities_management.group_facilities_manager')">Yes</t><t t-else="">No</t>
+                                <br/>Manager Permissions: <t t-if="request.env.user.has_group('fm.group_facilities_manager')">Yes</t><t t-else="">No</t>
                                 <br/><strong>Note:</strong> You can only reopen service requests that you created, or you need manager permissions.
                             </div>
                         </t>
@@ -630,7 +630,7 @@
 
     <!-- Portal New Service Request Form -->
     <template id="portal_service_request_new" name="New Service Request">
-        <t t-call="facilities_management.portal_layout_with_navigation">
+        <t t-call="fm.portal_layout_with_navigation">
             <div class="container mt-3">
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
@@ -796,7 +796,7 @@
 
     <!-- Portal Service Request From Catalog -->
     <template id="portal_service_request_from_catalog" name="Service Request From Catalog">
-        <t t-call="facilities_management.portal_layout_with_navigation">
+        <t t-call="fm.portal_layout_with_navigation">
             <div class="container mt-3">
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
@@ -939,7 +939,7 @@
 
     <!-- Portal Service Catalog -->
     <template id="portal_service_catalog" name="Service Catalog">
-        <t t-call="facilities_management.portal_layout_with_navigation">
+        <t t-call="fm.portal_layout_with_navigation">
             <div class="container mt-3">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3><i class="fa fa-book"/> Service Catalog</h3>
@@ -1001,7 +1001,7 @@
 
     <!-- Portal Help Center -->
     <template id="portal_help_center" name="Help Center">
-        <t t-call="facilities_management.portal_layout_with_navigation">
+        <t t-call="fm.portal_layout_with_navigation">
             <div class="container mt-3">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3><i class="fa fa-question-circle"/> Help Center</h3>
@@ -1156,7 +1156,7 @@
 
     <!-- Portal Dashboard -->
     <template id="portal_dashboard" name="Service Request Dashboard">
-        <t t-call="facilities_management.portal_layout_with_navigation">
+        <t t-call="fm.portal_layout_with_navigation">
             <t t-set="breadcrumbs_searchbar" t-value="False"/>
             
             <div class="container-fluid mt-3">

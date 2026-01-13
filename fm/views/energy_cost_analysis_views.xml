@@ -208,7 +208,7 @@
         <field name="name">facilities.energy.cost.analysis.search</field>
         <field name="model">facilities.energy.cost.analysis</field>
         <field name="arch" type="xml">
-            <search string="Energy Cost Analysis">
+            <search>
                 <field name="name"/>
                 <field name="analysis_code"/>
                 <field name="analysis_type"/>
@@ -243,14 +243,12 @@
                 <filter string="This Year" name="this_year" 
                         domain="[('analysis_date', '>=', datetime.datetime.now().strftime('%Y-01-01')), ('analysis_date', '&lt;', (datetime.datetime.now() + relativedelta(years=1)).strftime('%Y-01-01'))]"/>
                 
-                <group expand="0" string="Group By">
-                    <filter string="Analysis Type" name="group_type" context="{'group_by': 'analysis_type'}"/>
-                    <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
-                    <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
-                    <filter string="Budget Performance" name="group_budget" context="{'group_by': 'budget_performance'}"/>
-                    <filter string="Cost Trend" name="group_trend" context="{'group_by': 'cost_trend'}"/>
-                    <filter string="Analysis Date" name="group_date" context="{'group_by': 'analysis_date:month'}"/>
-                </group>
+            <filter string="Analysis Type" name="group_type" context="{'group_by': 'analysis_type'}"/>
+            <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+            <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
+            <filter string="Budget Performance" name="group_budget" context="{'group_by': 'budget_performance'}"/>
+            <filter string="Cost Trend" name="group_trend" context="{'group_by': 'cost_trend'}"/>
+            <filter string="Analysis Date" name="group_date" context="{'group_by': 'analysis_date:month'}"/>
             </search>
         </field>
     </record>

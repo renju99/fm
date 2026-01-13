@@ -138,7 +138,7 @@
         <field name="name">package.management.search</field>
         <field name="model">package.management</field>
         <field name="arch" type="xml">
-            <search string="Search Packages">
+            <search>
                 <field name="tracking_number"/>
                 <field name="recipient_id"/>
                 <field name="facility_id"/>
@@ -157,13 +157,11 @@
                 <filter string="This Week" name="this_week" 
                         domain="[('received_date', '&gt;=', (context_today() - relativedelta(weeks=1)).strftime('%Y-%m-%d'))]"/>
                 <separator/>
-                <group expand="0" string="Group By">
-                    <filter string="Recipient" name="group_recipient" context="{'group_by': 'recipient_id'}"/>
-                    <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
-                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
-                    <filter string="Package Type" name="group_type" context="{'group_by': 'package_type'}"/>
-                    <filter string="Received Date" name="group_received_date" context="{'group_by': 'received_date'}"/>
-                </group>
+            <filter string="Recipient" name="group_recipient" context="{'group_by': 'recipient_id'}"/>
+            <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+            <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+            <filter string="Package Type" name="group_type" context="{'group_by': 'package_type'}"/>
+            <filter string="Received Date" name="group_received_date" context="{'group_by': 'received_date'}"/>
             </search>
         </field>
     </record>
@@ -239,7 +237,7 @@
     <!-- Menu Items -->
     <menuitem id="menu_package_management_root"
               name="Packages"
-              parent="facility_asset_menus"
+              parent="menu_facilities_root"
               sequence="60"/>
 
     <menuitem id="menu_package_management"

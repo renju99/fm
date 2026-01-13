@@ -26,10 +26,10 @@
                             invisible="state != 'in_progress' or onhold_approval_state == 'pending'"/>
                     <button name="action_approve_onhold" type="object" string="Approve On-Hold" class="oe_highlight"
                             invisible="onhold_approval_state != 'pending'"
-                            groups="facilities_management.group_facilities_manager"/>
+                            groups="fm.group_facilities_manager"/>
                     <button name="action_reject_onhold" type="object" string="Reject On-Hold" class="btn-danger"
                             invisible="onhold_approval_state != 'pending'"
-                            groups="facilities_management.group_facilities_manager"/>
+                            groups="fm.group_facilities_manager"/>
                     <button name="action_reopen_workorder" type="object" string="Reopen"
                             invisible="not can_reopen_workorder"/>
                     <button name="action_create_invoice" type="object" string="Create Invoice" class="btn-primary"

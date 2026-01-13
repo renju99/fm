@@ -98,7 +98,7 @@
         <field name="name">facilities.asset.category.search</field>
         <field name="model">facilities.asset.category</field>
         <field name="arch" type="xml">
-            <search string="Asset Categories">
+            <search>
                 <field name="name"/>
                 <field name="category_type"/>
                 
@@ -107,9 +107,7 @@
                 <separator/>
                 <filter string="Has Assets" name="has_assets" domain="[('asset_count', '&gt;', 0)]"/>
                 
-                <group expand="0" string="Group By">
-                    <filter string="Category Type" name="groupby_type" context="{'group_by':'category_type'}"/>
-                </group>
+            <filter string="Category Type" name="groupby_type" context="{'group_by':'category_type'}"/>
             </search>
         </field>
     </record>

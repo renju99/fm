@@ -31,7 +31,7 @@ class FacilityReportWizard(models.TransientModel):
         return {
             'type': 'ir.actions.report',
             'report_type': 'qweb-pdf',
-            'report_name': 'facilities_management.facility_workorder_report',
+            'report_name': 'fm.facility_workorder_report',
             'data': {
                 'facility_id': self.facility_id.id,
                 'date_from': self.date_from,

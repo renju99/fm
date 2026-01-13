@@ -217,7 +217,7 @@ class FacilityRoom(models.Model):
             'res_model': 'facilities.room',
             'res_id': self.id,
             'view_mode': 'form',
-            'view_id': self.env.ref('facilities_management.view_room_qr_code_form').id,
+            'view_id': self.env.ref('fm.view_room_qr_code_form').id,
             'target': 'new',
             'context': {'show_qr_code': True}
         }

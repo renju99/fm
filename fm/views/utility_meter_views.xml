@@ -150,7 +150,7 @@
         <field name="name">facilities.utility.meter.search</field>
         <field name="model">facilities.utility.meter</field>
         <field name="arch" type="xml">
-            <search string="Utility Meters">
+            <search>
                 <field name="name"/>
                 <field name="meter_code"/>
                 <field name="meter_type"/>
@@ -184,13 +184,11 @@
                 <filter string="Low Consumption" name="low_consumption" 
                         domain="[('current_reading', '&lt;', 'low_consumption_threshold')]"/>
                 
-                <group expand="0" string="Group By">
-                    <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
-                    <filter string="Building" name="group_building" context="{'group_by': 'building_id'}"/>
-                    <filter string="Meter Type" name="group_type" context="{'group_by': 'meter_type'}"/>
-                    <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
-                    <filter string="Unit of Measure" name="group_unit" context="{'group_by': 'unit_of_measure'}"/>
-                </group>
+            <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+            <filter string="Building" name="group_building" context="{'group_by': 'building_id'}"/>
+            <filter string="Meter Type" name="group_type" context="{'group_by': 'meter_type'}"/>
+            <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
+            <filter string="Unit of Measure" name="group_unit" context="{'group_by': 'unit_of_measure'}"/>
             </search>
         </field>
     </record>

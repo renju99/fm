@@ -23,7 +23,7 @@
 
         <record id="ir_cron_permit_expiry_reminder" model="ir.cron">
             <field name="name">Permit Expiry Reminder</field>
-            <field name="model_id" ref="facilities_management.model_facilities_workorder_permit"/>
+            <field name="model_id" ref="fm.model_facilities_workorder_permit"/>
             <field name="state">code</field>
             <field name="code">
                 model.cron_remind_expiring_permits()
@@ -37,7 +37,7 @@
         <!-- Periodic Facility Reports (Email) -->
         <record id="ir_cron_send_monthly_facility_report" model="ir.cron">
             <field name="name">Send Monthly Facility Report</field>
-            <field name="model_id" ref="facilities_management.model_facilities_facility"/>
+            <field name="model_id" ref="fm.model_facilities_facility"/>
             <field name="state">code</field>
             <field name="code">model.cron_send_periodic_facility_report(period='monthly')</field>
             <field name="interval_number">1</field>
@@ -47,7 +47,7 @@
 
         <record id="ir_cron_send_weekly_facility_report" model="ir.cron">
             <field name="name">Send Weekly Facility Report</field>
-            <field name="model_id" ref="facilities_management.model_facilities_facility"/>
+            <field name="model_id" ref="fm.model_facilities_facility"/>
             <field name="state">code</field>
             <field name="code">model.cron_send_periodic_facility_report(period='weekly')</field>
             <field name="interval_number">1</field>
@@ -57,7 +57,7 @@
 
         <record id="ir_cron_send_daily_facility_report" model="ir.cron">
             <field name="name">Send Daily Facility Report</field>
-            <field name="model_id" ref="facilities_management.model_facilities_facility"/>
+            <field name="model_id" ref="fm.model_facilities_facility"/>
             <field name="state">code</field>
             <field name="code">model.cron_send_periodic_facility_report(period='daily')</field>
             <field name="interval_number">1</field>
